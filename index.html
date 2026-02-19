@@ -335,7 +335,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 40px 28px
         C. 8 de Mayo 9, Manuel Avila Camacho,<br>
         Naucalpan de Juárez, 53910, Estado de México<br><br>
         📞 <a href="tel:+525621836094">+52 56 2183 6094</a><br>
-        ✉️ <a href="/cdn-cgi/l/email-protection#167f787079567879647a7774386e6f6c"><span class="__cf_email__" data-cfemail="c9a0a7afa689a7a6bba5a8abe7b1b0b3">[email&#160;protected]</span></a>
+        ✉️ <a href="mailto:info@norlab.xyz">info@norlab.xyz</a>
       </div>
     </div>
     <div>
@@ -397,7 +397,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 40px 28px
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbwcfUgF5lyypCclkdAkfKFld_hNJD-6WrQ5pwT8UmBND3hp9JkqB8FI_E9MBt0D8yp3/exec';
 const EQ_FALLBACK = [
   {id:1,  n:"BA88A",   m:"Mindray", c:"Química Clínica", p:39990,   co:30000,  mr:null, pl:["fin"],             mx:6,  dm:0, mc:0,  nota:"0% de interés hasta 4 meses · máximo 6 meses"},
@@ -614,15 +614,22 @@ function openMd() {
   if (!eq) return;
   var planName = '', mensual = '', enganche = '', plazo = '';
   if (sTab === 'fin') {
-    var tasa = (eq.nota && eq.nota.indexOf('0%') !== -1) ? 0 : 1;
-    var r = calcFin(eq.p, sEng, sMes, tasa);
+    var tasa = (eq.nota && eq.nota.indexOf('0%') !== -1) ? 0 : 0.015;
+    var ep = sEng;
+    var e = eq.p * ep/100;
+    var cap = eq.p - e;
+    var mn = tasa === 0 ? cap/sMes : cap * tasa * Math.pow(1+tasa,sMes)/(Math.pow(1+tasa,sMes)-1);
     planName = 'Financiamiento'; plazo = String(sMes);
-    mensual = fmt2(r.mn) + ' + IVA'; enganche = fmt(r.e) + ' (' + sEng + '%)';
+    mensual = '$'+mn.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
+    enganche = '$'+Math.round(e).toLocaleString('es-MX')+' ('+ep+'%)';
   } else if (sTab === 'ren') {
-    planName = 'Renta'; mensual = fmt2(eq.p * 0.025) + ' + IVA';
+    planName = 'Renta'; mensual = '$'+(eq.p*0.025).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
   } else if (sTab === 'com') {
-    var c = calcCom(eq);
-    planName = 'Comodato'; mensual = fmt(c.mr) + '/mes'; enganche = 'Dep: ' + fmt(c.dep);
+    var mr = eq.co * (eq.mr || 0.3);
+    var dep = eq.p * (eq.dm || 3) * 0.025;
+    planName = 'Comodato';
+    mensual = 'Compra mín. $'+Math.round(mr).toLocaleString('es-MX')+'/mes';
+    enganche = 'Depósito: $'+Math.round(dep).toLocaleString('es-MX');
   }
   var params = 'equipo=' + encodeURIComponent(eq.n + ' · ' + eq.m) +
     '&plan=' + encodeURIComponent(planName) +
@@ -702,3 +709,11 @@ async function submitLead() {
     "Equipo: " + d.eq + "\nPlan: " + d.plan + "\n" + d.details +
     "\n\nNombre: " + d.nombre + "\nLaboratorio: " + d.lab +
     "\nCiudad: " + d.ciudad + "\nTel: " + d.tel + "\nEmail: " + d.email
+  );
+  document.getElementById("md-form").style.display = "none";
+  document.getElementById("md-ok").classList.add("on");
+  document.getElementById("ok-wa").href = "https://wa.me/525621836094?text=" + waMsg;
+}
+</script>
+</body>
+</html>
