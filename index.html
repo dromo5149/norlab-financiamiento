@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>NORLAB — Simulador de Financiamiento</title>
 <style>
 :root{--navy:#0b1f3a;--navy2:#132d52;--blue:#1565c0;--blue2:#1976d2;--bl:#e3f2fd;--light:#f7f9fc;--border:#e8edf5;--text:#1a2a4a;--muted:#6b7c93;}
@@ -335,7 +338,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 40px 28px
         C. 8 de Mayo 9, Manuel Avila Camacho,<br>
         Naucalpan de Juárez, 53910, Estado de México<br><br>
         📞 <a href="tel:+525621836094">+52 56 2183 6094</a><br>
-        ✉️ <a href="mailto:info@norlab.xyz">info@norlab.xyz</a>
+        ✉️ <a href="/cdn-cgi/l/email-protection#cba2a5ada48ba5a4b9a7aaa9e5b3b2b1"><span class="__cf_email__" data-cfemail="c6afa8a0a986a8a9b4aaa7a4e8bebfbc">[email&#160;protected]</span></a>
       </div>
     </div>
     <div>
@@ -397,7 +400,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 40px 28px
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbwcfUgF5lyypCclkdAkfKFld_hNJD-6WrQ5pwT8UmBND3hp9JkqB8FI_E9MBt0D8yp3/exec';
 const EQ_FALLBACK = [
   {id:1,  n:"BA88A",   m:"Mindray", c:"Química Clínica", p:39990,   co:30000,  mr:null, pl:["fin"],             mx:6,  dm:0, mc:0,  nota:"0% de interés hasta 4 meses · máximo 6 meses"},
@@ -709,11 +712,3 @@ async function submitLead() {
     "Equipo: " + d.eq + "\nPlan: " + d.plan + "\n" + d.details +
     "\n\nNombre: " + d.nombre + "\nLaboratorio: " + d.lab +
     "\nCiudad: " + d.ciudad + "\nTel: " + d.tel + "\nEmail: " + d.email
-  );
-  document.getElementById("md-form").style.display = "none";
-  document.getElementById("md-ok").classList.add("on");
-  document.getElementById("ok-wa").href = "https://wa.me/525621836094?text=" + waMsg;
-}
-</script>
-</body>
-</html>
