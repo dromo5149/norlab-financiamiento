@@ -13,6 +13,7 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--light);min-height:100vh;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideDown{from{opacity:0;max-height:0}to{opacity:1;max-height:300px}}
 nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
 .nav-logo{height:52px;object-fit:contain;cursor:pointer;}
 .nav-back{display:flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;}
@@ -63,25 +64,33 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
 .zoho-box.loading{background:#f5f7fa;color:var(--muted);}
 .zoho-box.found{background:#e8f5e9;border-color:#a5d6a7;}
 .zoho-box.notfound{background:#fff8e1;border-color:#ffe082;color:#5d4037;}
-.doc-item{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);margin-bottom:7px;cursor:pointer;transition:all .2s;background:#fff;}
-.doc-item:hover{border-color:#90caf9;background:var(--bl);}
-.doc-item.checked{border-color:var(--green);background:#f1f8e9;}
-.doc-cb{width:20px;height:20px;border:2px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:11px;color:transparent;transition:all .2s;}
+/* DOC ITEMS */
+.doc-item{border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;background:#fff;transition:border-color .2s;cursor:pointer;}
+.doc-item:hover{border-color:#90caf9;}
+.doc-item.checked{border-color:var(--green);}
+.doc-item.expanded{border-color:var(--blue2);}
+.doc-header{display:flex;align-items:center;gap:12px;padding:13px 16px;}
+.doc-cb{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:transparent;transition:all .2s;}
 .doc-item.checked .doc-cb{background:var(--green);border-color:var(--green);color:#fff;}
-.doc-info strong{font-size:13px;color:var(--text);}
-.doc-info span{font-size:11px;color:var(--muted);display:block;margin-top:2px;}
+.doc-info{flex:1;}
+.doc-info strong{font-size:13px;color:var(--text);display:block;}
+.doc-info span{font-size:11px;color:var(--muted);margin-top:2px;display:block;}
 .doc-req{font-size:10px;background:#ffebee;color:var(--red);border-radius:4px;padding:1px 5px;font-weight:700;margin-left:4px;}
 .doc-opt{font-size:10px;background:#e8f5e9;color:var(--green);border-radius:4px;padding:1px 5px;font-weight:700;margin-left:4px;}
-.doc-warn{background:#fff8e1;border:1px solid #ffe082;border-radius:10px;padding:11px 14px;font-size:12px;color:#5d4037;margin-top:10px;display:none;line-height:1.5;}
+.doc-arrow{font-size:20px;color:var(--muted);transition:transform .25s;font-weight:300;line-height:1;}
+.doc-item.expanded .doc-arrow{transform:rotate(90deg);color:var(--blue2);}
+/* INLINE UPLOAD ZONE */
+.doc-upload-zone{border-top:1.5px solid var(--border);background:#f8fafc;animation:slideDown .2s ease;overflow:hidden;padding:14px 16px;}
+.doc-upload-inner{border:2px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px;color:var(--muted);}
+.doc-upload-inner:hover,.doc-upload-inner.drag{border-color:var(--blue2);background:var(--bl);color:var(--blue2);}
+.doc-upload-inner input[type=file]{display:none;}
+.fi-list{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.fi-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:13px;}
+.fi-row.uploading{border-color:#90caf9;background:var(--bl);}
+.fi-row.done{border-color:var(--green);background:#f1f8e9;}
+/* DOC WARN */
+.doc-warn{background:#fff8e1;border:1px solid #ffe082;border-radius:10px;padding:11px 14px;font-size:12px;color:#5d4037;margin-top:6px;display:none;line-height:1.5;}
 .doc-warn.on{display:block;}
-.upload-area{border:2px dashed var(--border);border-radius:12px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;background:#fafbfc;margin-top:14px;}
-.upload-area:hover,.upload-area.drag{border-color:var(--blue2);background:var(--bl);}
-.upload-area input[type=file]{display:none;}
-.file-list{display:flex;flex-direction:column;gap:7px;margin-top:10px;}
-.file-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;border:1.5px solid var(--border);background:#fff;}
-.file-item.uploading{border-color:#90caf9;background:var(--bl);}
-.file-item.done{border-color:var(--green);background:#f1f8e9;}
-.file-item.error{border-color:var(--red);background:#ffebee;}
 .btn-row{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:20px;}
 .btn-back{background:none;border:2px solid var(--border);border-radius:10px;padding:12px 22px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;}
 .btn-back:hover{border-color:var(--muted);}
@@ -146,7 +155,7 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
       <div class="fg"><label>RFC <span>*</span></label><input id="f_rfc" placeholder="PEGJ800101XXX" style="text-transform:uppercase"><span class="ferr" id="ef_rfc">RFC inv&#225;lido (m&#237;n. 12 caracteres)</span></div>
       <div class="fg"><label>CURP <span>*</span></label><input id="f_curp" placeholder="PEGJ800101HMCRRN01" style="text-transform:uppercase"><span class="ferr" id="ef_curp">CURP inv&#225;lida (18 caracteres)</span></div>
       <div class="fg"><label>Tel&#233;fono <span>*</span></label><input id="f_tel" type="tel" placeholder="55 1234 5678"><span class="ferr" id="ef_tel">Tel&#233;fono inv&#225;lido</span></div>
-      <div class="fg"><label>Email <span>*</span></label><input id="f_email" type="email" placeholder="juan@laboratorio.com" onblur="onEmailBlur('fisica')"><span class="ferr" id="ef_email">Email inv&#225;lido</span></div>
+      <div class="fg"><label>Email <span>*</span></label><input id="f_email" type="email" placeholder="tu correo electronico" onblur="onEmailBlur('fisica')"><span class="ferr" id="ef_email">Email inv&#225;lido</span></div>
     </div></div>
     <div class="card"><div class="card-title">&#127973; Datos del negocio</div><div class="fg2">
       <div class="fg full"><label>Nombre del laboratorio / cl&#237;nica <span>*</span></label><input id="f_negocio" placeholder="Laboratorio Cl&#237;nico San Jos&#233;"><span class="ferr" id="ef_negocio">Campo requerido</span></div>
@@ -171,7 +180,7 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
     <div class="card"><div class="card-title">&#128100; Representante legal</div><div class="fg2">
       <div class="fg full"><label>Nombre del representante legal <span>*</span></label><input id="m_rep" placeholder="Lic. Mar&#237;a Gonz&#225;lez Soto"><span class="ferr" id="em_rep">Campo requerido</span></div>
       <div class="fg"><label>Tel&#233;fono <span>*</span></label><input id="m_tel" type="tel" placeholder="55 1234 5678"><span class="ferr" id="em_tel">Tel&#233;fono inv&#225;lido</span></div>
-      <div class="fg"><label>Email <span>*</span></label><input id="m_email" type="email" placeholder="contacto@empresa.com" onblur="onEmailBlur('moral')"><span class="ferr" id="em_email">Email inv&#225;lido</span></div>
+      <div class="fg"><label>Email <span>*</span></label><input id="m_email" type="email" placeholder="tu correo electronico" onblur="onEmailBlur('moral')"><span class="ferr" id="em_email">Email inv&#225;lido</span></div>
       <div class="fg full"><label>Comentarios</label><textarea id="m_notas" placeholder="Cualquier informaci&#243;n relevante..."></textarea></div>
     </div></div>
   </div>
@@ -179,43 +188,253 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
 </div>
 <!-- STEP 4 -->
 <div class="step" id="s4">
-  <div class="step-hd"><h2>&#128193; Documentaci&#243;n</h2><p>Marca los documentos que tienes y sube los que puedas ahora.</p></div>
+  <div class="step-hd"><h2>&#128193; Documentaci&#243;n</h2><p>Haz clic en cada documento para abrirlo y subir tu archivo.</p></div>
   <div id="docs_fisica" style="display:none">
-    <div class="card"><div class="card-title">&#128203; Documentos &#8212; Persona F&#237;sica</div>
-      <div class="doc-item" id="d_ine" onclick="toggleDoc('d_ine')"><div class="doc-cb" id="cb_d_ine">&#10003;</div><div class="doc-info"><strong>INE vigente <span class="doc-req">OBLIGATORIO</span></strong><span>Por ambos lados</span></div></div>
-      <div class="doc-item" id="d_dom" onclick="toggleDoc('d_dom')"><div class="doc-cb" id="cb_d_dom">&#10003;</div><div class="doc-info"><strong>Comprobante de domicilio <span class="doc-req">OBLIGATORIO</span></strong><span>No mayor a 3 meses</span></div></div>
-      <div class="doc-item" id="d_ec" onclick="toggleDoc('d_ec')"><div class="doc-cb" id="cb_d_ec">&#10003;</div><div class="doc-info"><strong>Estados de cuenta bancarios <span class="doc-req">OBLIGATORIO</span></strong><span>&#218;ltimos 3 meses</span></div></div>
-      <div class="doc-item" id="d_cif" onclick="toggleDoc('d_cif')"><div class="doc-cb" id="cb_d_cif">&#10003;</div><div class="doc-info"><strong>Constancia de Situaci&#243;n Fiscal <span class="doc-req">OBLIGATORIO</span></strong><span>Portal SAT</span></div></div>
-      <div class="doc-item" id="d_curp" onclick="toggleDoc('d_curp')"><div class="doc-cb" id="cb_d_curp">&#10003;</div><div class="doc-info"><strong>CURP <span class="doc-opt">COMPLEMENTARIO</span></strong><span>gob.mx/curp</span></div></div>
-      <div class="doc-warn" id="warn_fisica">&#9888; Faltan documentos obligatorios. El proceso se pausar&#225; hasta recibirlos.</div>
-      <div class="upload-area" onclick="document.getElementById('file_fisica').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="onDrop(event,'fisica')">
-        <input type="file" id="file_fisica" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onFileSelect(event,'fisica')">
-        <div style="font-size:28px;margin-bottom:6px">&#128194;</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.5">Arrastra archivos aqu&#237; o <strong style="color:var(--blue2)">haz clic para seleccionar</strong><br>PDF, JPG o PNG &#183; M&#225;x. 10MB &#183; Claude los analiza autom&#225;ticamente</div>
+    <div class="card">
+      <div class="card-title">&#128203; Documentos &#8212; Persona F&#237;sica</div>
+      
+      <div class="doc-item" id="d_ine" onclick="toggleDoc('d_ine')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_ine">&#10003;</div>
+          <div class="doc-info">
+            <strong>INE vigente <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>Por ambos lados</span>
+          </div>
+          <div class="doc-arrow" id="arr_d_ine">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_ine" style="display:none"
+             ondragover="onDocDragOver(event,'d_ine')" ondragleave="onDocDragLeave(event,'d_ine')" ondrop="onDocDrop(event,'d_ine')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_ine').click()">
+            <input type="file" id="file_d_ine" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_ine')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_ine"></div>
+        </div>
       </div>
-      <div class="file-list" id="files_fisica"></div>
+      
+      <div class="doc-item" id="d_dom" onclick="toggleDoc('d_dom')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_dom">&#10003;</div>
+          <div class="doc-info">
+            <strong>Comprobante de domicilio <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>No mayor a 3 meses</span>
+          </div>
+          <div class="doc-arrow" id="arr_d_dom">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_dom" style="display:none"
+             ondragover="onDocDragOver(event,'d_dom')" ondragleave="onDocDragLeave(event,'d_dom')" ondrop="onDocDrop(event,'d_dom')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_dom').click()">
+            <input type="file" id="file_d_dom" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_dom')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_dom"></div>
+        </div>
+      </div>
+      
+      <div class="doc-item" id="d_ec" onclick="toggleDoc('d_ec')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_ec">&#10003;</div>
+          <div class="doc-info">
+            <strong>Estados de cuenta bancarios <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>&#218;ltimos 3 meses</span>
+          </div>
+          <div class="doc-arrow" id="arr_d_ec">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_ec" style="display:none"
+             ondragover="onDocDragOver(event,'d_ec')" ondragleave="onDocDragLeave(event,'d_ec')" ondrop="onDocDrop(event,'d_ec')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_ec').click()">
+            <input type="file" id="file_d_ec" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_ec')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_ec"></div>
+        </div>
+      </div>
+      
+      <div class="doc-item" id="d_cif" onclick="toggleDoc('d_cif')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_cif">&#10003;</div>
+          <div class="doc-info">
+            <strong>Constancia de Situaci&#243;n Fiscal <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>Portal SAT</span>
+          </div>
+          <div class="doc-arrow" id="arr_d_cif">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_cif" style="display:none"
+             ondragover="onDocDragOver(event,'d_cif')" ondragleave="onDocDragLeave(event,'d_cif')" ondrop="onDocDrop(event,'d_cif')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_cif').click()">
+            <input type="file" id="file_d_cif" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_cif')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_cif"></div>
+        </div>
+      </div>
+      
+      <div class="doc-item" id="d_curp" onclick="toggleDoc('d_curp')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_curp">&#10003;</div>
+          <div class="doc-info">
+            <strong>CURP <span class="doc-opt">COMPLEMENTARIO</span></strong>
+            <span>gob.mx/curp</span>
+          </div>
+          <div class="doc-arrow" id="arr_d_curp">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_curp" style="display:none"
+             ondragover="onDocDragOver(event,'d_curp')" ondragleave="onDocDragLeave(event,'d_curp')" ondrop="onDocDrop(event,'d_curp')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_curp').click()">
+            <input type="file" id="file_d_curp" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_curp')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_curp"></div>
+        </div>
+      </div>
+      <div class="doc-warn" id="warn_fisica">&#9888; Faltan documentos obligatorios. El proceso se pausar&#225; hasta recibirlos.</div>
     </div>
   </div>
   <div id="docs_moral" style="display:none">
-    <div class="card"><div class="card-title">&#128203; Documentos &#8212; Persona Moral</div>
-      <div class="doc-item" id="dm_acta" onclick="toggleDoc('dm_acta')"><div class="doc-cb" id="cb_dm_acta">&#10003;</div><div class="doc-info"><strong>Acta constitutiva <span class="doc-req">OBLIGATORIO</span></strong><span>Con sello del Registro P&#250;blico de Comercio</span></div></div>
-      <div class="doc-item" id="dm_poder" onclick="toggleDoc('dm_poder')"><div class="doc-cb" id="cb_dm_poder">&#10003;</div><div class="doc-info"><strong>Poder notarial <span class="doc-req">OBLIGATORIO</span></strong><span>Del representante legal</span></div></div>
-      <div class="doc-item" id="dm_cif" onclick="toggleDoc('dm_cif')"><div class="doc-cb" id="cb_dm_cif">&#10003;</div><div class="doc-info"><strong>Constancia de Situaci&#243;n Fiscal <span class="doc-req">OBLIGATORIO</span></strong><span>De la empresa, portal SAT</span></div></div>
-      <div class="doc-item" id="dm_dom" onclick="toggleDoc('dm_dom')"><div class="doc-cb" id="cb_dm_dom">&#10003;</div><div class="doc-info"><strong>Comprobante de domicilio fiscal <span class="doc-req">OBLIGATORIO</span></strong><span>No mayor a 3 meses</span></div></div>
-      <div class="doc-item" id="dm_ec" onclick="toggleDoc('dm_ec')"><div class="doc-cb" id="cb_dm_ec">&#10003;</div><div class="doc-info"><strong>Estados de cuenta bancarios <span class="doc-req">OBLIGATORIO</span></strong><span>&#218;ltimos 3 meses, cuenta empresarial</span></div></div>
-      <div class="doc-item" id="dm_ef" onclick="toggleDoc('dm_ef')"><div class="doc-cb" id="cb_dm_ef">&#10003;</div><div class="doc-info"><strong>Estados financieros <span class="doc-opt">COMPLEMENTARIO</span></strong><span>&#218;ltimo a&#241;o fiscal</span></div></div>
-      <div class="doc-warn" id="warn_moral">&#9888; Faltan documentos obligatorios. El proceso se pausar&#225; hasta recibirlos.</div>
-      <div class="upload-area" onclick="document.getElementById('file_moral').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="onDrop(event,'moral')">
-        <input type="file" id="file_moral" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onFileSelect(event,'moral')">
-        <div style="font-size:28px;margin-bottom:6px">&#128194;</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.5">Arrastra archivos aqu&#237; o <strong style="color:var(--blue2)">haz clic para seleccionar</strong><br>PDF, JPG o PNG &#183; M&#225;x. 10MB &#183; Claude los analiza autom&#225;ticamente</div>
+    <div class="card">
+      <div class="card-title">&#128203; Documentos &#8212; Persona Moral</div>
+      
+      <div class="doc-item" id="dm_acta" onclick="toggleDoc('dm_acta')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_acta">&#10003;</div>
+          <div class="doc-info">
+            <strong>Acta constitutiva <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>Con sello del Registro P&#250;blico de Comercio</span>
+          </div>
+          <div class="doc-arrow" id="arr_dm_acta">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_acta" style="display:none"
+             ondragover="onDocDragOver(event,'dm_acta')" ondragleave="onDocDragLeave(event,'dm_acta')" ondrop="onDocDrop(event,'dm_acta')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_acta').click()">
+            <input type="file" id="file_dm_acta" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_acta')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_acta"></div>
+        </div>
       </div>
-      <div class="file-list" id="files_moral"></div>
+      
+      <div class="doc-item" id="dm_poder" onclick="toggleDoc('dm_poder')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_poder">&#10003;</div>
+          <div class="doc-info">
+            <strong>Poder notarial <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>Del representante legal</span>
+          </div>
+          <div class="doc-arrow" id="arr_dm_poder">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_poder" style="display:none"
+             ondragover="onDocDragOver(event,'dm_poder')" ondragleave="onDocDragLeave(event,'dm_poder')" ondrop="onDocDrop(event,'dm_poder')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_poder').click()">
+            <input type="file" id="file_dm_poder" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_poder')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_poder"></div>
+        </div>
+      </div>
+      
+      <div class="doc-item" id="dm_cif" onclick="toggleDoc('dm_cif')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_cif">&#10003;</div>
+          <div class="doc-info">
+            <strong>Constancia de Situaci&#243;n Fiscal <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>De la empresa, portal SAT</span>
+          </div>
+          <div class="doc-arrow" id="arr_dm_cif">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_cif" style="display:none"
+             ondragover="onDocDragOver(event,'dm_cif')" ondragleave="onDocDragLeave(event,'dm_cif')" ondrop="onDocDrop(event,'dm_cif')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_cif').click()">
+            <input type="file" id="file_dm_cif" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_cif')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_cif"></div>
+        </div>
+      </div>
+      
+      <div class="doc-item" id="dm_dom" onclick="toggleDoc('dm_dom')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_dom">&#10003;</div>
+          <div class="doc-info">
+            <strong>Comprobante de domicilio fiscal <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>No mayor a 3 meses</span>
+          </div>
+          <div class="doc-arrow" id="arr_dm_dom">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_dom" style="display:none"
+             ondragover="onDocDragOver(event,'dm_dom')" ondragleave="onDocDragLeave(event,'dm_dom')" ondrop="onDocDrop(event,'dm_dom')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_dom').click()">
+            <input type="file" id="file_dm_dom" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_dom')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_dom"></div>
+        </div>
+      </div>
+      
+      <div class="doc-item" id="dm_ec" onclick="toggleDoc('dm_ec')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_ec">&#10003;</div>
+          <div class="doc-info">
+            <strong>Estados de cuenta bancarios <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>&#218;ltimos 3 meses, cuenta empresarial</span>
+          </div>
+          <div class="doc-arrow" id="arr_dm_ec">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_ec" style="display:none"
+             ondragover="onDocDragOver(event,'dm_ec')" ondragleave="onDocDragLeave(event,'dm_ec')" ondrop="onDocDrop(event,'dm_ec')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_ec').click()">
+            <input type="file" id="file_dm_ec" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_ec')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_ec"></div>
+        </div>
+      </div>
+      
+      <div class="doc-item" id="dm_ef" onclick="toggleDoc('dm_ef')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_ef">&#10003;</div>
+          <div class="doc-info">
+            <strong>Estados financieros <span class="doc-opt">COMPLEMENTARIO</span></strong>
+            <span>&#218;ltimo a&#241;o fiscal</span>
+          </div>
+          <div class="doc-arrow" id="arr_dm_ef">&#8250;</div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_ef" style="display:none"
+             ondragover="onDocDragOver(event,'dm_ef')" ondragleave="onDocDragLeave(event,'dm_ef')" ondrop="onDocDrop(event,'dm_ef')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_ef').click()">
+            <input type="file" id="file_dm_ef" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_ef')">
+            <span style="font-size:22px">&#128228;</span>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_ef"></div>
+        </div>
+      </div>
+      <div class="doc-warn" id="warn_moral">&#9888; Faltan documentos obligatorios. El proceso se pausar&#225; hasta recibirlos.</div>
     </div>
   </div>
   <div class="card"><div class="card-title">&#128228; Documentos pendientes</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.65">Despu&#233;s de enviar recibir&#225;s un <strong>folio &#250;nico</strong>. Env&#237;a documentos pendientes a:</p>
-    <p style="font-size:13px;margin-bottom:6px">&#128231; <strong>expedientes [arroba] norlab.xyz</strong></p>
+    <p style="font-size:13px;margin-bottom:6px">&#128231; <strong>info&#64;norlab.xyz</strong></p>
     <p style="font-size:13px">&#128241; <strong>WhatsApp +52 56 2183 6094</strong> (menciona tu folio)</p>
   </div>
   <div class="card"><div class="card-title">&#9989; Resumen de tu solicitud</div><div id="resumen_content"></div></div>
@@ -235,9 +454,9 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
     <a class="btn-wa" id="wa_link" href="#" target="_blank">&#128241; Enviar docs por WhatsApp</a>
     <a class="btn-home" href="index.html">&#8592; Volver al inicio</a>
   </div>
-  <p style="font-size:12px;color:var(--muted)">Tambi&#233;n puedes enviar a <strong>expedientes [arroba] norlab.xyz</strong> con tu folio <strong id="refNum2"></strong></p>
+  <p style="font-size:12px;color:var(--muted)">Tambi&#233;n puedes enviar a <strong>info&#64;norlab.xyz</strong> con tu folio <strong id="refNum2"></strong></p>
 </div>
 </div>
-<script src="solicitud.js?v=202602192128"></script>
+<script src="solicitud.js?v=202602192217"></script>
 </body>
 </html>

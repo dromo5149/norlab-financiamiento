@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcfUgF5lyypCclkdAkfKFld_hNJD-6WrQ5pwT8UmBND3hp9JkqB8FI_E9MBt0D8yp3/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsrwHLnl6J881dPnHy_kJcRPw7jXuZuFKVu5Yz4wUumOSel4ew3kuy-pX8Mc3d2k2L/exec';
 const WA_NUM = '525621836094';
 const PLAN_LABELS = {fin:'Financiamiento', ren:'Renta mensual', com:'Comodato'};
 const PLAN_HINTS  = {
@@ -10,25 +10,24 @@ const REQ_FISICA = ['d_ine','d_dom','d_ec','d_cif'];
 const REQ_MORAL  = ['dm_acta','dm_poder','dm_cif','dm_dom','dm_ec'];
 const STEPS = ['Equipo','Tipo','Datos','Documentos'];
 
-// Map doc type guesses to checklist IDs
-const DOC_MAP_FISICA = {
-  'INE': 'd_ine',
-  'Comprobante de domicilio': 'd_dom',
-  'Estado de cuenta': 'd_ec',
-  'Constancia SAT': 'd_cif',
-  'CURP': 'd_curp'
-};
-const DOC_MAP_MORAL = {
-  'Acta constitutiva': 'dm_acta',
-  'Poder notarial': 'dm_poder',
-  'Constancia SAT': 'dm_cif',
-  'Comprobante de domicilio': 'dm_dom',
-  'Estado de cuenta': 'dm_ec',
-  'Estados financieros': 'dm_ef'
+// Map doc ID to doc type label
+const DOC_TYPE = {
+  'd_ine':   'INE',
+  'd_dom':   'Comprobante de domicilio',
+  'd_ec':    'Estado de cuenta',
+  'd_cif':   'Constancia SAT',
+  'd_curp':  'CURP',
+  'dm_acta':  'Acta constitutiva',
+  'dm_poder': 'Poder notarial',
+  'dm_cif':   'Constancia SAT',
+  'dm_dom':   'Comprobante de domicilio',
+  'dm_ec':    'Estado de cuenta',
+  'dm_ef':    'Estados financieros'
 };
 
 var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='';
 var checkedDocs=new Set();
+var expandedDoc=null;
 var EQ=[];
 
 function g(id){var el=document.getElementById(id);return el?el.value:'';}
@@ -205,7 +204,6 @@ function setTipo(t){
   document.getElementById('docs_moral').style.display=t==='moral'?'block':'none';
 }
 
-// FIX: Zoho lookup triggered both on select change AND when email already filled
 function onEmailBlur(t){
   var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
   if(cv==='si') doZohoLookup(t);
@@ -214,7 +212,6 @@ function onClienteChange(t){
   var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
   var box=document.getElementById('zoho_'+t);
   if(cv!=='si'){box.className='zoho-box';return;}
-  // Email may already be filled — lookup immediately
   var email=document.getElementById(t==='fisica'?'f_email':'m_email').value.trim();
   if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
     box.className='zoho-box notfound show';
@@ -251,21 +248,39 @@ function renderZoho(box,d,t){
   else{if(d.nombre&&!g('m_razon'))document.getElementById('m_razon').value=d.nombre;if(d.telefono&&!g('m_tel'))document.getElementById('m_tel').value=d.telefono;if(d.ciudad&&!g('m_ciudad'))document.getElementById('m_ciudad').value=d.ciudad;}
 }
 
-// DOCS CHECKLIST
+// ─── INLINE EXPAND & UPLOAD ──────────────────────────────────────────────────
+
 function toggleDoc(id){
+  // If already expanded, collapse it
+  if(expandedDoc===id){
+    collapseDoc(id);
+    return;
+  }
+  // Collapse any open one first
+  if(expandedDoc) collapseDoc(expandedDoc);
+  expandedDoc=id;
+
   var el=document.getElementById(id);
-  if(checkedDocs.has(id)){checkedDocs.delete(id);el.classList.remove('checked');}
-  else{checkedDocs.add(id);el.classList.add('checked');}
-  updateDocWarn();
+  var zone=document.getElementById('zone_'+id);
+  el.classList.add('expanded');
+  if(zone){zone.style.display='block';}
 }
-function checkDocById(id){
-  if(!id)return;
+
+function collapseDoc(id){
   var el=document.getElementById(id);
-  if(!el)return;
+  var zone=document.getElementById('zone_'+id);
+  el.classList.remove('expanded');
+  if(zone) zone.style.display='none';
+  if(expandedDoc===id) expandedDoc=null;
+}
+
+function checkDoc(id){
+  var el=document.getElementById(id);
   checkedDocs.add(id);
   el.classList.add('checked');
   updateDocWarn();
 }
+
 function updateDocWarn(){
   var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
   var miss=req.filter(function(x){return !checkedDocs.has(x);});
@@ -273,68 +288,109 @@ function updateDocWarn(){
   document.getElementById(warnId).classList.toggle('on',miss.length>0);
 }
 
-// UPLOAD
-function onDrop(e,t){e.preventDefault();e.currentTarget.classList.remove('drag');processFiles(Array.from(e.dataTransfer.files),t);}
-function onFileSelect(e,t){processFiles(Array.from(e.target.files),t);}
-function processFiles(files,t){
+function onDocDrop(e,docId){
+  e.preventDefault();
+  var zone=document.getElementById('zone_'+docId);
+  if(zone) zone.querySelector('.doc-upload-inner').classList.remove('drag');
+  processDocFiles(Array.from(e.dataTransfer.files), docId);
+}
+function onDocDragOver(e,docId){
+  e.preventDefault();
+  var zone=document.getElementById('zone_'+docId);
+  if(zone) zone.querySelector('.doc-upload-inner').classList.add('drag');
+}
+function onDocDragLeave(e,docId){
+  var zone=document.getElementById('zone_'+docId);
+  if(zone) zone.querySelector('.doc-upload-inner').classList.remove('drag');
+}
+function onDocFileSelect(e,docId){
+  processDocFiles(Array.from(e.target.files), docId);
+}
+
+function processDocFiles(files, docId){
+  if(!files.length) return;
   files.forEach(function(file){
     if(file.size>10*1024*1024){alert(file.name+' excede el l\u00edmite de 10MB');return;}
     var uid='f'+Date.now()+Math.random().toString(36).substr(2,4);
-    var item={uid:uid,name:file.name,tipo:t,status:'reading'};
-    uploadedFiles.push(item);addFileItem(item,t);
+    var docType=DOC_TYPE[docId]||'Documento';
+    var item={uid:uid,name:file.name,docId:docId,docType:docType,tipo:tipo,status:'reading'};
+    uploadedFiles.push(item);
+
+    // Show file item in this doc's zone
+    addDocFileItem(item, docId);
+
     var reader=new FileReader();
     reader.onload=function(ev){
       item.b64=ev.target.result.split(',')[1];
       item.mime=file.type||'application/octet-stream';
       item.status='uploading';
-      item.docType=guessDocType(file.name);
-      updateFileItem(item);
+      updateDocFileItem(item);
       uploadFile(item);
-      // FIX: auto-check the corresponding doc item
-      var map=t==='fisica'?DOC_MAP_FISICA:DOC_MAP_MORAL;
-      var docId=map[item.docType];
-      if(docId) checkDocById(docId);
+      // Auto-check the doc item
+      checkDoc(docId);
     };
     reader.readAsDataURL(file);
   });
 }
-function guessDocType(name){
-  var n=name.toLowerCase();
-  if(n.indexOf('ine')>-1||n.indexOf('identificacion')>-1)return 'INE';
-  if(n.indexOf('estado')>-1||n.indexOf('cuenta')>-1||n.indexOf('banco')>-1)return 'Estado de cuenta';
-  if(n.indexOf('domicilio')>-1||n.indexOf('cfe')>-1||n.indexOf('comprobante')>-1)return 'Comprobante de domicilio';
-  if(n.indexOf('sat')>-1||n.indexOf('cif')>-1||n.indexOf('constancia')>-1||n.indexOf('situacion')>-1)return 'Constancia SAT';
-  if(n.indexOf('curp')>-1)return 'CURP';
-  if(n.indexOf('acta')>-1)return 'Acta constitutiva';
-  if(n.indexOf('poder')>-1)return 'Poder notarial';
-  if(n.indexOf('financiero')>-1||n.indexOf('balance')>-1)return 'Estados financieros';
-  return 'Documento';
-}
+
 function uploadFile(item){
   var nombre=tipo==='fisica'?(g('f_nombre')||'solicitante'):(g('m_razon')||g('m_rep')||'solicitante');
   var folio=curFolio||('TEMP_'+Date.now());
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,file:item.b64,mime:item.mime,filename:folio+'_'+item.docType.replace(/ /g,'_')+'_'+item.name})
-  }).then(function(){item.status='done';item.analysis='Guardado en Drive. An\u00e1lisis Claude enviado por email.';updateFileItem(item);})
-  .catch(function(){item.status='done';item.analysis='Enviado correctamente.';updateFileItem(item);});
+    body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,
+      file:item.b64,mime:item.mime,filename:folio+'_'+item.docType.replace(/ /g,'_')+'_'+item.name})
+  }).then(function(){
+    item.status='done';
+    item.analysis='Guardado en Drive. An\u00e1lisis Claude enviado por email.';
+    updateDocFileItem(item);
+    // Mark doc as checked and collapse after short delay
+    checkDoc(item.docId);
+    setTimeout(function(){collapseDoc(item.docId);},800);
+  }).catch(function(){
+    item.status='done';
+    item.analysis='Enviado correctamente.';
+    updateDocFileItem(item);
+    checkDoc(item.docId);
+    setTimeout(function(){collapseDoc(item.docId);},800);
+  });
 }
-function addFileItem(item,t){var list=document.getElementById('files_'+t);var d=document.createElement('div');d.id='fi_'+item.uid;d.className='file-item';list.appendChild(d);updateFileItem(item);}
-function updateFileItem(item){
+
+function addDocFileItem(item, docId){
+  var list=document.getElementById('flist_'+docId);
+  if(!list) return;
+  var d=document.createElement('div');
+  d.id='fi_'+item.uid;
+  d.className='fi-row';
+  list.appendChild(d);
+  updateDocFileItem(item);
+}
+
+function updateDocFileItem(item){
   var el=document.getElementById('fi_'+item.uid);if(!el)return;
   var icons={reading:'&#128196;',uploading:'&#9203;',done:'&#9989;',error:'&#10060;'};
   var stat={reading:'Leyendo...',uploading:'Subiendo y analizando con Claude...',done:'Guardado en Drive',error:'Error'};
-  el.className='file-item '+(item.status==='done'?'done':item.status==='uploading'?'uploading':item.status==='error'?'error':'');
-  el.innerHTML='<span style="font-size:18px">'+(icons[item.status]||'&#128196;')+'</span>'+
+  el.className='fi-row '+(item.status==='done'?'done':item.status==='uploading'?'uploading':'');
+  el.innerHTML='<span style="font-size:16px;flex-shrink:0">'+(icons[item.status]||'&#128196;')+'</span>'+
     '<div style="flex:1;min-width:0">'+
-    '<div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.name+'</div>'+
-    (item.docType?'<div style="font-size:10px;color:var(--blue2);font-weight:700;margin-top:1px">'+item.docType+'</div>':'')+
-    '<div style="font-size:11px;color:#6b7c93;margin-top:2px">'+(stat[item.status]||'')+'</div>'+
-    (item.status==='uploading'?'<div style="height:3px;background:#e8edf5;border-radius:2px;margin-top:5px;overflow:hidden"><div style="height:100%;background:#1976d2;border-radius:2px;width:70%"></div></div>':'')+
-    (item.analysis?'<div style="margin-top:4px;padding:4px 8px;background:rgba(0,0,0,.04);border-radius:6px;font-size:11px;color:#132d52">'+item.analysis+'</div>':'')+
+    '<div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.name+'</div>'+
+    '<div style="font-size:11px;color:#6b7c93">'+(stat[item.status]||'')+'</div>'+
+    (item.status==='uploading'?'<div style="height:2px;background:#e8edf5;border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:100%;background:#1976d2;width:70%"></div></div>':'')+
     '</div>'+
-    (item.status!=='uploading'?'<button style="background:none;border:none;cursor:pointer;color:#6b7c93;font-size:15px;padding:0 4px" onclick="removeFile(\''+item.uid+'\',\''+item.tipo+'\')">&#x2715;</button>':'');
+    (item.status!=='uploading'?'<button style="background:none;border:none;cursor:pointer;color:#aaa;font-size:14px;padding:0 2px" onclick="removeDocFile(\''+item.uid+'\',\''+item.docId+'\')">&#x2715;</button>':'');
 }
-function removeFile(uid,t){uploadedFiles=uploadedFiles.filter(function(f){return f.uid!==uid;});var el=document.getElementById('fi_'+uid);if(el)el.remove();}
+
+function removeDocFile(uid, docId){
+  uploadedFiles=uploadedFiles.filter(function(f){return f.uid!==uid;});
+  var el=document.getElementById('fi_'+uid);if(el)el.remove();
+  // If no files left for this doc, uncheck it
+  var remaining=uploadedFiles.filter(function(f){return f.docId===docId&&f.status==='done';});
+  if(remaining.length===0){
+    var docEl=document.getElementById(docId);
+    if(docEl) docEl.classList.remove('checked');
+    checkedDocs.delete(docId);
+    updateDocWarn();
+  }
+}
 
 function buildResumen(){
   var rows=[];
