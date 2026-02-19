@@ -180,8 +180,8 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
         <div class="fg full"><label>Nombre del laboratorio / clinica <span>*</span></label><input id="f_negocio" placeholder="Laboratorio Clinico San Jose"><span class="ferr" id="ef_negocio">Campo requerido</span></div>
         <div class="fg full"><label>Direccion del negocio <span>*</span></label><input id="f_dir" placeholder="Av. Insurgentes Sur 1234, Col. Del Valle"><span class="ferr" id="ef_dir">Campo requerido</span></div>
         <div class="fg"><label>Ciudad <span>*</span></label><input id="f_ciudad" placeholder="Ciudad de Mexico"><span class="ferr" id="ef_ciudad">Campo requerido</span></div>
-        <div class="fg"><label>Anos de operacion <span>*</span></label>
-          <select id="f_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 anio</option><option value="1-2">1 a 2 anios</option><option value="3-5">3 a 5 anios</option><option value="6-10">6 a 10 anios</option><option value="mas10">Mas de 10 anios</option></select>
+        <div class="fg"><label>Años de operación <span>*</span></label>
+          <select id="f_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 año</option><option value="1-2">1 a 2 años</option><option value="3-5">3 a 5 años</option><option value="6-10">6 a 10 años</option><option value="mas10">Más de 10 años</option></select>
           <span class="ferr" id="ef_anos">Campo requerido</span></div>
         <div class="fg full"><label>Es cliente actual de NORLAB?</label>
           <select id="f_cliente" onchange="onClienteChange('fisica')"><option value="no">No, soy cliente nuevo</option><option value="si">Si, ya soy cliente</option></select></div>
@@ -196,8 +196,8 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
       <div class="fg2">
         <div class="fg full"><label>Razon social <span>*</span></label><input id="m_razon" placeholder="Laboratorios San Jose S.A. de C.V."><span class="ferr" id="em_razon">Campo requerido</span></div>
         <div class="fg"><label>RFC empresa <span>*</span></label><input id="m_rfc" placeholder="LSJ800101XXX" style="text-transform:uppercase"><span class="ferr" id="em_rfc">RFC invalido</span></div>
-        <div class="fg"><label>Anos de operacion <span>*</span></label>
-          <select id="m_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 anio</option><option value="1-2">1 a 2 anios</option><option value="3-5">3 a 5 anios</option><option value="6-10">6 a 10 anios</option><option value="mas10">Mas de 10 anios</option></select>
+        <div class="fg"><label>Años de operación <span>*</span></label>
+          <select id="m_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 año</option><option value="1-2">1 a 2 años</option><option value="3-5">3 a 5 años</option><option value="6-10">6 a 10 años</option><option value="mas10">Más de 10 años</option></select>
           <span class="ferr" id="em_anos">Campo requerido</span></div>
         <div class="fg full"><label>Direccion fiscal <span>*</span></label><input id="m_dir" placeholder="Av. Reforma 456, Col. Cuauhtemoc"><span class="ferr" id="em_dir">Campo requerido</span></div>
         <div class="fg"><label>Ciudad <span>*</span></label><input id="m_ciudad" placeholder="Ciudad de Mexico"><span class="ferr" id="em_ciudad">Campo requerido</span></div>
@@ -247,7 +247,7 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
       <div class="doc-item" id="dm_cif" onclick="toggleDoc('dm_cif')"><div class="doc-cb" id="cb_dm_cif">&#10003;</div><div class="doc-info"><strong>Constancia de Situacion Fiscal <span class="doc-req">OBLIGATORIO</span></strong><span>De la empresa, portal SAT</span></div></div>
       <div class="doc-item" id="dm_dom" onclick="toggleDoc('dm_dom')"><div class="doc-cb" id="cb_dm_dom">&#10003;</div><div class="doc-info"><strong>Comprobante de domicilio fiscal <span class="doc-req">OBLIGATORIO</span></strong><span>No mayor a 3 meses, a nombre de la empresa</span></div></div>
       <div class="doc-item" id="dm_ec" onclick="toggleDoc('dm_ec')"><div class="doc-cb" id="cb_dm_ec">&#10003;</div><div class="doc-info"><strong>Estados de cuenta bancarios <span class="doc-req">OBLIGATORIO</span></strong><span>Ultimos 3 meses, cuenta empresarial</span></div></div>
-      <div class="doc-item" id="dm_ef" onclick="toggleDoc('dm_ef')"><div class="doc-cb" id="cb_dm_ef">&#10003;</div><div class="doc-info"><strong>Estados financieros <span class="doc-opt">COMPLEMENTARIO</span></strong><span>Ultimo anio fiscal</span></div></div>
+      <div class="doc-item" id="dm_ef" onclick="toggleDoc('dm_ef')"><div class="doc-cb" id="cb_dm_ef">&#10003;</div><div class="doc-info"><strong>Estados financieros <span class="doc-opt">COMPLEMENTARIO</span></strong><span>Último año fiscal</span></div></div>
       <div class="doc-warn" id="warn_moral">&#9888; Faltan documentos obligatorios. El proceso se pausara hasta recibirlos.</div>
       <div class="upload-area" onclick="document.getElementById('file_moral').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="onDrop(event,'moral')">
         <input type="file" id="file_moral" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onFileSelect(event,'moral')">
@@ -260,7 +260,7 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
   <div class="card">
     <div class="card-title">&#128228; Documentos pendientes</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.65">Despues de enviar recibiras un <strong>folio unico</strong>. Puedes enviar los documentos pendientes a:</p>
-    <p style="font-size:13px;margin-bottom:6px">&#128231; <strong>expedientes@norlab.xyz</strong></p>
+    <p style="font-size:13px;margin-bottom:6px">&#128231; <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="74110c0411101d111a001107341a1b061815165a0c0d0e">[email&#160;protected]</a></strong></p>
     <p style="font-size:13px">&#128241; <strong>WhatsApp +52 56 2183 6094</strong> (menciona tu folio)</p>
   </div>
   <div class="card">
@@ -287,12 +287,11 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
     <a class="btn-wa" id="wa_link" href="#" target="_blank">&#128241; Enviar docs por WhatsApp</a>
     <a class="btn-home" href="index.html">&#8592; Volver al inicio</a>
   </div>
-  <p style="font-size:12px;color:var(--muted)">Tambien puedes enviar a <strong>expedientes@norlab.xyz</strong> con tu folio <strong id="refNum2"></strong></p>
+  <p style="font-size:12px;color:var(--muted)">Tambien puedes enviar a <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b0d5c8c0d5d4d9d5dec4d5c3f0dedfc2dcd1d29ec8c9ca">[email&#160;protected]</a></strong> con tu folio <strong id="refNum2"></strong></p>
 </div>
 
 </div>
-<script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcfUgF5lyypCclkdAkfKFld_hNJD-6WrQ5pwT8UmBND3hp9JkqB8FI_E9MBt0D8yp3/exec';
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcfUgF5lyypCclkdAkfKFld_hNJD-6WrQ5pwT8UmBND3hp9JkqB8FI_E9MBt0D8yp3/exec';
 const WA_NUM = '525621836094';
 const PLAN_LABELS = {fin:'Financiamiento', ren:'Renta mensual', com:'Comodato'};
 const PLAN_HINTS  = {
@@ -303,6 +302,23 @@ const PLAN_HINTS  = {
 const REQ_FISICA = ['d_ine','d_dom','d_ec','d_cif'];
 const REQ_MORAL  = ['dm_acta','dm_poder','dm_cif','dm_dom','dm_ec'];
 const STEPS = ['Equipo','Tipo','Datos','Documentos'];
+
+// Map doc type guesses to checklist IDs
+const DOC_MAP_FISICA = {
+  'INE': 'd_ine',
+  'Comprobante de domicilio': 'd_dom',
+  'Estado de cuenta': 'd_ec',
+  'Constancia SAT': 'd_cif',
+  'CURP': 'd_curp'
+};
+const DOC_MAP_MORAL = {
+  'Acta constitutiva': 'dm_acta',
+  'Poder notarial': 'dm_poder',
+  'Constancia SAT': 'dm_cif',
+  'Comprobante de domicilio': 'dm_dom',
+  'Estado de cuenta': 'dm_ec',
+  'Estados financieros': 'dm_ef'
+};
 
 var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='';
 var checkedDocs=new Set();
@@ -316,7 +332,7 @@ function buildProgress(){
     var n=i+1,done=n<curStep,active=n===curStep;
     var d=document.createElement('div');
     d.className='ps'+(done?' done':active?' active':'');
-    d.innerHTML='<div class="ps-dot">'+(done?'✓':n)+'</div>'+(i<STEPS.length-1?'<div class="ps-line"></div>':'');
+    d.innerHTML='<div class="ps-dot">'+(done?'&#10003;':n)+'</div>'+(i<STEPS.length-1?'<div class="ps-line"></div>':'');
     w.appendChild(d);
   });
   document.getElementById('progPct').textContent='Paso '+curStep+' de '+STEPS.length;
@@ -342,7 +358,7 @@ function populateEquipos(list){
   Object.keys(cats).sort().forEach(function(cat){
     var og=document.createElement('optgroup');og.label=cat;
     cats[cat].forEach(function(eq){
-      var o=document.createElement('option');o.value=eq.id;o.textContent=eq.n+' — '+eq.m;og.appendChild(o);
+      var o=document.createElement('option');o.value=eq.id;o.textContent=eq.n+' \u2014 '+eq.m;og.appendChild(o);
     });
     sel.appendChild(og);
   });
@@ -350,7 +366,7 @@ function populateEquipos(list){
   if(p.get('equipo')){
     var eqp=decodeURIComponent(p.get('equipo')).split('\u00b7')[0].trim();
     for(var i=0;i<sel.options.length;i++){
-      if(sel.options[i].text.split('—')[0].trim()===eqp){sel.value=sel.options[i].value;break;}
+      if(sel.options[i].text.split('\u2014')[0].trim()===eqp){sel.value=sel.options[i].value;break;}
     }
     onEquipoChange();
     if(p.get('plan')){
@@ -358,7 +374,7 @@ function populateEquipos(list){
         var ps=document.getElementById('p_plan'),pl=(p.get('plan')||'').toLowerCase();
         for(var j=0;j<ps.options.length;j++){
           var code=ps.options[j].value;
-          if(code&&pl.includes(code==='fin'?'finan':code==='ren'?'renta':code==='com'?'comod':'xx')){ps.value=code;onPlanChange();break;}
+          if(code&&pl.indexOf(code==='fin'?'finan':code==='ren'?'renta':code==='com'?'comod':'xx')>-1){ps.value=code;onPlanChange();break;}
         }
       },80);
     }
@@ -402,8 +418,8 @@ function onPlanChange(){
   }else if(code==='com'){
     pw.style.display='none';ew.style.display='flex';mw.style.display='flex';
     var mr=selEq.co*(selEq.mr||0.3),dep=selEq.p*(selEq.dm||3)*0.025;
-    document.getElementById('p_mensual').value='Compra minima $'+Math.round(mr).toLocaleString('es-MX')+'/mes en reactivos';
-    document.getElementById('p_enganche').value='Deposito: $'+Math.round(dep).toLocaleString('es-MX');
+    document.getElementById('p_mensual').value='Compra min. $'+Math.round(mr).toLocaleString('es-MX')+'/mes en reactivos';
+    document.getElementById('p_enganche').value='Dep\u00f3sito: $'+Math.round(dep).toLocaleString('es-MX');
   }
   document.getElementById('p_plan').classList.remove('er');
   document.getElementById('e_plan').classList.remove('on');
@@ -482,94 +498,131 @@ function setTipo(t){
   document.getElementById('docs_moral').style.display=t==='moral'?'block':'none';
 }
 
+// FIX: Zoho lookup triggered both on select change AND when email already filled
 function onEmailBlur(t){
   var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
-  if(cv==='si')onClienteChange(t);
+  if(cv==='si') doZohoLookup(t);
 }
 function onClienteChange(t){
   var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
   var box=document.getElementById('zoho_'+t);
   if(cv!=='si'){box.className='zoho-box';return;}
+  // Email may already be filled — lookup immediately
   var email=document.getElementById(t==='fisica'?'f_email':'m_email').value.trim();
   if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
     box.className='zoho-box notfound show';
-    box.innerHTML='Ingresa tu email primero para verificar tu cuenta';
+    box.innerHTML='&#9888; Ingresa tu email primero y luego selecciona esta opci\u00f3n nuevamente.';
     return;
   }
+  doZohoLookup(t);
+}
+function doZohoLookup(t){
+  var email=document.getElementById(t==='fisica'?'f_email':'m_email').value.trim();
+  if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email))return;
+  var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
+  if(cv!=='si')return;
+  var box=document.getElementById('zoho_'+t);
   box.className='zoho-box loading show';
-  box.innerHTML='Verificando en nuestro sistema...';
+  box.innerHTML='&#8635; Verificando en nuestro sistema...';
   var cb='zl_'+Date.now(),sc=document.createElement('script');
-  var to=setTimeout(function(){cleanup();box.className='zoho-box notfound show';box.innerHTML='No se pudo verificar. Continuaremos con revision manual.';},8000);
+  var to=setTimeout(function(){cleanup();box.className='zoho-box notfound show';box.innerHTML='No se pudo verificar. Continuaremos con revisi\u00f3n manual.';},8000);
   window[cb]=function(data){clearTimeout(to);cleanup();zohoData=data;renderZoho(box,data,t);};
   sc.src=SCRIPT_URL+'?action=zoho_lookup&email='+encodeURIComponent(email)+'&callback='+cb+'&ts='+Date.now();
-  sc.onerror=function(){clearTimeout(to);cleanup();box.className='zoho-box notfound show';box.innerHTML='Error de conexion.';};
+  sc.onerror=function(){clearTimeout(to);cleanup();box.className='zoho-box notfound show';box.innerHTML='Error de conexi\u00f3n.';};
   document.head.appendChild(sc);
   function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
 }
 function renderZoho(box,d,t){
-  if(!d||!d.found){box.className='zoho-box notfound show';box.innerHTML=d&&d.message||'No encontrado en nuestros registros.';return;}
+  if(!d||!d.found){box.className='zoho-box notfound show';box.innerHTML='&#9888; '+(d&&d.message||'No encontrado en nuestros registros.');return;}
   box.className='zoho-box found show';
-  box.innerHTML='<strong style="color:#2e7d32">Cliente verificado: '+d.nombre+'</strong><br>'+
-    'Total compras: $'+(d.total_pagado||0).toLocaleString('es-MX',{maximumFractionDigits:0})+' &bull; '+
-    'Facturas pagadas: '+(d.facturas_pagadas||0)+'/'+( d.total_facturas||0)+' &bull; '+
-    'Ultima compra: '+(d.ultima_compra||'N/A')+
+  box.innerHTML='<strong style="color:#2e7d32">&#10003; Cliente verificado: '+d.nombre+'</strong><br>'+
+    'Total compras: $'+(d.total_pagado||0).toLocaleString('es-MX',{maximumFractionDigits:0})+
+    ' &bull; Facturas pagadas: '+(d.facturas_pagadas||0)+'/'+(d.total_facturas||0)+
+    ' &bull; \u00daltima compra: '+(d.ultima_compra||'N/A')+
     (d.saldo_pendiente>0?' &bull; <span style="color:#c62828">Saldo pendiente: $'+d.saldo_pendiente.toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>':'');
   if(t==='fisica'){if(d.nombre&&!g('f_nombre'))document.getElementById('f_nombre').value=d.nombre;if(d.telefono&&!g('f_tel'))document.getElementById('f_tel').value=d.telefono;if(d.ciudad&&!g('f_ciudad'))document.getElementById('f_ciudad').value=d.ciudad;}
   else{if(d.nombre&&!g('m_razon'))document.getElementById('m_razon').value=d.nombre;if(d.telefono&&!g('m_tel'))document.getElementById('m_tel').value=d.telefono;if(d.ciudad&&!g('m_ciudad'))document.getElementById('m_ciudad').value=d.ciudad;}
 }
 
+// DOCS CHECKLIST
 function toggleDoc(id){
   var el=document.getElementById(id);
   if(checkedDocs.has(id)){checkedDocs.delete(id);el.classList.remove('checked');}
   else{checkedDocs.add(id);el.classList.add('checked');}
+  updateDocWarn();
+}
+function checkDocById(id){
+  if(!id)return;
+  var el=document.getElementById(id);
+  if(!el)return;
+  checkedDocs.add(id);
+  el.classList.add('checked');
+  updateDocWarn();
+}
+function updateDocWarn(){
   var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
   var miss=req.filter(function(x){return !checkedDocs.has(x);});
-  document.getElementById(tipo==='fisica'?'warn_fisica':'warn_moral').classList.toggle('on',miss.length>0);
+  var warnId=tipo==='fisica'?'warn_fisica':'warn_moral';
+  document.getElementById(warnId).classList.toggle('on',miss.length>0);
 }
 
+// UPLOAD
 function onDrop(e,t){e.preventDefault();e.currentTarget.classList.remove('drag');processFiles(Array.from(e.dataTransfer.files),t);}
 function onFileSelect(e,t){processFiles(Array.from(e.target.files),t);}
 function processFiles(files,t){
   files.forEach(function(file){
-    if(file.size>10*1024*1024){alert(file.name+' excede el limite de 10MB');return;}
+    if(file.size>10*1024*1024){alert(file.name+' excede el l\u00edmite de 10MB');return;}
     var uid='f'+Date.now()+Math.random().toString(36).substr(2,4);
     var item={uid:uid,name:file.name,tipo:t,status:'reading'};
     uploadedFiles.push(item);addFileItem(item,t);
     var reader=new FileReader();
-    reader.onload=function(ev){item.b64=ev.target.result.split(',')[1];item.mime=file.type||'application/octet-stream';item.status='uploading';updateFileItem(item);uploadFile(item);};
+    reader.onload=function(ev){
+      item.b64=ev.target.result.split(',')[1];
+      item.mime=file.type||'application/octet-stream';
+      item.status='uploading';
+      item.docType=guessDocType(file.name);
+      updateFileItem(item);
+      uploadFile(item);
+      // FIX: auto-check the corresponding doc item
+      var map=t==='fisica'?DOC_MAP_FISICA:DOC_MAP_MORAL;
+      var docId=map[item.docType];
+      if(docId) checkDocById(docId);
+    };
     reader.readAsDataURL(file);
   });
 }
 function guessDocType(name){
   var n=name.toLowerCase();
-  if(n.indexOf('ine')>-1||n.indexOf('id')>-1)return 'INE';
+  if(n.indexOf('ine')>-1||n.indexOf('identificacion')>-1)return 'INE';
   if(n.indexOf('estado')>-1||n.indexOf('cuenta')>-1||n.indexOf('banco')>-1)return 'Estado de cuenta';
-  if(n.indexOf('domicilio')>-1||n.indexOf('cfe')>-1)return 'Comprobante de domicilio';
-  if(n.indexOf('sat')>-1||n.indexOf('cif')>-1||n.indexOf('constancia')>-1)return 'Constancia SAT';
+  if(n.indexOf('domicilio')>-1||n.indexOf('cfe')>-1||n.indexOf('comprobante')>-1)return 'Comprobante de domicilio';
+  if(n.indexOf('sat')>-1||n.indexOf('cif')>-1||n.indexOf('constancia')>-1||n.indexOf('situacion')>-1)return 'Constancia SAT';
   if(n.indexOf('curp')>-1)return 'CURP';
   if(n.indexOf('acta')>-1)return 'Acta constitutiva';
   if(n.indexOf('poder')>-1)return 'Poder notarial';
+  if(n.indexOf('financiero')>-1||n.indexOf('balance')>-1)return 'Estados financieros';
   return 'Documento';
 }
 function uploadFile(item){
   var nombre=tipo==='fisica'?(g('f_nombre')||'solicitante'):(g('m_razon')||g('m_rep')||'solicitante');
   var folio=curFolio||('TEMP_'+Date.now());
-  var tipodoc=guessDocType(item.name);
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:tipodoc,file:item.b64,mime:item.mime,filename:folio+'_'+tipodoc.replace(/ /g,'_')+'_'+item.name})
-  }).then(function(){item.status='done';item.analysis='Guardado en Drive. Analisis Claude enviado por email.';updateFileItem(item);})
+    body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,file:item.b64,mime:item.mime,filename:folio+'_'+item.docType.replace(/ /g,'_')+'_'+item.name})
+  }).then(function(){item.status='done';item.analysis='Guardado en Drive. An\u00e1lisis Claude enviado por email.';updateFileItem(item);})
   .catch(function(){item.status='done';item.analysis='Enviado correctamente.';updateFileItem(item);});
 }
 function addFileItem(item,t){var list=document.getElementById('files_'+t);var d=document.createElement('div');d.id='fi_'+item.uid;d.className='file-item';list.appendChild(d);updateFileItem(item);}
 function updateFileItem(item){
   var el=document.getElementById('fi_'+item.uid);if(!el)return;
-  var icons={reading:'📄',uploading:'⏳',done:'✅',error:'❌'};
-  var stat={reading:'Leyendo...',uploading:'Subiendo y analizando con Claude IA...',done:'Guardado en Drive',error:'Error'};
+  var icons={reading:'&#128196;',uploading:'&#9203;',done:'&#9989;',error:'&#10060;'};
+  var stat={reading:'Leyendo...',uploading:'Subiendo y analizando con Claude...',done:'Guardado en Drive',error:'Error'};
   el.className='file-item '+(item.status==='done'?'done':item.status==='uploading'?'uploading':item.status==='error'?'error':'');
-  el.innerHTML='<span style="font-size:18px">'+(icons[item.status]||'📄')+'</span>'+
-    '<div style="flex:1;min-width:0"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.name+'</div>'+
+  el.innerHTML='<span style="font-size:18px">'+(icons[item.status]||'&#128196;')+'</span>'+
+    '<div style="flex:1;min-width:0">'+
+    '<div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.name+'</div>'+
+    (item.docType?'<div style="font-size:10px;color:var(--blue2);font-weight:700;margin-top:1px">'+item.docType+'</div>':'')+
     '<div style="font-size:11px;color:#6b7c93;margin-top:2px">'+(stat[item.status]||'')+'</div>'+
-    (item.status==='uploading'?'<div style="height:3px;background:#e8edf5;border-radius:2px;margin-top:5px;overflow:hidden"><div style="height:100%;background:#1976d2;border-radius:2px;width:70%;transition:width 1s"></div></div>':'')+
+    (item.status==='uploading'?'<div style="height:3px;background:#e8edf5;border-radius:2px;margin-top:5px;overflow:hidden"><div style="height:100%;background:#1976d2;border-radius:2px;width:70%"></div></div>':'')+
     (item.analysis?'<div style="margin-top:4px;padding:4px 8px;background:rgba(0,0,0,.04);border-radius:6px;font-size:11px;color:#132d52">'+item.analysis+'</div>':'')+
     '</div>'+
     (item.status!=='uploading'?'<button style="background:none;border:none;cursor:pointer;color:#6b7c93;font-size:15px;padding:0 4px" onclick="removeFile(\''+item.uid+'\',\''+item.tipo+'\')">&#x2715;</button>':'');
@@ -578,16 +631,19 @@ function removeFile(uid,t){uploadedFiles=uploadedFiles.filter(function(f){return
 
 function buildResumen(){
   var rows=[];
-  if(selEq)rows.push(['Equipo',selEq.n+' — '+selEq.m]);
+  if(selEq)rows.push(['Equipo',selEq.n+' \u2014 '+selEq.m]);
   var pc=document.getElementById('p_plan').value;
   rows.push(['Plan',({fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'})[pc]||pc]);
   var pl=g('p_plazo');if(pl)rows.push(['Plazo',pl+' meses']);
   var mn=g('p_mensual');if(mn)rows.push(['Mensualidad estimada',mn]);
-  rows.push(['Tipo',tipo==='fisica'?'Persona Fisica':'Persona Moral']);
-  if(tipo==='fisica'){rows.push(['Nombre',g('f_nombre')]);rows.push(['RFC',g('f_rfc')]);rows.push(['Tel',g('f_tel')]);rows.push(['Email',g('f_email')]);rows.push(['Negocio',g('f_negocio')]);rows.push(['Ciudad',g('f_ciudad')]);}
-  else{rows.push(['Razon social',g('m_razon')]);rows.push(['RFC',g('m_rfc')]);rows.push(['Representante',g('m_rep')]);rows.push(['Tel',g('m_tel')]);rows.push(['Email',g('m_email')]);rows.push(['Ciudad',g('m_ciudad')]);}
+  rows.push(['Tipo',tipo==='fisica'?'Persona F\u00edsica':'Persona Moral']);
+  if(tipo==='fisica'){rows.push(['Nombre',g('f_nombre')]);rows.push(['RFC',g('f_rfc')]);rows.push(['Tel\u00e9fono',g('f_tel')]);rows.push(['Email',g('f_email')]);rows.push(['Negocio',g('f_negocio')]);rows.push(['Ciudad',g('f_ciudad')]);}
+  else{rows.push(['Raz\u00f3n social',g('m_razon')]);rows.push(['RFC',g('m_rfc')]);rows.push(['Representante',g('m_rep')]);rows.push(['Tel\u00e9fono',g('m_tel')]);rows.push(['Email',g('m_email')]);rows.push(['Ciudad',g('m_ciudad')]);}
+  var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
+  var docsOk=req.filter(function(x){return checkedDocs.has(x);}).length;
   var docsUp=uploadedFiles.filter(function(f){return f.status==='done';}).length;
-  rows.push(['Documentos',checkedDocs.size+' en checklist, '+docsUp+' subidos']);
+  rows.push(['Documentos',docsOk+'/'+req.length+' obligatorios \u2022 '+docsUp+' subidos']);
+  if(zohoData&&zohoData.found)rows.push(['Cliente verificado','\u2705 '+zohoData.nombre]);
   document.getElementById('resumen_content').innerHTML=rows.filter(function(r){return r[1];}).map(function(r){
     return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e8edf5;font-size:13px"><span style="color:#6b7c93">'+r[0]+'</span><span style="font-weight:600">'+r[1]+'</span></div>';
   }).join('');
@@ -634,14 +690,11 @@ function showSuccess(ref,data){
   document.getElementById('refNum').textContent=ref;
   document.getElementById('refNum2').textContent=ref;
   var nombre=data.nombre||data.razon||'cliente';
-  var msg='Hola NORLAB, envio documentos de mi solicitud.\n\nFolio: '+ref+'\nSolicitante: '+nombre+'\nEquipo: '+data.equipo+'\nPlan: '+data.plan;
+  var msg='Hola NORLAB, env\u00edo documentos de mi solicitud.\n\nFolio: '+ref+'\nSolicitante: '+nombre+'\nEquipo: '+data.equipo+'\nPlan: '+data.plan;
   document.getElementById('wa_link').href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(msg);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 buildProgress();
 loadEquipos();
-
-</script>
-</body>
-</html>
+n
