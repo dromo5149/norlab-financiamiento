@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsrwHLnl6J881dPnHy_kJcRPw7jXuZuFKVu5Yz4wUumOSel4ew3kuy-pX8Mc3d2k2L/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGw_QkMRqPO6Z3Cgkg1qj7IEkvnuMjowox5SoL7Kg3RlP9ipsYGL9LqrHWPbft7HsX/exec';
 const WA_NUM = '525621836094';
 const PLAN_LABELS = {fin:'Financiamiento', ren:'Renta mensual', com:'Comodato'};
 const PLAN_HINTS  = {
