@@ -1,28 +1,25 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGw_QkMRqPO6Z3Cgkg1qj7IEkvnuMjowox5SoL7Kg3RlP9ipsYGL9LqrHWPbft7HsX/exec';
 const WA_NUM = '525621836094';
-const PLAN_LABELS = {fin:'Financiamiento', ren:'Renta mensual', com:'Comodato'};
-const PLAN_HINTS  = {
-  fin:'Adquiere el equipo en pagos fijos. Tu eres el dueno al finalizar.',
-  ren:'Renta mensual fija. Sin enganche.',
-  com:'El equipo es tuyo comprando los reactivos minimos mensualmente.'
+
+// Financial constants
+const TASA_MANT = 0.10; // 10% anual mantenimiento preventivo
+const MESES_BE_COM = 24; // punto de equilibrio comodato en meses
+const MARGIN_COM = 0.35; // margen en reactivos comodato
+
+const PLAN_HINTS = {
+  fin: 'Adquieres el equipo en pagos fijos. Es tuyo al finalizar.',
+  ren: 'Renta mensual fija. Incluye mantenimiento preventivo. Sin enganche. Instalacion se cotiza por separado.',
+  com: 'El equipo se paga con la compra minima mensual de reactivos. Punto de equilibrio en 24 meses. Instalacion se cotiza por separado.'
 };
 const REQ_FISICA = ['d_ine','d_dom','d_ec','d_cif'];
 const REQ_MORAL  = ['dm_acta','dm_poder','dm_cif','dm_dom','dm_ec'];
 const STEPS = ['Equipo','Tipo','Datos','Documentos'];
 
-// Map doc ID to doc type label
 const DOC_TYPE = {
-  'd_ine':   'INE',
-  'd_dom':   'Comprobante de domicilio',
-  'd_ec':    'Estado de cuenta',
-  'd_cif':   'Constancia SAT',
-  'd_curp':  'CURP',
-  'dm_acta':  'Acta constitutiva',
-  'dm_poder': 'Poder notarial',
-  'dm_cif':   'Constancia SAT',
-  'dm_dom':   'Comprobante de domicilio',
-  'dm_ec':    'Estado de cuenta',
-  'dm_ef':    'Estados financieros'
+  'd_ine':'INE','d_dom':'Comprobante de domicilio','d_ec':'Estado de cuenta',
+  'd_cif':'Constancia SAT','d_curp':'CURP',
+  'dm_acta':'Acta constitutiva','dm_poder':'Poder notarial','dm_cif':'Constancia SAT',
+  'dm_dom':'Comprobante de domicilio','dm_ec':'Estado de cuenta','dm_ef':'Estados financieros'
 };
 
 var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='';
@@ -32,18 +29,37 @@ var EQ=[];
 
 function g(id){var el=document.getElementById(id);return el?el.value:'';}
 
+// ── Finance helpers ──────────────────────────────────────────────────────────
+function calcRenta(eq){
+  // 3.5% mensual = cubre equipo + mantenimiento preventivo + margen
+  return eq.p * 0.035;
+}
+function calcComodatoReactivos(eq){
+  // Reactivos minimos para liquidar equipo en 24 meses incluyendo mantenimiento
+  // (reactivos * margin) = equipo/24 + mant_mensual
+  // reactivos = (equipo/24 + equipo*0.10/12) / margin
+  var mantMensual = eq.p * TASA_MANT / 12;
+  return Math.ceil((eq.p / MESES_BE_COM + mantMensual) / MARGIN_COM);
+}
+function calcComodatoDeposito(eq){
+  // 2 meses de reactivos como deposito
+  return calcComodatoReactivos(eq) * 2;
+}
+
+// ── Progress ─────────────────────────────────────────────────────────────────
 function buildProgress(){
   var w=document.getElementById('progSteps');w.innerHTML='';
   STEPS.forEach(function(l,i){
     var n=i+1,done=n<curStep,active=n===curStep;
     var d=document.createElement('div');
     d.className='ps'+(done?' done':active?' active':'');
-    d.innerHTML='<div class="ps-dot">'+(done?'&#10003;':n)+'</div>'+(i<STEPS.length-1?'<div class="ps-line"></div>':'');
+    d.innerHTML='<div class="ps-dot">'+(done?'<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>':n)+'</div>'+(i<STEPS.length-1?'<div class="ps-line"></div>':'');
     w.appendChild(d);
   });
   document.getElementById('progPct').textContent='Paso '+curStep+' de '+STEPS.length;
 }
 
+// ── Equipment ─────────────────────────────────────────────────────────────────
 function loadEquipos(){
   var cb='nlEQ_'+Date.now(),sc=document.createElement('script');
   var to=setTimeout(function(){cleanup();populateEquipos([]);},7000);
@@ -53,7 +69,6 @@ function loadEquipos(){
   document.head.appendChild(sc);
   function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
 }
-
 function populateEquipos(list){
   document.getElementById('eq_loading').style.display='none';
   document.getElementById('eq_form').style.display='grid';
@@ -86,14 +101,15 @@ function populateEquipos(list){
     }
   }
 }
-
 function onEquipoChange(){
   var v=document.getElementById('p_equipo').value;
   selEq=EQ.find(function(e){return String(e.id)===v;})||null;
   var ps=document.getElementById('p_plan');
   ps.innerHTML='<option value="">Selecciona un plan...</option>';
   ps.disabled=true;
-  ['plazo_wrap','eng_wrap','mensual_wrap'].forEach(function(id){document.getElementById(id).style.display='none';});
+  ['plazo_wrap','eng_wrap','mensual_wrap','mant_wrap'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.display='none';
+  });
   document.getElementById('plan_hint').classList.remove('on');
   if(!selEq)return;
   ps.disabled=false;
@@ -104,33 +120,44 @@ function onEquipoChange(){
   document.getElementById('p_equipo').classList.remove('er');
   document.getElementById('e_equipo').classList.remove('on');
 }
-
 function onPlanChange(){
   var code=document.getElementById('p_plan').value;
   if(!code||!selEq)return;
   document.getElementById('plan_hint').textContent=PLAN_HINTS[code]||'';
   document.getElementById('plan_hint').classList.add('on');
   var pw=document.getElementById('plazo_wrap'),ew=document.getElementById('eng_wrap'),mw=document.getElementById('mensual_wrap');
+  var mantWrap=document.getElementById('mant_wrap');
+
   if(code==='fin'){
     pw.style.display='flex';ew.style.display='flex';mw.style.display='flex';
+    if(mantWrap)mantWrap.style.display='none';
     var ps2=document.getElementById('p_plazo');ps2.innerHTML='';
     [6,12,18,24].filter(function(m){return m<=(selEq.mx||24);}).forEach(function(m){
       var o=document.createElement('option');o.value=m;o.textContent=m+' meses';ps2.appendChild(o);
     });
     calcPreview();
+
   }else if(code==='ren'){
     pw.style.display='none';ew.style.display='none';mw.style.display='flex';
-    document.getElementById('p_mensual').value='$'+(selEq.p*0.025).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA/mes';
+    if(mantWrap)mantWrap.style.display='flex';
+    var rentaMensual=calcRenta(selEq);
+    var mantMensual=selEq.p*TASA_MANT/12;
+    document.getElementById('p_mensual').value='$'+rentaMensual.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA/mes';
+    document.getElementById('p_mant').value='Incluido en renta ($'+Math.round(mantMensual).toLocaleString('es-MX')+'/mes estimado)';
+
   }else if(code==='com'){
     pw.style.display='none';ew.style.display='flex';mw.style.display='flex';
-    var mr=selEq.co*(selEq.mr||0.3),dep=selEq.p*(selEq.dm||3)*0.025;
-    document.getElementById('p_mensual').value='Compra min. $'+Math.round(mr).toLocaleString('es-MX')+'/mes en reactivos';
-    document.getElementById('p_enganche').value='Dep\u00f3sito: $'+Math.round(dep).toLocaleString('es-MX');
+    if(mantWrap)mantWrap.style.display='flex';
+    var reactMin=calcComodatoReactivos(selEq);
+    var dep=calcComodatoDeposito(selEq);
+    var mantMensualCom=selEq.p*TASA_MANT/12;
+    document.getElementById('p_mensual').value='Compra min. $'+Math.round(reactMin).toLocaleString('es-MX')+'/mes en reactivos';
+    document.getElementById('p_enganche').value='Dep\u00f3sito: $'+Math.round(dep).toLocaleString('es-MX')+' (2 meses de reactivos)';
+    document.getElementById('p_mant').value='Incluido en c\u00e1lculo. BE equipo = 24 meses';
   }
   document.getElementById('p_plan').classList.remove('er');
   document.getElementById('e_plan').classList.remove('on');
 }
-
 function calcPreview(){
   if(!selEq)return;
   var m=parseInt(document.getElementById('p_plazo').value)||12;
@@ -141,6 +168,7 @@ function calcPreview(){
   document.getElementById('p_mensual').value='$'+mn.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
 }
 
+// ── Navigation ────────────────────────────────────────────────────────────────
 function goStep(n){
   if(n>curStep&&!validateStep(curStep))return;
   document.getElementById('s'+curStep).classList.remove('active');
@@ -150,7 +178,6 @@ function goStep(n){
   if(n===4)buildResumen();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
 function validateStep(n){
   if(n===1){
     var ok=true;
@@ -162,7 +189,6 @@ function validateStep(n){
   if(n===3){return tipo==='fisica'?validateFisica():validateMoral();}
   return true;
 }
-
 function vf(id,fn,eid){
   var el=document.getElementById(id),er=document.getElementById(eid),ok=fn(el?el.value:'');
   if(el)el.classList.toggle('er',!ok);if(er)er.classList.toggle('on',!ok);return ok;
@@ -192,7 +218,6 @@ function validateMoral(){
   if(!vf('m_anos',function(x){return x!=='';},'em_anos'))ok=false;
   return ok;
 }
-
 function setTipo(t){
   tipo=t;
   document.getElementById('tc_fisica').classList.toggle('on',t==='fisica');
@@ -204,30 +229,50 @@ function setTipo(t){
   document.getElementById('docs_moral').style.display=t==='moral'?'block':'none';
 }
 
-function onEmailBlur(t){
-  var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
-  if(cv==='si') doZohoLookup(t);
-}
+// ── Zoho Lookup ───────────────────────────────────────────────────────────────
+// Show/hide inline email field when "soy cliente" is selected
 function onClienteChange(t){
-  var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
+  var val=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
+  var emailRow=document.getElementById('zoho_email_row_'+t);
   var box=document.getElementById('zoho_'+t);
-  if(cv!=='si'){box.className='zoho-box';return;}
-  var email=document.getElementById(t==='fisica'?'f_email':'m_email').value.trim();
-  if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
-    box.className='zoho-box notfound show';
-    box.innerHTML='&#9888; Ingresa tu email primero y luego selecciona esta opci\u00f3n nuevamente.';
+  if(val!=='si'){
+    if(emailRow)emailRow.style.display='none';
+    box.className='zoho-box';
+    zohoData=null;
     return;
   }
-  doZohoLookup(t);
+  // Show inline email row
+  if(emailRow)emailRow.style.display='flex';
+  // If main email field already has valid email, trigger lookup
+  var mainEmail=document.getElementById(t==='fisica'?'f_email':'m_email').value.trim();
+  if(mainEmail&&/^[^@]+@[^@]+\.[^@]+$/.test(mainEmail)){
+    // Pre-fill inline field
+    var inlineField=document.getElementById('zoho_email_'+t);
+    if(inlineField&&!inlineField.value)inlineField.value=mainEmail;
+    doZohoLookup(t);
+  }
+}
+function onZohoEmailKey(e,t){
+  if(e.key==='Enter'){e.preventDefault();doZohoLookup(t);}
 }
 function doZohoLookup(t){
-  var email=document.getElementById(t==='fisica'?'f_email':'m_email').value.trim();
-  if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email))return;
-  var cv=document.getElementById(t==='fisica'?'f_cliente':'m_cliente').value;
-  if(cv!=='si')return;
+  // Use inline email field OR main email field
+  var inlineField=document.getElementById('zoho_email_'+t);
+  var mainEmail=document.getElementById(t==='fisica'?'f_email':'m_email').value.trim();
+  var email=(inlineField&&inlineField.value.trim())||mainEmail;
+  if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
+    var box=document.getElementById('zoho_'+t);
+    box.className='zoho-box notfound show';
+    box.innerHTML='Ingresa un email v\u00e1lido para buscar.';
+    return;
+  }
+  // Copy to main email if not set
+  var mainEl=document.getElementById(t==='fisica'?'f_email':'m_email');
+  if(mainEl&&!mainEl.value.trim())mainEl.value=email;
+
   var box=document.getElementById('zoho_'+t);
   box.className='zoho-box loading show';
-  box.innerHTML='&#8635; Verificando en nuestro sistema...';
+  box.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="#1976d2" stroke-width="2" fill="none" style="animation:spin .8s linear infinite;margin-right:6px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Verificando en nuestro sistema...';
   var cb='zl_'+Date.now(),sc=document.createElement('script');
   var to=setTimeout(function(){cleanup();box.className='zoho-box notfound show';box.innerHTML='No se pudo verificar. Continuaremos con revisi\u00f3n manual.';},8000);
   window[cb]=function(data){clearTimeout(to);cleanup();zohoData=data;renderZoho(box,data,t);};
@@ -237,88 +282,76 @@ function doZohoLookup(t){
   function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
 }
 function renderZoho(box,d,t){
-  if(!d||!d.found){box.className='zoho-box notfound show';box.innerHTML='&#9888; '+(d&&d.message||'No encontrado en nuestros registros.');return;}
-  box.className='zoho-box found show';
-  box.innerHTML='<strong style="color:#2e7d32">&#10003; Cliente verificado: '+d.nombre+'</strong><br>'+
-    'Total compras: $'+(d.total_pagado||0).toLocaleString('es-MX',{maximumFractionDigits:0})+
-    ' &bull; Facturas pagadas: '+(d.facturas_pagadas||0)+'/'+(d.total_facturas||0)+
-    ' &bull; \u00daltima compra: '+(d.ultima_compra||'N/A')+
-    (d.saldo_pendiente>0?' &bull; <span style="color:#c62828">Saldo pendiente: $'+d.saldo_pendiente.toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>':'');
-  if(t==='fisica'){if(d.nombre&&!g('f_nombre'))document.getElementById('f_nombre').value=d.nombre;if(d.telefono&&!g('f_tel'))document.getElementById('f_tel').value=d.telefono;if(d.ciudad&&!g('f_ciudad'))document.getElementById('f_ciudad').value=d.ciudad;}
-  else{if(d.nombre&&!g('m_razon'))document.getElementById('m_razon').value=d.nombre;if(d.telefono&&!g('m_tel'))document.getElementById('m_tel').value=d.telefono;if(d.ciudad&&!g('m_ciudad'))document.getElementById('m_ciudad').value=d.ciudad;}
-}
-
-// ─── INLINE EXPAND & UPLOAD ──────────────────────────────────────────────────
-
-function toggleDoc(id){
-  // If already expanded, collapse it
-  if(expandedDoc===id){
-    collapseDoc(id);
+  if(!d||!d.found){
+    box.className='zoho-box notfound show';
+    box.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="#b45309" stroke-width="2" fill="none" style="margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+(d&&d.message||'No encontrado en nuestros registros.');
     return;
   }
-  // Collapse any open one first
-  if(expandedDoc) collapseDoc(expandedDoc);
-  expandedDoc=id;
+  box.className='zoho-box found show';
+  box.innerHTML='<div style="display:flex;align-items:center;gap:6px;font-weight:700;color:#2e7d32;margin-bottom:6px">'+
+    '<svg viewBox="0 0 24 24" width="16" height="16" stroke="#2e7d32" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>'+
+    'Cliente verificado: '+d.nombre+'</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px">'+
+    '<span style="color:#6b7c93">Total compras</span><span style="font-weight:600">$'+(d.total_pagado||0).toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>'+
+    '<span style="color:#6b7c93">Facturas pagadas</span><span style="font-weight:600">'+(d.facturas_pagadas||0)+'/'+(d.total_facturas||0)+'</span>'+
+    '<span style="color:#6b7c93">Ultima compra</span><span style="font-weight:600">'+(d.ultima_compra||'N/A')+'</span>'+
+    '<span style="color:#6b7c93">Comportamiento</span><span style="font-weight:600">'+(d.comportamiento||'N/A')+'</span>'+
+    (d.saldo_pendiente>0?'<span style="color:#c62828;font-weight:600;grid-column:1/-1">Saldo pendiente: $'+d.saldo_pendiente.toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>':'')+
+    '</div>';
+  // Auto-fill fields
+  if(t==='fisica'){
+    if(d.nombre&&!g('f_nombre'))document.getElementById('f_nombre').value=d.nombre;
+    if(d.telefono&&!g('f_tel'))document.getElementById('f_tel').value=d.telefono;
+    if(d.ciudad&&!g('f_ciudad'))document.getElementById('f_ciudad').value=d.ciudad;
+  }else{
+    if(d.nombre&&!g('m_razon'))document.getElementById('m_razon').value=d.nombre;
+    if(d.telefono&&!g('m_tel'))document.getElementById('m_tel').value=d.telefono;
+    if(d.ciudad&&!g('m_ciudad'))document.getElementById('m_ciudad').value=d.ciudad;
+  }
+}
 
+// ── Docs inline expand ────────────────────────────────────────────────────────
+function toggleDoc(id){
+  if(expandedDoc===id){collapseDoc(id);return;}
+  if(expandedDoc)collapseDoc(expandedDoc);
+  expandedDoc=id;
   var el=document.getElementById(id);
   var zone=document.getElementById('zone_'+id);
   el.classList.add('expanded');
-  if(zone){zone.style.display='block';}
+  if(zone)zone.style.display='block';
 }
-
 function collapseDoc(id){
   var el=document.getElementById(id);
   var zone=document.getElementById('zone_'+id);
   el.classList.remove('expanded');
-  if(zone) zone.style.display='none';
-  if(expandedDoc===id) expandedDoc=null;
+  if(zone)zone.style.display='none';
+  if(expandedDoc===id)expandedDoc=null;
 }
-
 function checkDoc(id){
   var el=document.getElementById(id);
   checkedDocs.add(id);
   el.classList.add('checked');
   updateDocWarn();
 }
-
 function updateDocWarn(){
   var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
   var miss=req.filter(function(x){return !checkedDocs.has(x);});
   var warnId=tipo==='fisica'?'warn_fisica':'warn_moral';
   document.getElementById(warnId).classList.toggle('on',miss.length>0);
 }
-
-function onDocDrop(e,docId){
-  e.preventDefault();
-  var zone=document.getElementById('zone_'+docId);
-  if(zone) zone.querySelector('.doc-upload-inner').classList.remove('drag');
-  processDocFiles(Array.from(e.dataTransfer.files), docId);
-}
-function onDocDragOver(e,docId){
-  e.preventDefault();
-  var zone=document.getElementById('zone_'+docId);
-  if(zone) zone.querySelector('.doc-upload-inner').classList.add('drag');
-}
-function onDocDragLeave(e,docId){
-  var zone=document.getElementById('zone_'+docId);
-  if(zone) zone.querySelector('.doc-upload-inner').classList.remove('drag');
-}
-function onDocFileSelect(e,docId){
-  processDocFiles(Array.from(e.target.files), docId);
-}
-
-function processDocFiles(files, docId){
-  if(!files.length) return;
+function onDocDrop(e,docId){e.preventDefault();var z=document.getElementById('zone_'+docId);if(z)z.querySelector('.doc-upload-inner').classList.remove('drag');processDocFiles(Array.from(e.dataTransfer.files),docId);}
+function onDocDragOver(e,docId){e.preventDefault();var z=document.getElementById('zone_'+docId);if(z)z.querySelector('.doc-upload-inner').classList.add('drag');}
+function onDocDragLeave(e,docId){var z=document.getElementById('zone_'+docId);if(z)z.querySelector('.doc-upload-inner').classList.remove('drag');}
+function onDocFileSelect(e,docId){processDocFiles(Array.from(e.target.files),docId);}
+function processDocFiles(files,docId){
+  if(!files.length)return;
   files.forEach(function(file){
-    if(file.size>10*1024*1024){alert(file.name+' excede el l\u00edmite de 10MB');return;}
+    if(file.size>10*1024*1024){alert(file.name+' excede el limite de 10MB');return;}
     var uid='f'+Date.now()+Math.random().toString(36).substr(2,4);
     var docType=DOC_TYPE[docId]||'Documento';
     var item={uid:uid,name:file.name,docId:docId,docType:docType,tipo:tipo,status:'reading'};
     uploadedFiles.push(item);
-
-    // Show file item in this doc's zone
-    addDocFileItem(item, docId);
-
+    addDocFileItem(item,docId);
     var reader=new FileReader();
     reader.onload=function(ev){
       item.b64=ev.target.result.split(',')[1];
@@ -326,13 +359,11 @@ function processDocFiles(files, docId){
       item.status='uploading';
       updateDocFileItem(item);
       uploadFile(item);
-      // Auto-check the doc item
       checkDoc(docId);
     };
     reader.readAsDataURL(file);
   });
 }
-
 function uploadFile(item){
   var nombre=tipo==='fisica'?(g('f_nombre')||'solicitante'):(g('m_razon')||g('m_rep')||'solicitante');
   var folio=curFolio||('TEMP_'+Date.now());
@@ -340,65 +371,50 @@ function uploadFile(item){
     body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,
       file:item.b64,mime:item.mime,filename:folio+'_'+item.docType.replace(/ /g,'_')+'_'+item.name})
   }).then(function(){
-    item.status='done';
-    item.analysis='Guardado en Drive. An\u00e1lisis Claude enviado por email.';
-    updateDocFileItem(item);
-    // Mark doc as checked and collapse after short delay
-    checkDoc(item.docId);
+    item.status='done';item.analysis='Guardado en Drive. Analisis Claude enviado por email.';
+    updateDocFileItem(item);checkDoc(item.docId);
     setTimeout(function(){collapseDoc(item.docId);},800);
   }).catch(function(){
-    item.status='done';
-    item.analysis='Enviado correctamente.';
-    updateDocFileItem(item);
-    checkDoc(item.docId);
+    item.status='done';item.analysis='Enviado correctamente.';
+    updateDocFileItem(item);checkDoc(item.docId);
     setTimeout(function(){collapseDoc(item.docId);},800);
   });
 }
-
-function addDocFileItem(item, docId){
-  var list=document.getElementById('flist_'+docId);
-  if(!list) return;
-  var d=document.createElement('div');
-  d.id='fi_'+item.uid;
-  d.className='fi-row';
-  list.appendChild(d);
-  updateDocFileItem(item);
-}
-
+function addDocFileItem(item,docId){var list=document.getElementById('flist_'+docId);if(!list)return;var d=document.createElement('div');d.id='fi_'+item.uid;d.className='fi-row';list.appendChild(d);updateDocFileItem(item);}
 function updateDocFileItem(item){
   var el=document.getElementById('fi_'+item.uid);if(!el)return;
-  var icons={reading:'&#128196;',uploading:'&#9203;',done:'&#9989;',error:'&#10060;'};
+  var icons={
+    reading:'<svg viewBox="0 0 24 24" width="16" height="16" stroke="#6b7c93" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+    uploading:'<svg viewBox="0 0 24 24" width="16" height="16" stroke="#1976d2" stroke-width="2" fill="none" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>',
+    done:'<svg viewBox="0 0 24 24" width="16" height="16" stroke="#2e7d32" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>',
+    error:'<svg viewBox="0 0 24 24" width="16" height="16" stroke="#c62828" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+  };
   var stat={reading:'Leyendo...',uploading:'Subiendo y analizando con Claude...',done:'Guardado en Drive',error:'Error'};
   el.className='fi-row '+(item.status==='done'?'done':item.status==='uploading'?'uploading':'');
-  el.innerHTML='<span style="font-size:16px;flex-shrink:0">'+(icons[item.status]||'&#128196;')+'</span>'+
+  el.innerHTML='<span style="flex-shrink:0">'+(icons[item.status]||icons.reading)+'</span>'+
     '<div style="flex:1;min-width:0">'+
     '<div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.name+'</div>'+
     '<div style="font-size:11px;color:#6b7c93">'+(stat[item.status]||'')+'</div>'+
     (item.status==='uploading'?'<div style="height:2px;background:#e8edf5;border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:100%;background:#1976d2;width:70%"></div></div>':'')+
     '</div>'+
-    (item.status!=='uploading'?'<button style="background:none;border:none;cursor:pointer;color:#aaa;font-size:14px;padding:0 2px" onclick="removeDocFile(\''+item.uid+'\',\''+item.docId+'\')">&#x2715;</button>':'');
+    (item.status!=='uploading'?'<button style="background:none;border:none;cursor:pointer;color:#aaa;font-size:14px;padding:0 2px" onclick="removeDocFile(\''+item.uid+'\',\''+item.docId+'\')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="#aaa" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>':'');
 }
-
-function removeDocFile(uid, docId){
+function removeDocFile(uid,docId){
   uploadedFiles=uploadedFiles.filter(function(f){return f.uid!==uid;});
   var el=document.getElementById('fi_'+uid);if(el)el.remove();
-  // If no files left for this doc, uncheck it
   var remaining=uploadedFiles.filter(function(f){return f.docId===docId&&f.status==='done';});
-  if(remaining.length===0){
-    var docEl=document.getElementById(docId);
-    if(docEl) docEl.classList.remove('checked');
-    checkedDocs.delete(docId);
-    updateDocWarn();
-  }
+  if(remaining.length===0){var docEl=document.getElementById(docId);if(docEl)docEl.classList.remove('checked');checkedDocs.delete(docId);updateDocWarn();}
 }
 
+// ── Resumen & Submit ──────────────────────────────────────────────────────────
 function buildResumen(){
   var rows=[];
   if(selEq)rows.push(['Equipo',selEq.n+' \u2014 '+selEq.m]);
   var pc=document.getElementById('p_plan').value;
   rows.push(['Plan',({fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'})[pc]||pc]);
   var pl=g('p_plazo');if(pl)rows.push(['Plazo',pl+' meses']);
-  var mn=g('p_mensual');if(mn)rows.push(['Mensualidad estimada',mn]);
+  var mn=g('p_mensual');if(mn)rows.push(['Mensualidad / Reactivos',mn]);
+  var en=g('p_enganche');if(en)rows.push(['Enganche / Dep\u00f3sito',en]);
   rows.push(['Tipo',tipo==='fisica'?'Persona F\u00edsica':'Persona Moral']);
   if(tipo==='fisica'){rows.push(['Nombre',g('f_nombre')]);rows.push(['RFC',g('f_rfc')]);rows.push(['Tel\u00e9fono',g('f_tel')]);rows.push(['Email',g('f_email')]);rows.push(['Negocio',g('f_negocio')]);rows.push(['Ciudad',g('f_ciudad')]);}
   else{rows.push(['Raz\u00f3n social',g('m_razon')]);rows.push(['RFC',g('m_rfc')]);rows.push(['Representante',g('m_rep')]);rows.push(['Tel\u00e9fono',g('m_tel')]);rows.push(['Email',g('m_email')]);rows.push(['Ciudad',g('m_ciudad')]);}
@@ -406,12 +422,11 @@ function buildResumen(){
   var docsOk=req.filter(function(x){return checkedDocs.has(x);}).length;
   var docsUp=uploadedFiles.filter(function(f){return f.status==='done';}).length;
   rows.push(['Documentos',docsOk+'/'+req.length+' obligatorios \u2022 '+docsUp+' subidos']);
-  if(zohoData&&zohoData.found)rows.push(['Cliente verificado','\u2705 '+zohoData.nombre]);
+  if(zohoData&&zohoData.found)rows.push(['Cliente verificado','\u2713 '+zohoData.nombre]);
   document.getElementById('resumen_content').innerHTML=rows.filter(function(r){return r[1];}).map(function(r){
     return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e8edf5;font-size:13px"><span style="color:#6b7c93">'+r[0]+'</span><span style="font-weight:600">'+r[1]+'</span></div>';
   }).join('');
 }
-
 function submitForm(){
   curFolio='NL-'+String(Math.floor(10000+Math.random()*90000));
   var btn=document.getElementById('btn_submit');btn.disabled=true;
@@ -421,8 +436,7 @@ function submitForm(){
   var docsOk=req.filter(function(x){return checkedDocs.has(x);}).length;
   var pc=document.getElementById('p_plan').value;
   var planName=({fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'})[pc]||pc;
-  var data={action:'solicitud',folio:curFolio,
-    equipo:selEq?(selEq.n+' - '+selEq.m):'',plan:planName,
+  var data={action:'solicitud',folio:curFolio,equipo:selEq?(selEq.n+' - '+selEq.m):'',plan:planName,
     plazo:g('p_plazo'),mensual:g('p_mensual'),enganche:g('p_enganche'),tipo:tipo,
     nombre:g('f_nombre'),rfc:g('f_rfc')||g('m_rfc'),curp:g('f_curp'),
     tel:g('f_tel')||g('m_tel'),email:g('f_email')||g('m_email'),
@@ -446,14 +460,13 @@ function submitForm(){
   document.head.appendChild(sc);
   function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
 }
-
 function showSuccess(ref,data){
   for(var i=1;i<=4;i++)document.getElementById('s'+i).classList.remove('active');
   document.getElementById('successScreen').classList.add('on');
   document.getElementById('refNum').textContent=ref;
   document.getElementById('refNum2').textContent=ref;
   var nombre=data.nombre||data.razon||'cliente';
-  var msg='Hola NORLAB, env\u00edo documentos de mi solicitud.\n\nFolio: '+ref+'\nSolicitante: '+nombre+'\nEquipo: '+data.equipo+'\nPlan: '+data.plan;
+  var msg='Hola NORLAB, envio documentos de mi solicitud.\n\nFolio: '+ref+'\nSolicitante: '+nombre+'\nEquipo: '+data.equipo+'\nPlan: '+data.plan;
   document.getElementById('wa_link').href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(msg);
   window.scrollTo({top:0,behavior:'smooth'});
 }
