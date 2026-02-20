@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4hRQBN0sUOD6RgHpeQnkGE7_x6DCSQR5jJ95gZi4nJcxpPil7rtZKiKStuWWKnga7/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJVA_gtP6E53eyDTf816PnOFw_TfcZpQB3m_9oMit4wUF5VIonwk0KEJziwHlb5KFR/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
@@ -22,7 +22,7 @@ const DOC_TYPE = {
   'dm_dom':'Comprobante de domicilio','dm_ec':'Estado de cuenta','dm_ef':'Estados financieros'
 };
 
-var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='';
+var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='', curMensualidad=0;
 var checkedDocs=new Set();
 var expandedDoc=null;
 var EQ=[];
@@ -392,6 +392,7 @@ function uploadFile(item){
   // Folder will be named: {Nombre}_{Folio}
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,
+      mensualidad:curMensualidad||0,
       file:item.b64,mime:item.mime,filename:folio+'_'+item.docType.replace(/ /g,'_')+'_'+item.name})
   }).then(function(){
     item.status='done';item.analysis='Guardado en Drive. Analisis Claude enviado por email.';
@@ -436,7 +437,7 @@ function buildResumen(){
   var pc=document.getElementById('p_plan').value;
   rows.push(['Plan',({fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'})[pc]||pc]);
   var pl=g('p_plazo');if(pl)rows.push(['Plazo',pl+' meses']);
-  var mn=g('p_mensual');if(mn)rows.push(['Mensualidad / Reactivos',mn]);
+  var mn=g('p_mensual');if(mn){rows.push(['Mensualidad / Reactivos',mn]);curMensualidad=Number((mn||'').replace(/[^0-9.]/g,''))||0;}
   var en=g('p_enganche');if(en)rows.push(['Enganche / Dep\u00f3sito',en]);
   rows.push(['Tipo',tipo==='fisica'?'Persona F\u00edsica':'Persona Moral']);
   if(tipo==='fisica'){rows.push(['Nombre',g('f_nombre')]);rows.push(['RFC',g('f_rfc')]);rows.push(['Tel\u00e9fono',g('f_tel')]);rows.push(['Email',g('f_email')]);rows.push(['Negocio',g('f_negocio')]);rows.push(['Ciudad',g('f_ciudad')]);}

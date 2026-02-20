@@ -145,7 +145,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycby4hRQBN0sUOD6RgHpeQnkGE7_x6DCSQR5jJ95gZi4nJcxpPil7rtZKiKStuWWKnga7/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbwJVA_gtP6E53eyDTf816PnOFw_TfcZpQB3m_9oMit4wUF5VIonwk0KEJziwHlb5KFR/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -188,10 +188,10 @@ function loadData(){
   });
 }
 
-function callScript(params, cb){
+function callScript(params, cb, timeout){
   var cb_name='_cb'+Date.now();
   var sc=document.createElement('script');
-  var to=setTimeout(function(){cleanup();cb({error:'Timeout - sin respuesta del servidor'});}, 10000);
+  var to=setTimeout(function(){cleanup();cb({error:'Timeout - sin respuesta del servidor'});}, timeout||10000);
   window[cb_name]=function(d){clearTimeout(to);cleanup();cb(d);};
   var qs=Object.keys(params).map(function(k){
     return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);
@@ -373,6 +373,19 @@ function renderDetail(d){
       '<div class="dp-section-title">Documentos</div>'+
       filesHtml+
     '</div>'+
+    '<div class="dp-section" id="analysis_section_'+d['Folio']+'">'+
+      '<div class="dp-section-title">Analisis crediticio por IA</div>'+
+      '<button onclick="runAnalysis(\''+d['Folio']+'\')" id="btn_analysis_'+d['Folio']+'" '+
+        'style="background:var(--navy);color:#fff;border:none;border-radius:9px;padding:11px 18px;'+
+        'font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;display:flex;'+
+        'align-items:center;justify-content:center;gap:8px;margin-bottom:8px">'+
+        '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none">'+
+          '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>'+
+        '</svg>'+
+        'Generar dictamen crediticio completo'+
+      '</button>'+
+      '<div id="analysis_result_'+d['Folio']+'"></div>'+
+    '</div>'+
     '<div class="dp-section">'+
       '<div class="dp-section-title">Cambiar estado</div>'+
       notasHtml+
@@ -417,6 +430,105 @@ function saveStatus(folio){
       if(btn){btn.disabled=false;btn.textContent='Guardar cambio de estado';}
     }
   });
+}
+
+function runAnalysis(folio){
+  var btn = document.getElementById('btn_analysis_'+folio);
+  var res = document.getElementById('analysis_result_'+folio);
+  if(btn){ btn.disabled=true; btn.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Analizando documentos con IA...'; }
+  if(res){ res.innerHTML='<p style="font-size:12px;color:var(--muted);padding:8px 0">Esto puede tomar 15-30 segundos...</p>'; }
+  callScript({action:'admin_analysis', pwd:userPwd, folio:folio}, function(d){
+    if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg> Re-analizar'; }
+    if(d.error){ if(res) res.innerHTML='<p style="color:var(--red);font-size:13px">'+d.error+'</p>'; return; }
+    if(res) res.innerHTML = renderAnalysis(d.synthesis);
+  }, 45000);
+}
+
+function renderAnalysis(s){
+  if(!s) return '<p style="color:var(--muted);font-size:12px">Sin resultados</p>';
+  var dictamenColors = {
+    'APROBAR':'var(--green)', 'APROBAR_CON_CONDICIONES':'var(--yellow)',
+    'SOLICITAR_MAS_INFORMACION':'var(--blue)', 'RECHAZAR':'var(--red)', 'ERROR':'var(--muted)'
+  };
+  var capColors = {
+    'SUFICIENTE':'var(--green)','AJUSTADA':'var(--yellow)',
+    'INSUFICIENTE':'var(--red)','NO_DETERMINADA':'var(--muted)'
+  };
+  var dc = dictamenColors[s.dictamen] || 'var(--muted)';
+  var cap = s.capacidad_de_pago || {};
+  var cc  = capColors[cap.nivel] || 'var(--muted)';
+  var calidad = s.calidad_documentos || {};
+  var html = '';
+
+  // Dictamen badge
+  html += '<div style="background:'+dc+';color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;font-size:14px;text-align:center;margin-bottom:12px">'+
+    (s.dictamen||'').replace(/_/g,' ')+'</div>';
+
+  // Resumen
+  if(s.resumen_ejecutivo){
+    html += '<div style="background:var(--light);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:12px;color:var(--text)">'+
+      s.resumen_ejecutivo+'</div>';
+  }
+
+  // Capacidad de pago
+  html += '<div style="border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px">';
+  html += '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Capacidad de pago</div>';
+  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">';
+  html += '<span style="font-size:18px;font-weight:800;color:'+cc+'">'+(cap.nivel||'N/A')+'</span>';
+  if(cap.porcentaje_compromiso) html += '<span style="font-size:12px;color:var(--muted)">'+cap.porcentaje_compromiso.toFixed(1)+'% del ingreso comprometido</span>';
+  html += '</div>';
+  if(cap.ingreso_promedio_estimado) html += '<div style="font-size:12px;color:var(--muted)">Ingreso prom. estimado: <strong style="color:var(--text)">$'+(Math.round(cap.ingreso_promedio_estimado)).toLocaleString('es-MX')+'</strong></div>';
+  if(cap.comentario) html += '<div style="font-size:12px;color:var(--muted);margin-top:4px">'+cap.comentario+'</div>';
+  html += '</div>';
+
+  // Documentos
+  html += '<div style="border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px">';
+  html += '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Calidad documental</div>';
+  html += '<div style="display:flex;gap:12px;margin-bottom:6px">';
+  if(calidad.documentos_ok!==undefined) html += '<span style="font-size:12px"><span style="color:var(--green);font-weight:700">'+calidad.documentos_ok+'</span> OK</span>';
+  if(calidad.documentos_con_alerta) html += '<span style="font-size:12px"><span style="color:var(--yellow);font-weight:700">'+calidad.documentos_con_alerta+'</span> con alerta</span>';
+  html += '</div>';
+  if(calidad.comentario) html += '<div style="font-size:12px;color:var(--muted)">'+calidad.comentario+'</div>';
+  html += '</div>';
+
+  // Factores
+  var riesgos = s.factores_riesgo || [];
+  var favor   = s.factores_favor  || [];
+  if(riesgos.length||favor.length){
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+    if(favor.length){
+      html += '<div style="background:#f1f8e9;border-radius:8px;padding:10px 12px">';
+      html += '<div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px">A favor</div>';
+      favor.forEach(function(f){ html += '<div style="font-size:11px;color:var(--text);margin-bottom:3px">+ '+f+'</div>'; });
+      html += '</div>';
+    }
+    if(riesgos.length){
+      html += '<div style="background:#ffebee;border-radius:8px;padding:10px 12px">';
+      html += '<div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;margin-bottom:6px">Riesgo</div>';
+      riesgos.forEach(function(r){ html += '<div style="font-size:11px;color:var(--text);margin-bottom:3px">- '+r+'</div>'; });
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Condiciones
+  var condiciones = s.condiciones||[];
+  if(condiciones.length){
+    html += '<div style="background:#fff8e1;border-radius:8px;padding:10px 12px;margin-bottom:10px">';
+    html += '<div style="font-size:10px;font-weight:700;color:var(--yellow);text-transform:uppercase;margin-bottom:6px">Condiciones para aprobar</div>';
+    condiciones.forEach(function(c){ html += '<div style="font-size:12px;color:var(--text);margin-bottom:3px">• '+c+'</div>'; });
+    html += '</div>';
+  }
+
+  // Siguiente paso
+  if(s.siguiente_paso){
+    html += '<div style="background:#e3f2fd;border-radius:8px;padding:10px 12px;border-left:3px solid var(--blue)">';
+    html += '<div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:4px">Siguiente paso</div>';
+    html += '<div style="font-size:12px;color:var(--text)">'+s.siguiente_paso+'</div>';
+    html += '</div>';
+  }
+
+  return html;
 }
 
 window.onload=function(){ document.getElementById('pwdInput').focus(); };
