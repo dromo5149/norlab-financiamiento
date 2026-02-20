@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKWp1heJ45HQKfBBYui82vqKlSU8lEV49N517_T4CqEBy7ZaTvdu3rnMgJL-hwhBcS/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjT9GCClm7sd03cM6P_uV6WVdhJ_qJ_J_CHLlAG9sCKroPvF0IZU0SrttQThLzhtTd/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
@@ -175,7 +175,13 @@ function goStep(n){
   curStep=n;
   document.getElementById('s'+curStep).classList.add('active');
   buildProgress();
-  if(n===4)buildResumen();
+  if(n===4){
+    // Assign folio NOW so uploaded docs get correct folder name
+    if(!curFolio||curFolio.indexOf('TEMP_')===0){
+      curFolio='NL-'+String(Math.floor(10000+Math.random()*90000));
+    }
+    buildResumen();
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function validateStep(n){
@@ -345,6 +351,8 @@ function checkDoc(id){
   checkedDocs.add(id);
   el.classList.add('checked');
   updateDocWarn();
+  // Update resumen counter live
+  if(curStep===4) buildResumen();
 }
 function updateDocWarn(){
   var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
@@ -379,7 +387,9 @@ function processDocFiles(files,docId){
 }
 function uploadFile(item){
   var nombre=tipo==='fisica'?(g('f_nombre')||'solicitante'):(g('m_razon')||g('m_rep')||'solicitante');
-  var folio=curFolio||('TEMP_'+Date.now());
+  var folio=curFolio||('NL-'+String(Math.floor(10000+Math.random()*90000)));
+  if(!curFolio||curFolio.indexOf('TEMP_')===0) curFolio=folio;
+  // Folder will be named: {Nombre}_{Folio}
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,
       file:item.b64,mime:item.mime,filename:folio+'_'+item.docType.replace(/ /g,'_')+'_'+item.name})
