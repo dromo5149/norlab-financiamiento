@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwUV5J0fTwYsP9ZTMSqOiVuPX5oAX0GVsR4GCx-cN7xDr6n8dOxTwXDxsMSAqCiXgc9/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKWp1heJ45HQKfBBYui82vqKlSU8lEV49N517_T4CqEBy7ZaTvdu3rnMgJL-hwhBcS/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
@@ -223,6 +223,8 @@ function setTipo(t){
   document.getElementById('tc_fisica').classList.toggle('on',t==='fisica');
   document.getElementById('tc_moral').classList.toggle('on',t==='moral');
   document.getElementById('e_tipo').classList.remove('on');
+  document.getElementById('cliente_card_fisica').style.display=t==='fisica'?'block':'none';
+  document.getElementById('cliente_card_moral').style.display=t==='moral'?'block':'none';
   document.getElementById('form_fisica').style.display=t==='fisica'?'block':'none';
   document.getElementById('form_moral').style.display=t==='moral'?'block':'none';
   document.getElementById('docs_fisica').style.display=t==='fisica'?'block':'none';
@@ -284,29 +286,40 @@ function doZohoLookup(t){
 function renderZoho(box,d,t){
   if(!d||!d.found){
     box.className='zoho-box notfound show';
-    box.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="#b45309" stroke-width="2" fill="none" style="margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+(d&&d.message||'No encontrado en nuestros registros.');
+    box.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="#b45309" stroke-width="2" fill="none" style="margin-right:6px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+(d&&d.message||'No encontrado en nuestros registros.');
     return;
   }
   box.className='zoho-box found show';
-  box.innerHTML='<div style="display:flex;align-items:center;gap:6px;font-weight:700;color:#2e7d32;margin-bottom:6px">'+
+  box.innerHTML='<div style="display:flex;align-items:center;gap:6px;font-weight:700;color:#2e7d32;margin-bottom:8px">'+
     '<svg viewBox="0 0 24 24" width="16" height="16" stroke="#2e7d32" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>'+
     'Cliente verificado: '+d.nombre+'</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px">'+
     '<span style="color:#6b7c93">Total compras</span><span style="font-weight:600">$'+(d.total_pagado||0).toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>'+
     '<span style="color:#6b7c93">Facturas pagadas</span><span style="font-weight:600">'+(d.facturas_pagadas||0)+'/'+(d.total_facturas||0)+'</span>'+
-    '<span style="color:#6b7c93">Ultima compra</span><span style="font-weight:600">'+(d.ultima_compra||'N/A')+'</span>'+
+    '<span style="color:#6b7c93">\u00daltima compra</span><span style="font-weight:600">'+(d.ultima_compra||'N/A')+'</span>'+
     '<span style="color:#6b7c93">Comportamiento</span><span style="font-weight:600">'+(d.comportamiento||'N/A')+'</span>'+
-    (d.saldo_pendiente>0?'<span style="color:#c62828;font-weight:600;grid-column:1/-1">Saldo pendiente: $'+d.saldo_pendiente.toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>':'')+
-    '</div>';
-  // Auto-fill fields
+    (d.saldo_pendiente>0?'<span style="color:#c62828;font-weight:600;grid-column:1/-1;margin-top:4px">Saldo pendiente: $'+d.saldo_pendiente.toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>':'')+
+    '</div>'+
+    '<div style="font-size:11px;color:#2e7d32;margin-top:8px;font-style:italic">Los campos disponibles se han llenado autom\u00e1ticamente.</div>';
+
+  // Auto-fill ALL available fields
+  function fill(id,val){if(val){var el=document.getElementById(id);if(el&&!el.value.trim())el.value=val;}}
   if(t==='fisica'){
-    if(d.nombre&&!g('f_nombre'))document.getElementById('f_nombre').value=d.nombre;
-    if(d.telefono&&!g('f_tel'))document.getElementById('f_tel').value=d.telefono;
-    if(d.ciudad&&!g('f_ciudad'))document.getElementById('f_ciudad').value=d.ciudad;
+    fill('f_nombre', d.nombre);
+    fill('f_tel',    d.telefono);
+    fill('f_email',  d.email||'');
+    fill('f_ciudad', d.ciudad);
+    fill('f_negocio',d.empresa||d.nombre);
+    fill('f_rfc',    d.rfc||'');
+    fill('f_dir',    d.direccion||'');
   }else{
-    if(d.nombre&&!g('m_razon'))document.getElementById('m_razon').value=d.nombre;
-    if(d.telefono&&!g('m_tel'))document.getElementById('m_tel').value=d.telefono;
-    if(d.ciudad&&!g('m_ciudad'))document.getElementById('m_ciudad').value=d.ciudad;
+    fill('m_razon',  d.nombre);
+    fill('m_tel',    d.telefono);
+    fill('m_email',  d.email||'');
+    fill('m_ciudad', d.ciudad);
+    fill('m_rep',    d.rep||'');
+    fill('m_rfc',    d.rfc||'');
+    fill('m_dir',    d.direccion||'');
   }
 }
 
