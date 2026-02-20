@@ -160,8 +160,8 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <!-- DETAIL PANEL -->
-<div id="detailOverlay" onclick="closeDetail()"></div>
-<div id="detailPanel">
+<div id="detailOverlay" onclick="closeDetail()" style="display:none"></div>
+<div id="detailPanel" style="display:none">
   <div class="dp-head">
     <h3 id="dp-title">Detalle de solicitud</h3>
     <button class="dp-close" onclick="closeDetail()">&times;</button>
@@ -179,11 +179,15 @@ var allRows = [], userPwd = '';
 function doLogin(){
   var pwd = document.getElementById('pwdInput').value;
   if(!pwd)return;
-  document.getElementById('loginErr').style.display='none';
-  // Verify by fetching real data
+  var btn = document.querySelector('.btn-login');
+  var err = document.getElementById('loginErr');
+  err.style.display='none';
+  btn.disabled=true; btn.textContent='Verificando...';
   callScript({action:'admin_list',pwd:pwd}, function(data){
+    btn.disabled=false; btn.textContent='Ingresar';
     if(data.error){
-      document.getElementById('loginErr').style.display='block';
+      err.textContent = data.error==='No autorizado' ? 'Contraseña incorrecta' : 'Error de conexión: '+data.error;
+      err.style.display='block';
     }else{
       userPwd=pwd;
       document.getElementById('loginScreen').style.display='none';
