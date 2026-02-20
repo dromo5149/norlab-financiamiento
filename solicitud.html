@@ -228,15 +228,11 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
         Datos del negocio
       </div>
       <div class="fg2">
-        <div class="fg full"><label>Nombre del laboratorio / cl&iacute;nica <span>*</span></label><input id="f_negocio" placeholder="Laboratorio Cl&iacute;nico San Jos&eacute;"><span class="ferr" id="ef_negocio">Campo requerido</span></div>
-        <div class="fg full"><label>Direcci&oacute;n del negocio <span>*</span></label><input id="f_dir" placeholder="Av. Insurgentes Sur 1234"><span class="ferr" id="ef_dir">Campo requerido</span></div>
-        <div class="fg"><label>Ciudad <span>*</span></label><input id="f_ciudad" placeholder="Ciudad de M&eacute;xico"><span class="ferr" id="ef_ciudad">Campo requerido</span></div>
-        <div class="fg"><label>A&ntilde;os de operaci&oacute;n <span>*</span></label><select id="f_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 a&ntilde;o</option><option value="1-2">1 a 2 a&ntilde;os</option><option value="3-5">3 a 5 a&ntilde;os</option><option value="6-10">6 a 10 a&ntilde;os</option><option value="mas10">M&aacute;s de 10 a&ntilde;os</option></select><span class="ferr" id="ef_anos">Campo requerido</span></div>
         <div class="fg full">
-          <label>&iquest;Es cliente actual de NORLAB?</label>
+          <label>&iquest;Ya eres cliente de NORLAB?</label>
           <select id="f_cliente" onchange="onClienteChange('fisica')">
             <option value="no">No, soy cliente nuevo</option>
-            <option value="si">S&iacute;, ya soy cliente</option>
+            <option value="si">S&iacute;, ya soy cliente &mdash; verificar mi historial</option>
           </select>
         </div>
         
@@ -254,6 +250,10 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
         </div>
       </div>
         <div class="fg full"><div class="zoho-box" id="zoho_fisica"></div></div>
+        <div class="fg full"><label>Nombre del laboratorio / cl&iacute;nica <span>*</span></label><input id="f_negocio" placeholder="Laboratorio Cl&iacute;nico San Jos&eacute;"><span class="ferr" id="ef_negocio">Campo requerido</span></div>
+        <div class="fg full"><label>Direcci&oacute;n del negocio <span>*</span></label><input id="f_dir" placeholder="Av. Insurgentes Sur 1234"><span class="ferr" id="ef_dir">Campo requerido</span></div>
+        <div class="fg"><label>Ciudad <span>*</span></label><input id="f_ciudad" placeholder="Ciudad de M&eacute;xico"><span class="ferr" id="ef_ciudad">Campo requerido</span></div>
+        <div class="fg"><label>A&ntilde;os de operaci&oacute;n <span>*</span></label><select id="f_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 a&ntilde;o</option><option value="1-2">1 a 2 a&ntilde;os</option><option value="3-5">3 a 5 a&ntilde;os</option><option value="6-10">6 a 10 a&ntilde;os</option><option value="mas10">M&aacute;s de 10 a&ntilde;os</option></select><span class="ferr" id="ef_anos">Campo requerido</span></div>
         <div class="fg full"><label>Comentarios</label><textarea id="f_notas" placeholder="Cualquier informaci&oacute;n relevante..."></textarea></div>
       </div>
     </div>
@@ -267,16 +267,11 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
         Datos de la empresa
       </div>
       <div class="fg2">
-        <div class="fg full"><label>Raz&oacute;n social <span>*</span></label><input id="m_razon" placeholder="Laboratorios San Jos&eacute; S.A. de C.V."><span class="ferr" id="em_razon">Campo requerido</span></div>
-        <div class="fg"><label>RFC empresa <span>*</span></label><input id="m_rfc" placeholder="LSJ800101XXX" style="text-transform:uppercase"><span class="ferr" id="em_rfc">RFC inv&aacute;lido</span></div>
-        <div class="fg"><label>A&ntilde;os de operaci&oacute;n <span>*</span></label><select id="m_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 a&ntilde;o</option><option value="1-2">1 a 2 a&ntilde;os</option><option value="3-5">3 a 5 a&ntilde;os</option><option value="6-10">6 a 10 a&ntilde;os</option><option value="mas10">M&aacute;s de 10 a&ntilde;os</option></select><span class="ferr" id="em_anos">Campo requerido</span></div>
-        <div class="fg full"><label>Direcci&oacute;n fiscal <span>*</span></label><input id="m_dir" placeholder="Av. Reforma 456, Col. Cuauht&eacute;moc"><span class="ferr" id="em_dir">Campo requerido</span></div>
-        <div class="fg"><label>Ciudad <span>*</span></label><input id="m_ciudad" placeholder="Ciudad de M&eacute;xico"><span class="ferr" id="em_ciudad">Campo requerido</span></div>
-        <div class="fg">
-          <label>&iquest;Es cliente actual de NORLAB?</label>
+        <div class="fg full">
+          <label>&iquest;Ya son clientes de NORLAB?</label>
           <select id="m_cliente" onchange="onClienteChange('moral')">
             <option value="no">No, somos cliente nuevo</option>
-            <option value="si">S&iacute;, ya somos clientes</option>
+            <option value="si">S&iacute;, ya somos clientes &mdash; verificar historial</option>
           </select>
         </div>
         
@@ -294,6 +289,11 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
         </div>
       </div>
         <div class="fg full"><div class="zoho-box" id="zoho_moral"></div></div>
+        <div class="fg full"><label>Raz&oacute;n social <span>*</span></label><input id="m_razon" placeholder="Laboratorios San Jos&eacute; S.A. de C.V."><span class="ferr" id="em_razon">Campo requerido</span></div>
+        <div class="fg"><label>RFC empresa <span>*</span></label><input id="m_rfc" placeholder="LSJ800101XXX" style="text-transform:uppercase"><span class="ferr" id="em_rfc">RFC inv&aacute;lido</span></div>
+        <div class="fg"><label>A&ntilde;os de operaci&oacute;n <span>*</span></label><select id="m_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 a&ntilde;o</option><option value="1-2">1 a 2 a&ntilde;os</option><option value="3-5">3 a 5 a&ntilde;os</option><option value="6-10">6 a 10 a&ntilde;os</option><option value="mas10">M&aacute;s de 10 a&ntilde;os</option></select><span class="ferr" id="em_anos">Campo requerido</span></div>
+        <div class="fg full"><label>Direcci&oacute;n fiscal <span>*</span></label><input id="m_dir" placeholder="Av. Reforma 456, Col. Cuauht&eacute;moc"><span class="ferr" id="em_dir">Campo requerido</span></div>
+        <div class="fg"><label>Ciudad <span>*</span></label><input id="m_ciudad" placeholder="Ciudad de M&eacute;xico"><span class="ferr" id="em_ciudad">Campo requerido</span></div>
       </div>
     </div>
     <div class="card">
@@ -731,7 +731,7 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
 </div>
 
 </div>
-<script src="solicitud.js?v=202602201646"></script>
+<script src="solicitud.js?v=202602201852"></script>
 <script>
 // Show install note for renta and comodato
 var _origOnPlanChange = onPlanChange;
