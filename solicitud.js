@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhOl4UZW7nV8jfY-r3P8CbOSa4IbzddRcSXSc6unf9Gp58Fu0jnghIarB_R1yUce1o/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbySCcqJ3dyRjGX8qA-ysssBh6PI5lZfyS3BbDGHh-KfgnFwjYyn4IpH9ybKq-s7yOB2/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
