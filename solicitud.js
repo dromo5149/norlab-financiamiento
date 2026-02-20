@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJVA_gtP6E53eyDTf816PnOFw_TfcZpQB3m_9oMit4wUF5VIonwk0KEJziwHlb5KFR/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfRAnQ3aT7zp2E1umtJfiBhnv--4_P97T_xA5qXEWggkxViZzsYOg4RlpewPHS9jxB/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
@@ -11,18 +11,31 @@ const PLAN_HINTS = {
   ren: 'Renta mensual fija. Incluye mantenimiento preventivo. Sin enganche. Instalacion se cotiza por separado.',
   com: 'El equipo se paga con la compra minima mensual de reactivos. Punto de equilibrio en 24 meses. Instalacion se cotiza por separado.'
 };
-const REQ_FISICA = ['d_ine','d_dom','d_ec','d_cif'];
-const REQ_MORAL  = ['dm_acta','dm_poder','dm_cif','dm_dom','dm_ec'];
+const UMBRAL_AVAL = 300000; // Obligado Solidario requerido para equipos >= este monto
+const REQ_FISICA_BASE = ['d_ine','d_dom','d_ec','d_cif'];
+const REQ_FISICA_AVAL = ['d_aval_ine','d_aval_dom'];
+const REQ_MORAL_BASE  = ['dm_acta','dm_poder','dm_cif','dm_dom','dm_ec'];
+const REQ_MORAL_AVAL  = ['dm_aval_ine','dm_aval_dom'];
 const STEPS = ['Equipo','Tipo','Datos','Documentos'];
 
 const DOC_TYPE = {
   'd_ine':'INE','d_dom':'Comprobante de domicilio','d_ec':'Estado de cuenta',
   'd_cif':'Constancia SAT','d_curp':'CURP',
+  'd_aval_ine':'INE del Obligado Solidario','d_aval_dom':'Domicilio del Obligado Solidario',
   'dm_acta':'Acta constitutiva','dm_poder':'Poder notarial','dm_cif':'Constancia SAT',
-  'dm_dom':'Comprobante de domicilio','dm_ec':'Estado de cuenta','dm_ef':'Estados financieros'
+  'dm_dom':'Comprobante de domicilio','dm_ec':'Estado de cuenta','dm_ef':'Estados financieros',
+  'dm_aval_ine':'INE del Accionista / Obligado Solidario','dm_aval_dom':'Domicilio del Accionista / Obligado Solidario'
 };
 
-var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='', curMensualidad=0;
+function getReqDocs(){
+  var base = tipo === 'fisica' ? REQ_FISICA_BASE.slice() : REQ_MORAL_BASE.slice();
+  if(curPrecio >= UMBRAL_AVAL){
+    base = base.concat(tipo === 'fisica' ? REQ_FISICA_AVAL : REQ_MORAL_AVAL);
+  }
+  return base;
+}
+
+var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='', curMensualidad=0, curPrecio=0;
 var checkedDocs=new Set();
 var expandedDoc=null;
 var EQ=[];
@@ -84,6 +97,7 @@ function populateEquipos(list){
     sel.appendChild(og);
   });
   var p=new URLSearchParams(window.location.search);
+  curPrecio = parseFloat(p.get('precio') || '0') || 0;
   if(p.get('equipo')){
     var eqp=decodeURIComponent(p.get('equipo')).split('\u00b7')[0].trim();
     for(var i=0;i<sel.options.length;i++){
@@ -235,6 +249,15 @@ function setTipo(t){
   document.getElementById('form_moral').style.display=t==='moral'?'block':'none';
   document.getElementById('docs_fisica').style.display=t==='fisica'?'block':'none';
   document.getElementById('docs_moral').style.display=t==='moral'?'block':'none';
+  updateAvalSection(t);
+}
+
+function updateAvalSection(t){
+  var needsAval = curPrecio >= UMBRAL_AVAL;
+  var avalFisica = document.getElementById('docs_aval_fisica');
+  var avalMoral  = document.getElementById('docs_aval_moral');
+  if(avalFisica) avalFisica.style.display = (t==='fisica' && needsAval) ? 'block' : 'none';
+  if(avalMoral)  avalMoral.style.display  = (t==='moral'  && needsAval) ? 'block' : 'none';
 }
 
 // ── Zoho Lookup ───────────────────────────────────────────────────────────────
@@ -442,7 +465,7 @@ function buildResumen(){
   rows.push(['Tipo',tipo==='fisica'?'Persona F\u00edsica':'Persona Moral']);
   if(tipo==='fisica'){rows.push(['Nombre',g('f_nombre')]);rows.push(['RFC',g('f_rfc')]);rows.push(['Tel\u00e9fono',g('f_tel')]);rows.push(['Email',g('f_email')]);rows.push(['Negocio',g('f_negocio')]);rows.push(['Ciudad',g('f_ciudad')]);}
   else{rows.push(['Raz\u00f3n social',g('m_razon')]);rows.push(['RFC',g('m_rfc')]);rows.push(['Representante',g('m_rep')]);rows.push(['Tel\u00e9fono',g('m_tel')]);rows.push(['Email',g('m_email')]);rows.push(['Ciudad',g('m_ciudad')]);}
-  var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
+  var req=getReqDocs();
   var docsOk=req.filter(function(x){return checkedDocs.has(x);}).length;
   var docsUp=uploadedFiles.filter(function(f){return f.status==='done';}).length;
   rows.push(['Documentos',docsOk+'/'+req.length+' obligatorios \u2022 '+docsUp+' subidos']);
@@ -456,7 +479,7 @@ function submitForm(){
   var btn=document.getElementById('btn_submit');btn.disabled=true;
   document.getElementById('btn_txt').textContent='Enviando...';
   document.getElementById('btn_spin').style.display='inline-block';
-  var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
+  var req=getReqDocs();
   var docsOk=req.filter(function(x){return checkedDocs.has(x);}).length;
   var pc=document.getElementById('p_plan').value;
   var planName=({fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'})[pc]||pc;

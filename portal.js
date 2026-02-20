@@ -1,5 +1,5 @@
 
-const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbwJVA_gtP6E53eyDTf816PnOFw_TfcZpQB3m_9oMit4wUF5VIonwk0KEJziwHlb5KFR/exec';
+const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbzfRAnQ3aT7zp2E1umtJfiBhnv--4_P97T_xA5qXEWggkxViZzsYOg4RlpewPHS9jxB/exec';
 const EQ_FALLBACK = [
   {id:1,  n:"BA88A",   m:"Mindray", c:"Química Clínica", p:39990,   co:30000,  mr:null, pl:["fin"],             mx:6,  dm:0, mc:0,  nota:"0% de interés hasta 4 meses · máximo 6 meses"},
   {id:2,  n:"AQ-200i", m:"Meril",   c:"Química Clínica", p:184338,  co:131670, mr:0.40, pl:["fin","com"],       mx:24, dm:3, mc:48, nota:null},
@@ -240,7 +240,8 @@ function openMd() {
     '&plan=' + encodeURIComponent(planName) +
     '&plazo=' + encodeURIComponent(plazo) +
     '&mensual=' + encodeURIComponent(mensual) +
-    '&enganche=' + encodeURIComponent(enganche);
+    '&enganche=' + encodeURIComponent(enganche) +
+    '&precio=' + encodeURIComponent(eq.p || 0);
   window.location.href = 'solicitud.html?' + params;
 }
 
