@@ -224,13 +224,17 @@ function openMd() {
     mensual = '$'+mn.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
     enganche = '$'+Math.round(e).toLocaleString('es-MX')+' ('+ep+'%)';
   } else if (sTab === 'ren') {
-    planName = 'Renta'; mensual = '$'+(eq.p*0.025).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
+    // Renta: 3.5% mensual (incluye mantenimiento preventivo 10% anual)
+    planName = 'Renta'; mensual = '$'+(eq.p*0.035).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
   } else if (sTab === 'com') {
-    var mr = eq.co * (eq.mr || 0.3);
-    var dep = eq.p * (eq.dm || 3) * 0.025;
+    // Comodato: reactivos minimos para recuperar equipo en 24 meses + mant. preventivo
+    // reactivos = (equipo/24 + equipo*10%/12) / 35% margen
+    var mantMensual = eq.p * 0.10 / 12;
+    var mr = Math.ceil((eq.p / 24 + mantMensual) / 0.35);
+    var dep = mr * 2; // deposito = 2 meses de reactivos
     planName = 'Comodato';
     mensual = 'Compra mín. $'+Math.round(mr).toLocaleString('es-MX')+'/mes';
-    enganche = 'Depósito: $'+Math.round(dep).toLocaleString('es-MX');
+    enganche = 'Depósito: $'+Math.round(dep).toLocaleString('es-MX')+' (2 meses)';
   }
   var params = 'equipo=' + encodeURIComponent(eq.n + ' · ' + eq.m) +
     '&plan=' + encodeURIComponent(planName) +
