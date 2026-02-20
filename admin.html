@@ -145,7 +145,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycbySCcqJ3dyRjGX8qA-ysssBh6PI5lZfyS3BbDGHh-KfgnFwjYyn4IpH9ybKq-s7yOB2/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbznVUQYACkc6V93IrAgIynNuBOUS1dehcnWv7z5GDY6M4HZi6ocU8eblQtouS_kVBox/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -372,6 +372,16 @@ function renderDetail(d){
     '<div class="dp-section">'+
       '<div class="dp-section-title">Documentos</div>'+
       filesHtml+
+      (files.length ? '<button onclick="reanalizarDocs(\''+d['Folio']+'\',\''+nombre+'\')" id="btn_reanalizar_'+d['Folio']+'" '+
+        'style="background:#0d7c66;color:#fff;border:none;border-radius:9px;padding:9px 16px;'+
+        'font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;display:flex;'+
+        'align-items:center;justify-content:center;gap:8px;margin-top:10px">'+
+        '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">'+
+          '<polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>'+
+        '</svg>'+
+        'Analizar documentos con IA'+
+      '</button>' : '')+
+      '<div id="reanalizar_result_'+d['Folio']+'"></div>'+
     '</div>'+
     '<div class="dp-section" id="analysis_section_'+d['Folio']+'">'+
       '<div class="dp-section-title">Analisis crediticio por IA</div>'+
@@ -430,6 +440,24 @@ function saveStatus(folio){
       if(btn){btn.disabled=false;btn.textContent='Guardar cambio de estado';}
     }
   });
+}
+
+function reanalizarDocs(folio, nombre){
+  var btn = document.getElementById('btn_reanalizar_'+folio);
+  var res = document.getElementById('reanalizar_result_'+folio);
+  if(btn){ btn.disabled=true; btn.textContent='Analizando documentos...'; }
+  if(res){ res.innerHTML='<p style="font-size:12px;color:var(--muted);margin-top:8px">Enviando archivos a Claude AI, puede tardar 30-60 segundos...</p>'; }
+  callScript({action:'admin_reanalizar', pwd:userPwd, folio:folio}, function(d){
+    if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Analizar documentos con IA'; }
+    if(d.error){
+      if(res) res.innerHTML='<p style="color:var(--red);font-size:12px;margin-top:6px">Error: '+d.error+'</p>';
+      return;
+    }
+    if(res) res.innerHTML='<p style="color:#0d7c66;font-size:12px;font-weight:700;margin-top:6px">'+
+      (d.mensaje||'Documentos analizados')+'. Ahora genera el dictamen.</p>';
+    // Auto-trigger synthesis
+    setTimeout(function(){ runAnalysis(folio); }, 800);
+  }, 90000);
 }
 
 function runAnalysis(folio){
