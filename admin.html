@@ -475,7 +475,7 @@ function runAnalysis(folio){
     if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg> Re-analizar'; }
     if(d.error){ if(res) res.innerHTML='<p style="color:var(--red);font-size:13px">'+d.error+'</p>'; return; }
     if(res) res.innerHTML = renderAnalysis(d.synthesis);
-  }, 45000);
+  }, 120000);
 }
 
 function renderAnalysis(s){
