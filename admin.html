@@ -145,7 +145,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycbybsHP37Jkj6vHj-9BguUtZ2KuDLV8QJAC5y8acnFxMeP9IHy8nxFJouneavATqqlhh/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbzfqDuJXYjiEW-NuYY0hwdGldNQKq4lVryXw737vCgD9CduWCeYWbJtAJIb6-bLbNWH/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -337,7 +337,10 @@ function renderDetail(d){
   }else{
     filesHtml+='<p style="font-size:12px;color:var(--muted)">Sin documentos subidos.</p>';
     if(d._debug_folders){
-      filesHtml+='<p style="font-size:11px;color:#b45309;margin-top:6px">Carpetas en Drive: '+d._debug_folders+'</p>';
+      filesHtml+='<p style="font-size:11px;color:#b45309;margin-top:6px">'+d._debug_folders+'</p>';
+    }
+    if(d._folder_mismatch){
+      filesHtml+='<p style="font-size:11px;color:#b45309;font-weight:700;margin-top:6px">&#9888; '+d._folder_mismatch+'</p>';
     }
   }
 
