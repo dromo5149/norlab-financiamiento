@@ -1,5 +1,5 @@
 
-const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbxvEclP_AQCEwV9_WttEf609UEKLA1M2nVLHfypyemhhQ18bmT6GGb3h3m48UvarU6C/exec';
+const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbyKH-nkMbUD6sdiG0yKGuLYKNF53eZ_yVAt43XH8l9aRUtLFCg9VtsqgUWqW2Xn1i0a/exec';
 const EQ_FALLBACK = [
   {id:1,  n:"BA88A",   m:"Mindray", c:"Química Clínica", p:39990,   co:30000,  mr:null, pl:["fin"],             mx:6,  dm:0, mc:0,  nota:"0% de interés hasta 4 meses · máximo 6 meses"},
   {id:2,  n:"AQ-200i", m:"Meril",   c:"Química Clínica", p:184338,  co:131670, mr:0.40, pl:["fin","com"],       mx:24, dm:3, mc:48, nota:null},
