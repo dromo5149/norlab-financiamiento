@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyymikq9LoYl2XYR6_tAyDU16f_aclC6TXG4m-bb6AV8MqzYzuHJqXvOTrFLWAeunAj/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyj76CiPK0NG9sEoyy0d4r2kBI35KihXNyeFH3G1iUAtgzxDdHOJthqrWFaMLq3jK6N/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
@@ -207,6 +207,30 @@ function validateStep(n){
   }
   if(n===2){if(!tipo){document.getElementById('e_tipo').classList.add('on');return false;}return true;}
   if(n===3){return tipo==='fisica'?validateFisica():validateMoral();}
+  if(n===4){
+    var req=getReqDocs();
+    var docsOk=req.filter(function(x){return checkedDocs.has(x);}).length;
+    var req2=getReqDocs();
+  var docsOk2=req2.filter(function(x){return checkedDocs.has(x);}).length;
+  var warnId=tipo==='fisica'?'warn_fisica':'warn_moral';
+  var warnEl2=document.getElementById(warnId);
+  if(warnEl2)warnEl2.style.display=docsOk2<req2.length?'flex':'none';
+    var warnEl=document.getElementById(warnId);
+    // Also check aval warns
+    var warnAvalF=document.getElementById('warn_aval_fisica');
+    var warnAvalM=document.getElementById('warn_aval_moral');
+    if(docsOk<req.length){
+      if(warnEl)warnEl.style.display='flex';
+      if(warnAvalF)warnAvalF.style.display='flex';
+      if(warnAvalM)warnAvalM.style.display='flex';
+      // Scroll to docs section
+      var docsEl=document.getElementById('docs_fisica')||document.getElementById('docs_moral');
+      if(docsEl)docsEl.scrollIntoView({behavior:'smooth',block:'start'});
+      return false;
+    }
+    if(warnEl)warnEl.style.display='none';
+    return true;
+  }
   return true;
 }
 function vf(id,fn,eid){
@@ -380,7 +404,11 @@ function checkDoc(id){
 function updateDocWarn(){
   var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
   var miss=req.filter(function(x){return !checkedDocs.has(x);});
+  var req2=getReqDocs();
+  var docsOk2=req2.filter(function(x){return checkedDocs.has(x);}).length;
   var warnId=tipo==='fisica'?'warn_fisica':'warn_moral';
+  var warnEl2=document.getElementById(warnId);
+  if(warnEl2)warnEl2.style.display=docsOk2<req2.length?'flex':'none';
   document.getElementById(warnId).classList.toggle('on',miss.length>0);
 }
 function onDocDrop(e,docId){e.preventDefault();var z=document.getElementById('zone_'+docId);if(z)z.querySelector('.doc-upload-inner').classList.remove('drag');processDocFiles(Array.from(e.dataTransfer.files),docId);}
