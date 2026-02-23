@@ -145,7 +145,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycbylJzTT8HUIOMsYxyyRE-LbScN7oY6iqt4K3Gh366_GOFc5ssriPuK7MsDQKOG9dLW4/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbwaVWuLhF5eRkE9i3Q5IkKsNyVRGGmZy95VVwxgqWSLcPtdicgAispz7O_cVXQAm4k-/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -391,6 +391,10 @@ function renderDetail(d){
     '</div>'+
     '<div class="dp-section" id="analysis_section_'+d['Folio']+'">'+
       '<div class="dp-section-title">Analisis crediticio por IA</div>'+
+      (d['Dictamen'] && d['Dictamen']!=='' ?
+        '<div style="background:#e8f5e9;border-radius:8px;padding:8px 12px;font-size:11px;color:#2e7d32;margin-bottom:8px">'+
+        '&#10003; Dictamen guardado: <strong>'+d['Dictamen'].replace(/_/g,' ')+'</strong> &mdash; '+
+        (d['Fecha analisis']||'').toString().substr(0,16)+'</div>' : '')+
       '<button onclick="runAnalysis(\''+d['Folio']+'\')" id="btn_analysis_'+d['Folio']+'" '+
         'style="background:var(--navy);color:#fff;border:none;border-radius:9px;padding:11px 18px;'+
         'font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;display:flex;'+
@@ -400,7 +404,10 @@ function renderDetail(d){
         '</svg>'+
         'Generar dictamen crediticio completo'+
       '</button>'+
-      '<div id="analysis_result_'+d['Folio']+'"></div>'+
+      '<div id="analysis_result_'+d['Folio']+'">'+
+        (d['Resumen IA'] ? '<div style="background:var(--light);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.6;color:var(--text)">'+d['Resumen IA']+'</div>' : '')+
+        (d['Siguiente paso'] ? '<div style="background:#e3f2fd;border-radius:8px;padding:10px 12px;border-left:3px solid var(--blue);margin-top:8px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:4px">Siguiente paso</div><div style="font-size:12px;color:var(--text)">'+d['Siguiente paso']+'</div></div>' : '')+
+      '</div>'+
     '</div>'+
     '<div class="dp-section">'+
       '<div class="dp-section-title">Cambiar estado</div>'+
@@ -509,7 +516,31 @@ function runAnalysis(folio){
     if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg> Re-analizar'; }
     if(d.error){ if(res) res.innerHTML='<p style="color:var(--red);font-size:13px">'+d.error+'</p>'; return; }
     if(res) res.innerHTML = renderAnalysis(d.synthesis);
+    // Reload detail to get updated score from sheet
+    refreshScoreUI(folio);
   }, 120000);
+}
+
+function refreshScoreUI(folio){
+  callScript({action:'admin_detail', pwd:userPwd, folio:folio}, function(d){
+    if(d.error || !d.Score) return;
+    // Update score in list row
+    var rows = document.querySelectorAll('tr[data-folio="'+folio+'"], .sol-row[data-folio="'+folio+'"]');
+    rows.forEach(function(r){
+      var scoreEl = r.querySelector('.score-val, .score-bar-fill');
+      if(scoreEl) scoreEl.textContent = d.Score;
+    });
+    // Update score in detail panel header
+    var scoreEl = document.querySelector('.score-big .sn');
+    var recEl   = document.querySelector('.score-big .rec');
+    if(scoreEl){
+      var s = Number(d.Score)||0;
+      var color = s>=70?'var(--green)':s>=40?'var(--yellow)':'var(--red)';
+      scoreEl.style.color = color;
+      scoreEl.innerHTML   = s+'<span style="font-size:20px;color:var(--muted)">/100</span>';
+    }
+    if(recEl && d['Recomendación']) recEl.textContent = d['Recomendación'];
+  }, 10000);
 }
 
 function renderAnalysis(s){
