@@ -112,7 +112,7 @@ function render() {
 
   if (sTab === "ren") {
     const mn = eq.p*0.025;
-    CP = {eq: eq.n+' · '+eq.m, plan:'Renta Mensual', ml:'Renta mensual', mv:fmt2(mn)+' + IVA', el:'Mantenimiento', ev:'Incluido', details:'Tasa: 2.5% mensual | Sin enganche'};
+    CP = {eq: eq.n+' · '+eq.m, plan:'Renta Mensual', ml:'Renta mensual', mv:fmt2(mn)+' + IVA', el:'Mantenimiento', ev:'Incluido', details:'Tasa: 3.6% mensual | Sin enganche'};
     box.innerHTML = '<div class="res">' +
       '<div class="r-lbl">📅 Renta Mensual</div>' +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
@@ -122,7 +122,7 @@ function render() {
       '<div class="rr"><span class="rl">Enganche</span><span class="rv">No aplica</span></div>' +
       '<div class="rr"><span class="rl">Plazo</span><span class="rv">Sin plazo fijo</span></div>' +
       '<div class="rr"><span class="rl">Mantenimiento</span><span class="rv" style="color:#a5d6a7">Incluido ✓</span></div>' +
-      '<div class="rr"><span class="rl">Tasa</span><span class="rv">2.5% mensual</span></div>' +
+      '<div class="rr"><span class="rl">Tasa</span><span class="rv">3.6% mensual</span></div>' +
       '<div class="r-note">Estimado sujeto a propuesta formal.</div>' +
       '<div class="r-cta">' +
       '<button class="r-btn" onclick="openMd()">Solicitar renta →</button>' +
@@ -155,7 +155,7 @@ function render() {
   }
 
   // Financiamiento
-  const t  = eq.id===1 ? (sMes<=4 ? 0 : 0.015) : 0.015;
+  const t  = eq.id===1 ? (sMes<=4 ? 0 : 0.02) : 0.02;
   const m  = eq.id===1 ? Math.min(sMes,6) : sMes;
   const ep = eq.id===1 ? 30 : sEng;
   const {e, cap, mn, int, tot} = calcFin(eq.p, ep, m, t);
@@ -170,7 +170,7 @@ function render() {
     '<div class="rr"><span class="rl">Precio equipo</span><span class="rv">' + fmt(eq.p) + '</span></div>' +
     '<div class="rr"><span class="rl">Enganche (' + ep + '%)</span><span class="rv">' + fmt(e) + '</span></div>' +
     '<div class="rr"><span class="rl">Capital financiado</span><span class="rv">' + fmt(cap) + '</span></div>' +
-    '<div class="rr"><span class="rl">Tasa mensual</span><span class="rv">' + (t===0 ? "0% sin intereses 🎉" : "1.5% mensual") + '</span></div>' +
+    '<div class="rr"><span class="rl">Tasa mensual</span><span class="rv">' + (t===0 ? "0% sin intereses 🎉" : "2% mensual") + '</span></div>' +
     '<div class="rr"><span class="rl">Intereses totales</span><span class="rv" style="color:' + (int>0 ? "#ffb74d" : "#a5d6a7") + '">' + fmt(int) + '</span></div>' +
     '<div class="r-tot"><span class="rtl">Total a pagar</span><span class="rtv">' + fmt2(tot) + '</span></div>' +
     (t===0 ? '<div class="r-green">🎉 Sin intereses — Financiamiento al 0%</div>' : '') +
@@ -215,7 +215,7 @@ function openMd() {
   if (!eq) return;
   var planName = '', mensual = '', enganche = '', plazo = '';
   if (sTab === 'fin') {
-    var tasa = (eq.nota && eq.nota.indexOf('0%') !== -1) ? 0 : 0.015;
+    var tasa = (eq.nota && eq.nota.indexOf('0%') !== -1) ? 0 : 0.02;
     var ep = sEng;
     var e = eq.p * ep/100;
     var cap = eq.p - e;
@@ -225,7 +225,7 @@ function openMd() {
     enganche = '$'+Math.round(e).toLocaleString('es-MX')+' ('+ep+'%)';
   } else if (sTab === 'ren') {
     // Renta: 3.5% mensual (incluye mantenimiento preventivo 10% anual)
-    planName = 'Renta'; mensual = '$'+(eq.p*0.035).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
+    planName = 'Renta'; mensual = '$'+(eq.p*0.036).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
   } else if (sTab === 'com') {
     // Comodato: reactivos minimos para recuperar equipo en 24 meses + mant. preventivo
     // reactivos = (equipo/24 + equipo*10%/12) / 35% margen

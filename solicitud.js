@@ -45,7 +45,7 @@ function g(id){var el=document.getElementById(id);return el?el.value:'';}
 // ── Finance helpers ──────────────────────────────────────────────────────────
 function calcRenta(eq){
   // 3.5% mensual = cubre equipo + mantenimiento preventivo + margen
-  return eq.p * 0.035;
+  return eq.p * 0.036;
 }
 function calcComodatoReactivos(eq){
   // Reactivos minimos para liquidar equipo en 24 meses incluyendo mantenimiento
@@ -176,7 +176,7 @@ function calcPreview(){
   if(!selEq)return;
   var m=parseInt(document.getElementById('p_plazo').value)||12;
   var e=selEq.p*0.30,cap=selEq.p-e;
-  var tasa=(selEq.nota&&selEq.nota.indexOf('0%')!==-1)?0:0.015;
+  var tasa=(selEq.nota&&selEq.nota.indexOf('0%')!==-1)?0:0.02;
   var mn=tasa===0?cap/m:cap*tasa*Math.pow(1+tasa,m)/(Math.pow(1+tasa,m)-1);
   document.getElementById('p_enganche').value='$'+Math.round(e).toLocaleString('es-MX')+' (30%)';
   document.getElementById('p_mensual').value='$'+mn.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
