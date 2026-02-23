@@ -145,7 +145,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycbwaVWuLhF5eRkE9i3Q5IkKsNyVRGGmZy95VVwxgqWSLcPtdicgAispz7O_cVXQAm4k-/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbwIQz0xdojwGVP2J8-se1Ctjl6FeUshP7BnjAm0FkVZu9E3VdpvMWS0binkfQ0oQ3ht/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -423,6 +423,16 @@ function renderDetail(d){
       '</select>'+
       '<textarea id="dp_nota" class="nota-input" placeholder="Nota interna (opcional)..."></textarea>'+
       '<button class="btn-save" onclick="saveStatus(\''+d['Folio']+'\')">Guardar cambio de estado</button>'+
+      // ── Mifiel: firma electrónica ──────────────────────────────
+      (d['Dictamen']==='APROBAR'||d['Dictamen']==='APROBAR_CON_CONDICIONES' ? (
+        '<div style="margin-top:20px;padding:16px;background:#f0f7ff;border:1px solid #c0d8ee;border-radius:10px">' +
+        '<p style="font-weight:700;color:#1A3A4A;margin:0 0 12px;font-size:13px">✍️ Firma electrónica — Mifiel</p>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap" id="mifiel_btns_'+d['Folio']+'">' +
+        buildMifielBtns_(d) +
+        '</div>' +
+        '<div id="mifiel_status_'+d['Folio']+'" style="margin-top:10px;font-size:12px;color:#555"></div>' +
+        '</div>'
+      ) : '') +
     '</div>';
 
   var sel=document.getElementById('dp_status');
@@ -631,6 +641,62 @@ function renderAnalysis(s){
 }
 
 window.onload=function(){ document.getElementById('pwdInput').focus(); };
+
+// ── Mifiel ────────────────────────────────────────────────────────────────────
+function buildMifielBtns_(d) {
+  var folio = d['Folio'];
+  var btnStyle = 'border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;';
+  return '<button style="'+btnStyle+'background:#2D7EA8;color:#fff" onclick="signEnviar(\''+folio+'\',\'contrato\')">📄 Generar Contrato</button>' +
+    '<button style="'+btnStyle+'background:#4AB8C8;color:#fff" onclick="signEnviar(\''+folio+'\',\'pagare\')">📋 Generar Pagaré</button>' +
+    '<button style="'+btnStyle+'background:#2A5870;color:#fff" onclick="signEnviar(\''+folio+'\',\'aviso\')">🔒 Aviso Privacidad</button>' +
+    '<button style="'+btnStyle+'background:#f5f5f5;color:#2A5870;border:1px solid #c0d0dc" onclick="signVerEstado(\''+folio+'\')">↻ Ver estado</button>';
+}
+
+function signEnviar(folio, tipo) {
+  var label = {contrato:'Contrato', pagare:'Pagaré', aviso:'Aviso de privacidad'}[tipo];
+  var el = document.getElementById('mifiel_status_'+folio);
+  if(el) el.innerHTML = '<span style="color:#2D7EA8">⏳ Generando '+label+' y enviando a Zoho Sign...</span>';
+
+  callScript({action:'sign_enviar', pwd:userPwd, folio:folio, tipo:tipo}, function(d){
+    if(!el) return;
+    if(d.ok){
+      el.innerHTML =
+        '<div style="background:#e8f5e9;border-radius:8px;padding:10px 12px;border-left:3px solid #4caf50">' +
+        '<div style="font-weight:700;color:#2e7d32;margin-bottom:4px">✓ '+label+' enviado para firma</div>' +
+        '<div style="font-size:11px;color:#555">'+d.mensaje+'</div>' +
+        (d.sign_url ? '<a href="'+d.sign_url+'" target="_blank" style="display:inline-block;margin-top:8px;background:#2D7EA8;color:#fff;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;text-decoration:none">🔗 Link de firma del cliente</a>' : '') +
+        '</div>';
+    } else {
+      el.innerHTML = '<div style="color:#c62828;font-size:12px;background:#ffebee;border-radius:6px;padding:8px 10px">✗ Error: '+(d.error||'desconocido')+'</div>';
+    }
+  }, 30000);
+}
+
+function signVerEstado(folio) {
+  var el = document.getElementById('mifiel_status_'+folio);
+  if(el) el.innerHTML = '<span style="color:#2D7EA8;font-size:12px">⏳ Consultando Zoho Sign...</span>';
+
+  callScript({action:'sign_status_folio', pwd:userPwd, folio:folio}, function(d){
+    if(!el) return;
+    if(!d.ok || !d.contratos || d.contratos.length===0){
+      el.innerHTML = '<span style="font-size:12px;color:#888">Sin documentos enviados a Zoho Sign aún.</span>';
+      return;
+    }
+    var html = '<div style="font-size:12px">';
+    d.contratos.forEach(function(c){
+      var color = c.firmado ? '#e8f5e9' : '#fff8e1';
+      var icon  = c.firmado ? '✓' : '⏳';
+      var color2= c.firmado ? '#2e7d32' : '#f57c00';
+      html += '<div style="background:'+color+';border-radius:6px;padding:6px 10px;margin-bottom:4px">' +
+        '<span style="color:'+color2+';font-weight:700">'+icon+' '+c.tipo+'</span>' +
+        ' · <span style="color:#555">'+c.estado+'</span>' +
+        (c.pdf_url ? ' · <a href="'+c.pdf_url+'" target="_blank" style="color:#2D7EA8;font-weight:600">Descargar PDF firmado</a>' : '') +
+        '</div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  }, 15000);
+}
 
 </script>
 </body>
