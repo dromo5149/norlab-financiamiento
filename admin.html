@@ -145,7 +145,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycbyKH-nkMbUD6sdiG0yKGuLYKNF53eZ_yVAt43XH8l9aRUtLFCg9VtsqgUWqW2Xn1i0a/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbylJzTT8HUIOMsYxyyRE-LbScN7oY6iqt4K3Gh366_GOFc5ssriPuK7MsDQKOG9dLW4/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -451,19 +451,53 @@ function saveStatus(folio){
 function reanalizarDocs(folio, nombre){
   var btn = document.getElementById('btn_reanalizar_'+folio);
   var res = document.getElementById('reanalizar_result_'+folio);
-  if(btn){ btn.disabled=true; btn.textContent='Analizando documentos...'; }
-  if(res){ res.innerHTML='<p style="font-size:12px;color:var(--muted);margin-top:8px">Enviando archivos a Claude AI, puede tardar 30-60 segundos...</p>'; }
-  callScript({action:'admin_reanalizar', pwd:userPwd, folio:folio}, function(d){
-    if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Analizar documentos con IA'; }
+  if(btn){ btn.disabled=true; }
+  if(res){ res.innerHTML='<p style="font-size:12px;color:var(--muted);margin-top:8px">Obteniendo lista de documentos...</p>'; }
+
+  // Step 1: Get file list (fast, no Claude)
+  callScript({action:'admin_list_files', pwd:userPwd, folio:folio}, function(d){
     if(d.error){
+      if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Analizar documentos con IA'; }
       if(res) res.innerHTML='<p style="color:var(--red);font-size:12px;margin-top:6px">Error: '+d.error+'</p>';
       return;
     }
-    if(res) res.innerHTML='<p style="color:#0d7c66;font-size:12px;font-weight:700;margin-top:6px">'+
-      (d.mensaje||'Documentos analizados')+'. Ahora genera el dictamen.</p>';
-    // Auto-trigger synthesis
-    setTimeout(function(){ runAnalysis(folio); }, 800);
-  }, 180000);
+    var files = d.files || [];
+    if(!files.length){
+      if(btn){ btn.disabled=false; }
+      if(res) res.innerHTML='<p style="color:var(--red);font-size:12px;margin-top:6px">No se encontraron archivos en Drive</p>';
+      return;
+    }
+    // Step 2: Analyze each file individually
+    procesarDocsUnoAUno(folio, files, d.nombre||nombre, d.mensualidad||0, 0, 0, btn, res);
+  }, 15000);
+}
+
+function procesarDocsUnoAUno(folio, files, nombre, mensualidad, idx, ok, btn, res){
+  if(idx >= files.length){
+    // All done
+    if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Analizar documentos con IA'; }
+    if(res) res.innerHTML='<p style="color:#0d7c66;font-size:12px;font-weight:700;margin-top:6px">'+ok+'/'+files.length+' documentos analizados. Generando dictamen...</p>';
+    setTimeout(function(){ runAnalysis(folio); }, 600);
+    return;
+  }
+  var f = files[idx];
+  var pct = Math.round((idx/files.length)*100);
+  if(res) res.innerHTML=
+    '<div style="background:#e2e8f0;border-radius:6px;height:6px;margin:8px 0;overflow:hidden">'+
+      '<div style="background:#0d7c66;height:6px;width:'+pct+'%;transition:width .3s"></div></div>'+
+    '<p style="font-size:11px;color:var(--muted);margin:0">Analizando '+( idx+1)+'/'+files.length+': '+f.name.substr(0,40)+'...</p>';
+
+  callScript({
+    action:'admin_analizar_doc', pwd:userPwd, folio:folio,
+    file_id:f.id, file_name:f.name, mime:f.mime,
+    nombre:nombre, mensualidad:mensualidad
+  }, function(d){
+    var newOk = ok + (d.ok ? 1 : 0);
+    // Continue with next doc after small delay
+    setTimeout(function(){
+      procesarDocsUnoAUno(folio, files, nombre, mensualidad, idx+1, newOk, btn, res);
+    }, 2000);
+  }, 30000);
 }
 
 function runAnalysis(folio){
