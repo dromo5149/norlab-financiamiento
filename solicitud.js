@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx73WrSGyDvEkqwxStUXk3avi3C1gAcPsiWu4KoYFixdwkuCQuT3CwgP2sT4ezyHY4X/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyC5X7asl7NkvRTl40Ya8AK8DWwG2xHu01WXWtjB3d8S1iMUaPazSInx5bnDSG5E62/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
@@ -13,18 +13,20 @@ const PLAN_HINTS = {
 };
 const UMBRAL_AVAL = 300000; // Obligado Solidario requerido para equipos >= este monto
 const REQ_FISICA_BASE = ['d_ine','d_dom','d_ec','d_cif'];
-const REQ_FISICA_AVAL = ['d_aval_ine','d_aval_dom'];
+const REQ_FISICA_AVAL = ['d_aval_ine','d_aval_dom','d_aval_ec','d_aval_cif'];
 const REQ_MORAL_BASE  = ['dm_acta','dm_poder','dm_cif','dm_dom','dm_ec'];
-const REQ_MORAL_AVAL  = ['dm_aval_ine','dm_aval_dom'];
+const REQ_MORAL_AVAL  = ['dm_aval_ine','dm_aval_dom','dm_aval_ec','dm_aval_cif'];
 const STEPS = ['Equipo','Tipo','Datos','Documentos'];
 
 const DOC_TYPE = {
   'd_ine':'INE','d_dom':'Comprobante de domicilio','d_ec':'Estado de cuenta',
   'd_cif':'Constancia SAT','d_curp':'CURP',
   'd_aval_ine':'INE del Obligado Solidario','d_aval_dom':'Domicilio del Obligado Solidario',
+  'd_aval_ec':'Estado de cuenta del Obligado Solidario','d_aval_cif':'Constancia SAT del Obligado Solidario',
   'dm_acta':'Acta constitutiva','dm_poder':'Poder notarial','dm_cif':'Constancia SAT',
   'dm_dom':'Comprobante de domicilio','dm_ec':'Estado de cuenta','dm_ef':'Estados financieros',
-  'dm_aval_ine':'INE del Accionista / Obligado Solidario','dm_aval_dom':'Domicilio del Accionista / Obligado Solidario'
+  'dm_aval_ine':'INE del Accionista / Obligado Solidario','dm_aval_dom':'Domicilio del Accionista / Obligado Solidario',
+  'dm_aval_ec':'Estado de cuenta del Accionista / Obligado Solidario','dm_aval_cif':'Constancia SAT del Accionista / Obligado Solidario'
 };
 
 function getReqDocs(){
@@ -125,7 +127,21 @@ function onEquipoChange(){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
   document.getElementById('plan_hint').classList.remove('on');
-  if(!selEq)return;
+  // Ocultar secciones adicionales
+  var banner=document.getElementById('aval_banner');
+  if(banner) banner.style.display='none';
+  var comWrap=document.getElementById('com_reactivos_wrap');
+  if(comWrap) comWrap.style.display='none';
+  if(!selEq) return;
+
+  // Actualizar precio
+  curPrecio = selEq.p || 0;
+
+  // Banner obligado solidario
+  if(banner && curPrecio >= UMBRAL_AVAL){
+    banner.style.display='flex';
+  }
+
   ps.disabled=false;
   var planNames={fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'};
   selEq.pl.forEach(function(code){
@@ -133,6 +149,8 @@ function onEquipoChange(){
   });
   document.getElementById('p_equipo').classList.remove('er');
   document.getElementById('e_equipo').classList.remove('on');
+  // Actualizar visibilidad aval en docs
+  updateAvalSection(tipo);
 }
 function onPlanChange(){
   var code=document.getElementById('p_plan').value;
@@ -168,6 +186,8 @@ function onPlanChange(){
     document.getElementById('p_mensual').value='Compra min. $'+Math.round(reactMin).toLocaleString('es-MX')+'/mes en reactivos';
     document.getElementById('p_enganche').value='Dep\u00f3sito: $'+Math.round(dep).toLocaleString('es-MX')+' (2 meses de reactivos)';
     document.getElementById('p_mant').value='Incluido en c\u00e1lculo. BE equipo = 24 meses';
+    // Mostrar selector de reactivos comodato
+    loadReactivosComodato(reactMin);
   }
   document.getElementById('p_plan').classList.remove('er');
   document.getElementById('e_plan').classList.remove('on');
@@ -282,6 +302,77 @@ function updateAvalSection(t){
   var avalMoral  = document.getElementById('docs_aval_moral');
   if(avalFisica) avalFisica.style.display = (t==='fisica' && needsAval) ? 'block' : 'none';
   if(avalMoral)  avalMoral.style.display  = (t==='moral'  && needsAval) ? 'block' : 'none';
+  // Datos form del aval (visible en step 3)
+  var formAval = document.getElementById('form_aval');
+  if(formAval) formAval.style.display = needsAval ? 'block' : 'none';
+}
+
+// ── Reactivos Comodato ────────────────────────────────────────────────────────
+var reactivosCache=null;
+var reactivosSeleccionados=[];
+function loadReactivosComodato(reactMin){
+  var wrap=document.getElementById('com_reactivos_wrap');
+  var grid=document.getElementById('com_reactivos_grid');
+  var loading=document.getElementById('com_reactivos_loading');
+  if(!wrap)return;
+  wrap.style.display='block';
+  grid.style.display='none';
+  loading.style.display='block';
+  loading.textContent='Cargando cat\u00e1logo de reactivos...';
+  if(reactivosCache){renderReactivosGrid(reactivosCache,reactMin);return;}
+  var cb='nlRX_'+Date.now(),sc=document.createElement('script');
+  var to=setTimeout(function(){cleanup();loading.textContent='No se pudo cargar el cat\u00e1logo. Cont\u00e1ctanos para detalle de precios.';},6000);
+  window[cb]=function(data){clearTimeout(to);cleanup();reactivosCache=Array.isArray(data)?data:[];renderReactivosGrid(reactivosCache,reactMin);};
+  sc.src=SCRIPT_URL+'?action=reactivos_comodato&callback='+cb;
+  sc.onerror=function(){clearTimeout(to);cleanup();loading.textContent='No se pudo cargar el cat\u00e1logo.';};
+  document.head.appendChild(sc);
+  function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
+}
+function renderReactivosGrid(list,reactMin){
+  var grid=document.getElementById('com_reactivos_grid');
+  var loading=document.getElementById('com_reactivos_loading');
+  loading.style.display='none';
+  if(!list||list.length===0){grid.innerHTML='<p style="font-size:13px;color:var(--muted)">Cat\u00e1logo no disponible. Tu ejecutivo te enviar\u00e1 la lista de precios.</p>';grid.style.display='block';return;}
+  var html='<div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px">Cat\u00e1logo de precios especiales</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-bottom:10px">';
+  list.forEach(function(r,i){
+    html+='<label style="display:flex;align-items:flex-start;gap:8px;background:#f8fbfd;border:1px solid #d6eaf5;border-radius:8px;padding:10px;cursor:pointer;transition:all .15s" id="rx_card_'+i+'">';
+    html+='<input type="checkbox" id="rx_chk_'+i+'" style="margin-top:2px;flex-shrink:0" onchange="updateReactivosSel()" data-i="'+i+'" data-nombre="'+(r.n||'').replace(/"/g,'&quot;')+'" data-precio="'+(r.p||0)+'" data-unidad="'+(r.u||'unidad')+'">';
+    html+='<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--navy)">'+(r.n||'Reactivo')+'</div>';
+    html+='<div style="font-size:11px;color:var(--muted)">'+(r.m||'')+'</div>';
+    html+='<div style="font-size:13px;font-weight:700;color:#4AB8C8;margin-top:3px">$'+(Number(r.p)||0).toLocaleString('es-MX',{minimumFractionDigits:2})+' / '+(r.u||'kit')+'</div></div></label>';
+  });
+  html+='</div>';
+  grid.innerHTML=html;
+  grid.style.display='block';
+  updateReactivosSel(reactMin);
+}
+function updateReactivosSel(reactMinOverride){
+  var reactMin=reactMinOverride||(selEq?calcComodatoReactivos(selEq):0);
+  var chks=document.querySelectorAll('[id^="rx_chk_"]');
+  var total=0,selected=[];
+  chks.forEach(function(c){
+    var card=document.getElementById('rx_card_'+c.dataset.i);
+    if(c.checked){
+      var p=Number(c.dataset.precio)||0;
+      total+=p;
+      selected.push(c.dataset.nombre+' ($'+p.toLocaleString('es-MX')+'/'+c.dataset.unidad+')');
+      if(card){card.style.background='#e8f7f9';card.style.borderColor='#4AB8C8';}
+    }else{
+      if(card){card.style.background='#f8fbfd';card.style.borderColor='#d6eaf5';}
+    }
+  });
+  reactivosSeleccionados=selected;
+  var info=document.getElementById('com_reactivos_sel_info');
+  if(!info)return;
+  if(selected.length===0){info.style.display='none';return;}
+  var diff=total-reactMin;
+  var ok=diff>=0;
+  info.style.display='block';
+  info.innerHTML='<div style="font-weight:700;color:#1A3A4A;font-size:13px">'+selected.length+' reactivo(s) seleccionado(s) &mdash; Total: $'+total.toLocaleString('es-MX',{minimumFractionDigits:2})+'/mes</div>'+
+    '<div style="font-size:12px;margin-top:3px">Compra m\u00ednima requerida: <strong>$'+Math.round(reactMin).toLocaleString('es-MX')+'/mes</strong> &nbsp;&bull;&nbsp; '+
+    '<span style="color:'+(ok?'#2e7d32':'#c62828')+'">'+(ok?'\u2713 Cubre la compra m\u00ednima (+$'+diff.toLocaleString('es-MX')+')'
+      :'Faltan $'+Math.abs(diff).toLocaleString('es-MX')+' para cubrir la compra m\u00ednima')+'</span></div>';
 }
 
 // ── Zoho Lookup ───────────────────────────────────────────────────────────────
@@ -519,6 +610,11 @@ function submitForm(){
     anos:g('f_anos')||g('m_anos'),cliente:g('f_cliente')||g('m_cliente'),
     razon:g('m_razon'),rep:g('m_rep'),notas:g('f_notas')||g('m_notas'),
     docs_ok:docsOk,docs_req:req.length,
+    // Obligado solidario
+    aval_nombre:g('aval_nombre'),aval_rfc:g('aval_rfc'),aval_tel:g('aval_tel'),
+    aval_dir:g('aval_dir'),aval_ciudad:g('aval_ciudad'),aval_relacion:g('aval_relacion'),
+    // Reactivos comodato seleccionados
+    reactivos_seleccionados:reactivosSeleccionados.join(' | '),
     zoho_cliente:zohoData&&zohoData.found?'Si':'No verificado',
     zoho_total:zohoData&&zohoData.found?String(zohoData.total_pagado||0):'',
     zoho_ultima:zohoData&&zohoData.found?(zohoData.ultima_compra||''):'',

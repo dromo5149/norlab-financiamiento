@@ -102,6 +102,8 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 .ct-badge-pend{background:#e3f2fd;color:#1565C0;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .ct-badge-rev{background:#fff8e1;color:#b45309;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .ct-badge-sign{background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.ct-badge-firmado{background:#1b5e20;color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.ct-doc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0;border-bottom:1px solid #f0f4f8;}
 .ct-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;font-size:12px;font-weight:700;border:1.5px solid;cursor:pointer;font-family:inherit;text-decoration:none;}
 .ct-btn-gdoc{background:#e8f0fe;color:#1a73e8;border-color:#a8c7fa;}
 .ct-btn-word{background:#e8f5e9;color:#2e7d32;border-color:#a5d6a7;}
@@ -138,6 +140,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
   <div class="tabs-bar">
     <button class="tab-btn active" onclick="switchTab('solicitudes')">Solicitudes</button>
     <button class="tab-btn" onclick="switchTab('contratos')" id="tabBtnContratos">Contratos</button>
+    <button class="tab-btn" onclick="switchTab('reactivos')" id="tabBtnReactivos">Cat&aacute;logo Reactivos</button>
   </div>
 
   <!-- TAB: SOLICITUDES -->
@@ -188,6 +191,51 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
     </div>
   </div><!-- /tabContratos -->
 
+  <!-- TAB: REACTIVOS -->
+  <div id="tabReactivos" class="tab-panel">
+    <div class="ct-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--navy)">Cat&aacute;logo de Reactivos &mdash; Precios Especiales Comodato</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Estos precios son visibles para el cliente en la solicitud de comodato. Gestiona el cat&aacute;logo desde la hoja "Reactivos" en Google Sheets.</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-refresh" onclick="loadReactivos()">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Actualizar
+          </button>
+          <button style="border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--blue2);color:#fff;display:flex;align-items:center;gap:6px" onclick="showAddReactivoModal()">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agregar reactivo
+          </button>
+        </div>
+      </div>
+      <div id="reactivosArea"><div class="loading-spinner">Haz clic en Actualizar para cargar el cat&aacute;logo</div></div>
+    </div>
+  </div><!-- /tabReactivos -->
+
+  <!-- Modal agregar/editar reactivo -->
+  <div id="reactivoModal" style="display:none;position:fixed;inset:0;background:rgba(10,22,32,.45);z-index:1100;display:none;align-items:center;justify-content:center">
+    <div style="background:#fff;border-radius:14px;padding:24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+      <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px" id="reactivoModalTitle">Agregar reactivo</div>
+      <div style="display:grid;gap:12px">
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Nombre del reactivo</label><input id="rx_nombre" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Ej. Reactivo para glucosa COBAS"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Marca / modelo</label><input id="rx_marca" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Ej. Roche / REF 123456"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Precio especial (MXN)</label><input id="rx_precio" type="number" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="0.00"></div>
+          <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Unidad</label><input id="rx_unidad" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="kit / caja / frasco"></div>
+        </div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Equipos compatibles</label><input id="rx_equipo" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Ej. COBAS C111, COBAS B101"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Activo</label><select id="rx_activo" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit"><option value="si">S&iacute;</option><option value="no">No</option></select></div>
+      </div>
+      <div id="rx_modal_msg" style="display:none;margin-top:10px;font-size:12px;color:#c62828"></div>
+      <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">
+        <button onclick="closeReactivoModal()" style="border:1.5px solid #d6eaf5;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;background:#fff;color:var(--navy);cursor:pointer;font-family:inherit">Cancelar</button>
+        <button onclick="saveReactivo()" id="rx_save_btn" style="border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;background:var(--blue2);color:#fff;cursor:pointer;font-family:inherit">Guardar</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div id="detailOverlay" onclick="closeDetail()"></div>
@@ -200,7 +248,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycbx73WrSGyDvEkqwxStUXk3avi3C1gAcPsiWu4KoYFixdwkuCQuT3CwgP2sT4ezyHY4X/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbxyC5X7asl7NkvRTl40Ya8AK8DWwG2xHu01WXWtjB3d8S1iMUaPazSInx5bnDSG5E62/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -755,12 +803,14 @@ function signVerEstado(folio) {
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
 function switchTab(tab) {
-  ['solicitudes','contratos'].forEach(function(t) {
-    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
-    var btn = document.querySelector('[onclick="switchTab(''+t+'')"]');
+  ['solicitudes','contratos','reactivos'].forEach(function(t) {
+    var panel = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+    if(panel) panel.classList.toggle('active', t === tab);
+    var btn = document.querySelector('[onclick="switchTab(\''+t+'\')"]');
     if(btn) btn.classList.toggle('active', t === tab);
   });
   if(tab === 'contratos') loadContratos();
+  if(tab === 'reactivos') loadReactivos();
 }
 
 // ── Contratos ─────────────────────────────────────────────────────────────────
@@ -779,64 +829,96 @@ function renderContratos(rows) {
     area.innerHTML = '<div class="empty-state">No hay contratos todavía. Los contratos aparecen aquí cuando se aprueba una solicitud.</div>';
     return;
   }
+
+  var icoDoc  = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+  var icoDl   = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  var icoFold = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+  var icoSign = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>';
+  var icoPag  = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+
   var html = '';
   rows.forEach(function(row) {
-    var folio   = row['Folio']   || '';
-    var nombre  = row['Nombre']  || '';
-    var equipo  = row['Equipo']  || '';
-    var plan    = row['Plan']    || '';
-    var fecha   = row['Fecha']   || '';
-    var estado  = row['Estado']  || 'Pendiente revisión';
-    var docUrl  = row['Doc URL'] || '';
-    var driveId = row['Drive ID Revisado'] || '';
-    var signId  = row['Zoho Sign ID'] || '';
+    var folio       = row['Folio']   || '';
+    var nombre      = row['Nombre']  || '';
+    var equipo      = row['Equipo']  || '';
+    var plan        = row['Plan']    || '';
+    var fecha       = row['Fecha']   || '';
+    var estado      = row['Estado']  || 'Pendiente revision';
+    var docViewUrl  = row['contrato_view_url'] || '';
+    var docDocxUrl  = row['contrato_docx_url'] || '';
+    var carpetaUrl  = row['carpeta_url']       || '';
+    var firmadoUrl  = row['firmado_url']        || '';
+    var signId      = row['Zoho Sign ID']      || '';
+    var driveIdRev  = row['Drive ID Revisado'] || '';
+    var pagareLinks = row['pagare_links']       || [];
+    var pagareCount = parseInt(row['pagare_count'] || '0') || 0;
 
     var badgeClass = 'ct-badge-pend';
-    if (estado.indexOf('Revisado') > -1) badgeClass = 'ct-badge-rev';
-    if (estado.indexOf('Sign') > -1)     badgeClass = 'ct-badge-sign';
-
-    // Google Doc download URL as .docx
-    var docxUrl = docUrl ? docUrl.replace('/edit', '/export?format=docx') : '';
+    if (estado.indexOf('Revisado') > -1)  badgeClass = 'ct-badge-rev';
+    if (estado.indexOf('Sign') > -1)      badgeClass = 'ct-badge-sign';
+    if (estado === 'Firmado')             badgeClass = 'ct-badge-firmado';
 
     html += '<div class="ct-card" id="ctcard_'+folio+'">';
-    html +=   '<div class="ct-card-head">';
-    html +=     '<span class="ct-folio">'+folio+'</span>';
-    html +=     '<span class="ct-name">'+nombre+'</span>';
-    html +=     '<span class="ct-equipo">'+equipo+'</span>';
-    html +=     '<span style="font-size:11px;color:var(--muted)">'+fecha+'</span>';
-    html +=   '</div>';
-    html +=   '<div class="ct-card-body">';
-    // Estado badge
-    html +=     '<span class="'+badgeClass+'">'+estado+'</span>';
-    // Botón ver Google Doc
-    if (docUrl) {
-      html += '<a href="'+docUrl+'" target="_blank" class="ct-btn ct-btn-gdoc">'+
-        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'+
-        ' Ver Google Doc</a>';
-    }
-    // Botón descargar .docx
-    if (docxUrl) {
-      html += '<a href="'+docxUrl+'" target="_blank" class="ct-btn ct-btn-word">'+
-        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'+
-        ' Descargar .docx</a>';
-    }
-    // Upload área
-    html +=   '<div class="ct-upload-area">';
-    html +=     '<input type="file" accept=".pdf,.docx" class="ct-upload-input" id="file_'+folio+'" onchange="onFileSelect(''+folio+'')">';
-    html +=     '<button class="ct-btn-upload" id="btnUpload_'+folio+'" onclick="subirContrato(''+folio+'')" disabled>Subir revisado</button>';
-    html +=   '</div>';
-    // Botón enviar a Zoho Sign
-    var signDisabled = (estado.indexOf('Sign') > -1) ? 'disabled' : (driveId ? '' : 'disabled title="Primero sube el contrato revisado"');
-    html +=     '<button class="ct-btn ct-btn-sign" '+signDisabled+' id="btnSign_'+folio+'" onclick="enviarASign(''+folio+'')">'+
-      '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>'+
-      (signId ? ' Enviado a Zoho Sign' : ' Enviar a Zoho Sign')+'</button>';
+    html += '<div class="ct-card-head">';
+    html +=   '<span class="ct-folio">'+folio+'</span>';
+    html +=   '<span class="ct-name">'+nombre+'</span>';
+    html +=   '<span class="ct-equipo">'+equipo+'</span>';
+    html +=   '<span style="font-size:11px;color:var(--muted)">'+plan+'</span>';
+    html +=   '<span style="font-size:11px;color:var(--muted);margin-left:auto">'+fecha+'</span>';
+    html += '</div>';
+    html += '<div class="ct-card-body">';
+    html += '<span class="'+badgeClass+'">'+estado+'</span>';
 
-    html +=   '<div id="ctmsg_'+folio+'" style="width:100%"></div>';
-    html +=   '</div>'; // card-body
-    html += '</div>'; // card
+    // Contrato
+    html += '<div class="ct-doc-row">';
+    html +=   '<span style="font-size:12px;font-weight:600;color:var(--dark);min-width:90px">Contrato</span>';
+    if (docViewUrl)  html += '<a href="'+docViewUrl+'" target="_blank" class="ct-btn ct-btn-gdoc">'+icoDoc+' Ver/Editar</a>';
+    if (docDocxUrl)  html += '<a href="'+docDocxUrl+'" target="_blank" class="ct-btn ct-btn-word">'+icoDl+' .docx</a>';
+    if (carpetaUrl)  html += '<a href="'+carpetaUrl+'" target="_blank" class="ct-btn" style="background:#e8f0fe;color:#1a73e8">'+icoFold+' Drive</a>';
+    html += '</div>';
+
+    // Pagarés
+    if (pagareCount > 0) {
+      html += '<div class="ct-doc-row">';
+      html +=   '<span style="font-size:12px;font-weight:600;color:var(--dark);min-width:90px">Pagarés</span>';
+      html +=   '<div style="display:flex;flex-wrap:wrap;gap:4px">';
+      if (Array.isArray(pagareLinks)) {
+        pagareLinks.forEach(function(pl, idx) {
+          html += '<a href="'+pl.docx+'" target="_blank" class="ct-btn" style="background:#fff3e0;color:#e65100;font-size:11px">'+icoPag+' #'+(idx+1)+'</a>';
+        });
+      }
+      html +=   '</div>';
+      html += '</div>';
+    }
+
+    // Firmado
+    if (firmadoUrl) {
+      html += '<div class="ct-doc-row">';
+      html +=   '<span style="font-size:12px;font-weight:600;color:#2e7d32;min-width:90px">Firmado</span>';
+      html +=   '<a href="'+firmadoUrl+'" target="_blank" class="ct-btn" style="background:#e8f5e9;color:#2e7d32">'+icoDl+' PDF firmado</a>';
+      html += '</div>';
+    }
+
+    // Upload
+    html += '<div class="ct-upload-area" style="margin-top:10px">';
+    html +=   '<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Subir contrato revisado (.docx o .pdf):</label>';
+    html +=   '<div style="display:flex;gap:8px;align-items:center">';
+    html +=     '<input type="file" accept=".pdf,.docx" class="ct-upload-input" id="file_'+folio+'" onchange="onFileSelect(\''+folio+'\')">';
+    html +=     '<button class="ct-btn-upload" id="btnUpload_'+folio+'" onclick="subirContrato(\''+folio+'\')" disabled>Subir</button>';
+    html +=   '</div>';
+    html += '</div>';
+
+    // Zoho Sign
+    var signDisabled = (estado === 'Firmado') ? 'disabled' : (signId ? 'disabled' : (driveIdRev ? '' : 'disabled'));
+    var signLabel = (estado === 'Firmado') ? '✓ Firmado' : (signId ? 'En Zoho Sign' : icoSign+' Enviar a Zoho Sign');
+    html += '<button class="ct-btn ct-btn-sign" '+signDisabled+' id="btnSign_'+folio+'" onclick="enviarASign(\''+folio+'\')" style="margin-top:8px">'+signLabel+'</button>';
+    html += '<div id="ctmsg_'+folio+'" style="width:100%;margin-top:6px"></div>';
+    html += '</div>';
+    html += '</div>';
   });
   area.innerHTML = html;
 }
+
 
 function onFileSelect(folio) {
   var fileInput = document.getElementById('file_'+folio);
@@ -895,6 +977,88 @@ function enviarASign(folio) {
       msgEl.innerHTML = '<span class="ct-msg ct-msg-err">Error: '+(d.error||'desconocido')+'</span>';
     }
   }, 30000);
+}
+
+// ── Reactivos catalog ──────────────────────────────────────────────────────────
+function loadReactivos() {
+  var area = document.getElementById('reactivosArea');
+  area.innerHTML = '<div class="loading-spinner"><svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>&nbsp;Cargando cat\u00e1logo...</div>';
+  callScript({action:'reactivos_lista', pwd:userPwd}, function(d) {
+    if(!d.ok) { area.innerHTML='<div class="ct-msg ct-msg-err">Error: '+(d.error||'desconocido')+'</div>'; return; }
+    renderReactivosTable(d.reactivos||[]);
+  }, 15000);
+}
+function renderReactivosTable(list) {
+  var area = document.getElementById('reactivosArea');
+  if(!list.length){area.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px">Sin reactivos en el cat\u00e1logo. Haz clic en &ldquo;Agregar reactivo&rdquo; para comenzar.</div>';return;}
+  var html='<table style="width:100%;border-collapse:collapse;font-size:13px">';
+  html+='<thead><tr style="background:#e8eef5"><th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--navy)">Reactivo</th><th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--navy)">Marca/Modelo</th><th style="padding:10px 12px;text-align:right;font-weight:700;color:var(--navy)">Precio especial</th><th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--navy)">Unidad</th><th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--navy)">Equipos compatibles</th><th style="padding:10px 12px;text-align:center;font-weight:700;color:var(--navy)">Activo</th><th style="padding:10px 12px;text-align:center;font-weight:700;color:var(--navy)">Acciones</th></tr></thead><tbody>';
+  list.forEach(function(r,i){
+    var activo=r.activo!=='no';
+    html+='<tr style="border-bottom:1px solid #e8eef5;opacity:'+(activo?'1':'.5')+'">';
+    html+='<td style="padding:10px 12px;font-weight:600;color:var(--navy)">'+(r.n||'')+'</td>';
+    html+='<td style="padding:10px 12px;color:var(--muted)">'+(r.m||'')+'</td>';
+    html+='<td style="padding:10px 12px;text-align:right;font-weight:700;color:#2A5870">$'+(Number(r.p)||0).toLocaleString('es-MX',{minimumFractionDigits:2})+'</td>';
+    html+='<td style="padding:10px 12px;color:var(--muted)">'+(r.u||'')+'</td>';
+    html+='<td style="padding:10px 12px;color:var(--muted)">'+(r.e||'')+'</td>';
+    html+='<td style="padding:10px 12px;text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;'+(activo?'background:#e8f5e9;color:#2e7d32':'background:#f5f5f5;color:#999')+'">'+(activo?'Activo':'Inactivo')+'</span></td>';
+    html+='<td style="padding:10px 12px;text-align:center;display:flex;gap:6px;justify-content:center">';
+    html+='<button style="border:1px solid #d6eaf5;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--blue2);font-family:inherit" onclick="editReactivo('+i+')">Editar</button>';
+    html+='<button style="border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;background:#feecea;color:#c62828;font-family:inherit" onclick="deleteReactivo(\''+encodeURIComponent(r.n||'')+'\')">Eliminar</button>';
+    html+='</td></tr>';
+  });
+  html+='</tbody></table>';
+  area.innerHTML=html;
+  window._reactivosList=list;
+}
+var _editingReactivoIdx=null;
+function showAddReactivoModal(){
+  _editingReactivoIdx=null;
+  document.getElementById('reactivoModalTitle').textContent='Agregar reactivo';
+  ['rx_nombre','rx_marca','rx_precio','rx_unidad','rx_equipo'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('rx_activo').value='si';
+  document.getElementById('rx_modal_msg').style.display='none';
+  document.getElementById('reactivoModal').style.display='flex';
+}
+function editReactivo(i){
+  var r=(window._reactivosList||[])[i];
+  if(!r)return;
+  _editingReactivoIdx=i;
+  document.getElementById('reactivoModalTitle').textContent='Editar reactivo';
+  document.getElementById('rx_nombre').value=r.n||'';
+  document.getElementById('rx_marca').value=r.m||'';
+  document.getElementById('rx_precio').value=r.p||'';
+  document.getElementById('rx_unidad').value=r.u||'';
+  document.getElementById('rx_equipo').value=r.e||'';
+  document.getElementById('rx_activo').value=r.activo||'si';
+  document.getElementById('rx_modal_msg').style.display='none';
+  document.getElementById('reactivoModal').style.display='flex';
+}
+function closeReactivoModal(){document.getElementById('reactivoModal').style.display='none';}
+function saveReactivo(){
+  var n=document.getElementById('rx_nombre').value.trim();
+  var p=parseFloat(document.getElementById('rx_precio').value)||0;
+  if(!n){document.getElementById('rx_modal_msg').textContent='El nombre es obligatorio.';document.getElementById('rx_modal_msg').style.display='block';return;}
+  if(!p){document.getElementById('rx_modal_msg').textContent='El precio debe ser mayor a 0.';document.getElementById('rx_modal_msg').style.display='block';return;}
+  var btn=document.getElementById('rx_save_btn');btn.disabled=true;btn.textContent='Guardando...';
+  var payload={action:'reactivo_guardar',pwd:userPwd,
+    n:n,m:document.getElementById('rx_marca').value.trim(),
+    p:p,u:document.getElementById('rx_unidad').value.trim(),
+    e:document.getElementById('rx_equipo').value.trim(),
+    activo:document.getElementById('rx_activo').value,
+    idx:_editingReactivoIdx
+  };
+  callScript(payload,function(d){
+    btn.disabled=false;btn.textContent='Guardar';
+    if(d.ok){closeReactivoModal();loadReactivos();}
+    else{document.getElementById('rx_modal_msg').textContent='Error: '+(d.error||'desconocido');document.getElementById('rx_modal_msg').style.display='block';}
+  },10000);
+}
+function deleteReactivo(nombre){
+  if(!confirm('¿Eliminar "'+decodeURIComponent(nombre)+'" del catálogo?'))return;
+  callScript({action:'reactivo_eliminar',pwd:userPwd,nombre:decodeURIComponent(nombre)},function(d){
+    if(d.ok)loadReactivos();else alert('Error: '+(d.error||'desconocido'));
+  },10000);
 }
 
 </script>
