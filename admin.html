@@ -83,6 +83,37 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 .empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
 .loading-spinner{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px;color:var(--muted);font-size:14px;}
 .notes-log{background:var(--light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);white-space:pre-wrap;line-height:1.6;max-height:100px;overflow-y:auto;margin-bottom:8px;}
+
+/* ── Tabs ─────────────────────────────────────────────────────────────────── */
+.tabs-bar{background:#fff;border-bottom:2px solid var(--border);padding:0 28px;display:flex;gap:0;}
+.tab-btn{padding:14px 20px;font-size:13px;font-weight:700;color:var(--muted);border:none;border-bottom:3px solid transparent;background:none;cursor:pointer;font-family:inherit;letter-spacing:.3px;margin-bottom:-2px;}
+.tab-btn.active{color:var(--blue2);border-bottom-color:var(--blue2);}
+.tab-btn:hover:not(.active){color:var(--navy);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+/* ── Contratos ────────────────────────────────────────────────────────────── */
+.ct-wrap{padding:20px 28px 40px;}
+.ct-card{background:#fff;border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;}
+.ct-card-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);}
+.ct-folio{font-size:13px;font-weight:800;color:var(--navy);}
+.ct-name{font-size:13px;color:var(--text);flex:1;}
+.ct-equipo{font-size:12px;color:var(--muted);}
+.ct-card-body{padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.ct-badge-pend{background:#e3f2fd;color:#1565C0;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.ct-badge-rev{background:#fff8e1;color:#b45309;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.ct-badge-sign{background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.ct-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;font-size:12px;font-weight:700;border:1.5px solid;cursor:pointer;font-family:inherit;text-decoration:none;}
+.ct-btn-gdoc{background:#e8f0fe;color:#1a73e8;border-color:#a8c7fa;}
+.ct-btn-word{background:#e8f5e9;color:#2e7d32;border-color:#a5d6a7;}
+.ct-btn-sign{background:var(--blue);color:#fff;border-color:var(--blue);}
+.ct-btn-sign:disabled{opacity:.5;cursor:not-allowed;}
+.ct-upload-area{display:flex;align-items:center;gap:8px;flex:1;min-width:200px;}
+.ct-upload-input{font-size:12px;font-family:inherit;border:1.5px solid var(--border);border-radius:9px;padding:6px 10px;flex:1;min-width:0;}
+.ct-btn-upload{background:var(--blue2);color:#fff;border:none;border-radius:9px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.ct-btn-upload:disabled{opacity:.5;cursor:not-allowed;}
+.ct-msg{font-size:12px;padding:4px 10px;border-radius:6px;}
+.ct-msg-ok{background:#e8f5e9;color:#2e7d32;}
+.ct-msg-err{background:#ffebee;color:#c62828;}
 </style>
 </head>
 <body>
@@ -103,6 +134,14 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <div id="mainScreen">
+  <!-- TAB NAVIGATION -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('solicitudes')">Solicitudes</button>
+    <button class="tab-btn" onclick="switchTab('contratos')" id="tabBtnContratos">Contratos</button>
+  </div>
+
+  <!-- TAB: SOLICITUDES -->
+  <div id="tabSolicitudes" class="tab-panel active">
   <div class="toolbar">
     <div class="toolbar-title">Solicitudes de Financiamiento</div>
     <div class="search-box">
@@ -133,6 +172,22 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
   <div class="table-wrap">
     <div id="tableArea"><div class="loading-spinner">Esperando...</div></div>
   </div>
+  </div><!-- /tabSolicitudes -->
+
+  <!-- TAB: CONTRATOS -->
+  <div id="tabContratos" class="tab-panel">
+    <div class="ct-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-size:16px;font-weight:700;color:var(--navy)">Contratos aprobados</div>
+        <button class="btn-refresh" onclick="loadContratos()">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Actualizar
+        </button>
+      </div>
+      <div id="contratosArea"><div class="loading-spinner">Haz clic en Actualizar para cargar contratos</div></div>
+    </div>
+  </div><!-- /tabContratos -->
+
 </div>
 
 <div id="detailOverlay" onclick="closeDetail()"></div>
@@ -145,7 +200,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 </div>
 
 <script>
-var SCRIPT = 'https://script.google.com/macros/s/AKfycby7G8dPsGf7o9v0wWpiy9aoM3Ii05xFOIZ_xp4ks0WKrpm_uZ5LqG4BgkpTPMGo3_Bp/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbx73WrSGyDvEkqwxStUXk3avi3C1gAcPsiWu4KoYFixdwkuCQuT3CwgP2sT4ezyHY4X/exec';
 var allRows = [], userPwd = '';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -696,6 +751,150 @@ function signVerEstado(folio) {
     html += '</div>';
     el.innerHTML = html;
   }, 15000);
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  ['solicitudes','contratos'].forEach(function(t) {
+    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+    var btn = document.querySelector('[onclick="switchTab(''+t+'')"]');
+    if(btn) btn.classList.toggle('active', t === tab);
+  });
+  if(tab === 'contratos') loadContratos();
+}
+
+// ── Contratos ─────────────────────────────────────────────────────────────────
+function loadContratos() {
+  var area = document.getElementById('contratosArea');
+  area.innerHTML = '<div class="loading-spinner"><svg viewBox="0 0 24 24" width="20" height="20" stroke="#2A5870" stroke-width="2" fill="none" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Cargando contratos...</div>';
+  callScript({action:'contratos_lista', pwd:userPwd}, function(d) {
+    if (!d.ok) { area.innerHTML = '<div class="empty-state">Error: '+(d.error||'desconocido')+'</div>'; return; }
+    renderContratos(d.contratos || []);
+  }, 15000);
+}
+
+function renderContratos(rows) {
+  var area = document.getElementById('contratosArea');
+  if (!rows.length) {
+    area.innerHTML = '<div class="empty-state">No hay contratos todavía. Los contratos aparecen aquí cuando se aprueba una solicitud.</div>';
+    return;
+  }
+  var html = '';
+  rows.forEach(function(row) {
+    var folio   = row['Folio']   || '';
+    var nombre  = row['Nombre']  || '';
+    var equipo  = row['Equipo']  || '';
+    var plan    = row['Plan']    || '';
+    var fecha   = row['Fecha']   || '';
+    var estado  = row['Estado']  || 'Pendiente revisión';
+    var docUrl  = row['Doc URL'] || '';
+    var driveId = row['Drive ID Revisado'] || '';
+    var signId  = row['Zoho Sign ID'] || '';
+
+    var badgeClass = 'ct-badge-pend';
+    if (estado.indexOf('Revisado') > -1) badgeClass = 'ct-badge-rev';
+    if (estado.indexOf('Sign') > -1)     badgeClass = 'ct-badge-sign';
+
+    // Google Doc download URL as .docx
+    var docxUrl = docUrl ? docUrl.replace('/edit', '/export?format=docx') : '';
+
+    html += '<div class="ct-card" id="ctcard_'+folio+'">';
+    html +=   '<div class="ct-card-head">';
+    html +=     '<span class="ct-folio">'+folio+'</span>';
+    html +=     '<span class="ct-name">'+nombre+'</span>';
+    html +=     '<span class="ct-equipo">'+equipo+'</span>';
+    html +=     '<span style="font-size:11px;color:var(--muted)">'+fecha+'</span>';
+    html +=   '</div>';
+    html +=   '<div class="ct-card-body">';
+    // Estado badge
+    html +=     '<span class="'+badgeClass+'">'+estado+'</span>';
+    // Botón ver Google Doc
+    if (docUrl) {
+      html += '<a href="'+docUrl+'" target="_blank" class="ct-btn ct-btn-gdoc">'+
+        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'+
+        ' Ver Google Doc</a>';
+    }
+    // Botón descargar .docx
+    if (docxUrl) {
+      html += '<a href="'+docxUrl+'" target="_blank" class="ct-btn ct-btn-word">'+
+        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'+
+        ' Descargar .docx</a>';
+    }
+    // Upload área
+    html +=   '<div class="ct-upload-area">';
+    html +=     '<input type="file" accept=".pdf,.docx" class="ct-upload-input" id="file_'+folio+'" onchange="onFileSelect(''+folio+'')">';
+    html +=     '<button class="ct-btn-upload" id="btnUpload_'+folio+'" onclick="subirContrato(''+folio+'')" disabled>Subir revisado</button>';
+    html +=   '</div>';
+    // Botón enviar a Zoho Sign
+    var signDisabled = (estado.indexOf('Sign') > -1) ? 'disabled' : (driveId ? '' : 'disabled title="Primero sube el contrato revisado"');
+    html +=     '<button class="ct-btn ct-btn-sign" '+signDisabled+' id="btnSign_'+folio+'" onclick="enviarASign(''+folio+'')">'+
+      '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>'+
+      (signId ? ' Enviado a Zoho Sign' : ' Enviar a Zoho Sign')+'</button>';
+
+    html +=   '<div id="ctmsg_'+folio+'" style="width:100%"></div>';
+    html +=   '</div>'; // card-body
+    html += '</div>'; // card
+  });
+  area.innerHTML = html;
+}
+
+function onFileSelect(folio) {
+  var fileInput = document.getElementById('file_'+folio);
+  var btn       = document.getElementById('btnUpload_'+folio);
+  btn.disabled  = !fileInput.files.length;
+}
+
+function subirContrato(folio) {
+  var fileInput = document.getElementById('file_'+folio);
+  var msgEl     = document.getElementById('ctmsg_'+folio);
+  if (!fileInput.files.length) return;
+  var file = fileInput.files[0];
+  var btn  = document.getElementById('btnUpload_'+folio);
+  btn.disabled = true;
+  btn.textContent = 'Subiendo...';
+  msgEl.innerHTML = '<span class="ct-msg" style="color:var(--blue)">Subiendo archivo...</span>';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var b64 = e.target.result.split(',')[1];
+    callScript({
+      action: 'contratos_subir', pwd: userPwd,
+      folio: folio, filename: file.name, base64: b64
+    }, function(d) {
+      btn.textContent = 'Subir revisado';
+      if (d.ok) {
+        msgEl.innerHTML = '<span class="ct-msg ct-msg-ok">Archivo subido. Ahora puedes enviarlo a Zoho Sign.</span>';
+        document.getElementById('btnSign_'+folio).disabled = false;
+        document.getElementById('btnSign_'+folio).removeAttribute('title');
+      } else {
+        btn.disabled = false;
+        msgEl.innerHTML = '<span class="ct-msg ct-msg-err">Error: '+(d.error||'desconocido')+'</span>';
+      }
+    }, 30000);
+  };
+  reader.readAsDataURL(file);
+}
+
+function enviarASign(folio) {
+  var btn   = document.getElementById('btnSign_'+folio);
+  var msgEl = document.getElementById('ctmsg_'+folio);
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Enviando a Zoho Sign...';
+  msgEl.innerHTML = '';
+
+  callScript({action:'contratos_a_sign', pwd:userPwd, folio:folio}, function(d) {
+    if (d.ok) {
+      btn.innerHTML = '✓ Enviado — Ver en Zoho Sign';
+      btn.onclick   = function(){ window.open('https://sign.zoho.com','_blank'); };
+      btn.style.background = '#2e7d32';
+      btn.disabled  = false;
+      msgEl.innerHTML = '<span class="ct-msg ct-msg-ok">Draft creado en Zoho Sign (ID: '+d.request_id+'). Entra a Zoho Sign para revisar y enviar al cliente.</span>';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = 'Enviar a Zoho Sign';
+      msgEl.innerHTML = '<span class="ct-msg ct-msg-err">Error: '+(d.error||'desconocido')+'</span>';
+    }
+  }, 30000);
 }
 
 </script>
