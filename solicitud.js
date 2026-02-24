@@ -75,11 +75,23 @@ function buildProgress(){
 }
 
 // ── Equipment ─────────────────────────────────────────────────────────────────
-function loadEquipos(){
+function loadEquipos(retry){
   fetch(SCRIPT_URL+'?ts='+Date.now())
     .then(function(r){return r.json();})
-    .then(function(data){EQ=Array.isArray(data)?data:[];populateEquipos(EQ);})
-    .catch(function(){populateEquipos([]);});
+    .then(function(data){
+      if(Array.isArray(data) && data.length > 0){
+        EQ = data; populateEquipos(EQ);
+      } else if(!retry) {
+        // Deployment frío — reintentar una vez tras 3 seg
+        setTimeout(function(){ loadEquipos(true); }, 3000);
+      } else {
+        populateEquipos([]);
+      }
+    })
+    .catch(function(){
+      if(!retry){ setTimeout(function(){ loadEquipos(true); }, 3000); }
+      else { populateEquipos([]); }
+    });
 }
 function populateEquipos(list){
   document.getElementById('eq_loading').style.display='none';

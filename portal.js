@@ -182,11 +182,18 @@ function render() {
     '</div></div>';
 }
 
-function initPortal() {
+function initPortal(retry) {
   fetch(EQ_JSON_URL + '?ts=' + Date.now())
     .then(function(r) { return r.json(); })
-    .then(function(data) { if (Array.isArray(data) && data.length > 0) EQ = data; render(); })
-    .catch(function() { render(); });
+    .then(function(data) {
+      if (Array.isArray(data) && data.length > 0) { EQ = data; render(); }
+      else if (!retry) { setTimeout(function(){ initPortal(true); }, 3000); }
+      else { render(); }
+    })
+    .catch(function() {
+      if (!retry) { setTimeout(function(){ initPortal(true); }, 3000); }
+      else { render(); }
+    });
 }
 initPortal();
 
