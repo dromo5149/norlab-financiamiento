@@ -594,7 +594,10 @@ function buildResumen(){
   }).join('');
 }
 function submitForm(){
-  curFolio='NL-'+String(Math.floor(10000+Math.random()*90000));
+  // IMPORTANTE: NO regenerar folio — usar el asignado en paso 4 (que ya se usó para subir docs)
+  if(!curFolio || curFolio.indexOf('TEMP_')===0){
+    curFolio='NL-'+String(Math.floor(10000+Math.random()*90000));
+  }
   var btn=document.getElementById('btn_submit');btn.disabled=true;
   document.getElementById('btn_txt').textContent='Enviando...';
   document.getElementById('btn_spin').style.display='inline-block';
