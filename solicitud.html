@@ -157,6 +157,24 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
       <div class="fg full" id="mensual_wrap" style="display:none"><label>Mensualidad / Reactivos m&iacute;nimos</label><input id="p_mensual" readonly></div>
       <div class="fg full" id="mant_wrap" style="display:none"><label>Mantenimiento preventivo</label><input id="p_mant" readonly></div>
     </div>
+    <!-- Leyenda obligado solidario -->
+    <div id="aval_banner" style="display:none;background:#fff8e1;border:1px solid #f9a825;border-radius:10px;padding:12px 16px;margin-top:8px;display:none;align-items:center;gap:10px">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="#f57c00" stroke-width="2" fill="none" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span style="font-size:13px;color:#e65100"><strong>Obligado solidario requerido.</strong> Este equipo supera $300,000 MXN. Necesitar&aacute;s un aval que firme el contrato y cuyo documentos se solicitar&aacute;n en el paso 4.</span>
+    </div>
+    <!-- Selector de reactivos para comodato -->
+    <div id="com_reactivos_wrap" style="display:none;margin-top:10px">
+      <div class="card" style="border-left:3px solid var(--teal)">
+        <div class="card-title" style="color:var(--teal)">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+          Reactivos NORLAB para tu comodato
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 12px 0">Consulta los reactivos con precio especial disponibles para cubrir tu compra m&iacute;nima mensual. Puedes elegir la combinaci&oacute;n que m&aacute;s te convenga.</p>
+        <div id="com_reactivos_loading" style="font-size:13px;color:var(--muted)">Cargando cat&aacute;logo...</div>
+        <div id="com_reactivos_grid" style="display:none"></div>
+        <div id="com_reactivos_sel_info" style="display:none;margin-top:10px;background:#e8f8f8;border-radius:8px;padding:10px 14px;font-size:13px"></div>
+      </div>
+    </div>
     <div class="info-note" id="install_note" style="display:none">
       <svg viewBox="0 0 24 24" width="16" height="16" stroke="#2A5870" stroke-width="1.8" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <span>La instalaci&oacute;n y validaci&oacute;n del equipo se cotiza por separado seg&uacute;n ubicaci&oacute;n y condiciones del sitio.</span>
@@ -267,6 +285,25 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
         <div class="fg"><label>Ciudad <span>*</span></label><input id="f_ciudad" placeholder="Ciudad de M&eacute;xico"><span class="ferr" id="ef_ciudad">Campo requerido</span></div>
         <div class="fg"><label>A&ntilde;os de operaci&oacute;n <span>*</span></label><select id="f_anos"><option value="">Selecciona...</option><option value="menos1">Menos de 1 a&ntilde;o</option><option value="1-2">1 a 2 a&ntilde;os</option><option value="3-5">3 a 5 a&ntilde;os</option><option value="6-10">6 a 10 a&ntilde;os</option><option value="mas10">M&aacute;s de 10 a&ntilde;os</option></select><span class="ferr" id="ef_anos">Campo requerido</span></div>
         <div class="fg full"><label>Comentarios</label><textarea id="f_notas" placeholder="Cualquier informaci&oacute;n relevante..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datos obligado solidario (visible solo si equipo >= 300k) -->
+  <div id="form_aval" style="display:none">
+    <div class="card" style="border-left:3px solid #f57c00">
+      <div class="card-title" style="color:#e65100">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Datos del Obligado Solidario
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px 0">El equipo supera $300,000 MXN. Se requiere un obligado solidario (aval) que co-firme el contrato.</p>
+      <div class="fg2">
+        <div class="fg full"><label>Nombre completo del obligado solidario</label><input id="aval_nombre" placeholder="Nombre completo"></div>
+        <div class="fg"><label>RFC del obligado solidario</label><input id="aval_rfc" placeholder="XXXX000000XXX" style="text-transform:uppercase"></div>
+        <div class="fg"><label>Tel&eacute;fono</label><input id="aval_tel" type="tel" placeholder="55 1234 5678"></div>
+        <div class="fg full"><label>Domicilio del obligado solidario</label><input id="aval_dir" placeholder="Direcci&oacute;n completa"></div>
+        <div class="fg"><label>Ciudad</label><input id="aval_ciudad" placeholder="Ciudad"></div>
+        <div class="fg"><label>Relaci&oacute;n con el solicitante</label><select id="aval_relacion"><option value="">Selecciona...</option><option>Propietario del negocio</option><option>Socio</option><option>C&oacute;nyuge</option><option>Familiar</option><option>Otro</option></select></div>
       </div>
     </div>
   </div>
@@ -504,6 +541,118 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
       <div class="doc-warn" id="warn_fisica">
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="#b45309" stroke-width="2" fill="none" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         Faltan documentos obligatorios. El proceso se pausar&aacute; hasta recibirlos.
+      </div>
+    </div>
+  </div>
+  <!-- Obligado Solidario - Persona Fisica (equipos >= $300,000) -->
+  <div id="docs_aval_fisica" style="display:none">
+    <div class="card" style="border-left:3px solid #b45309">
+      <div class="card-title" style="color:#b45309">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#b45309" stroke-width="1.8" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Obligado Solidario &mdash; requerido por monto del equipo
+      </div>
+      <p style="font-size:13px;color:#6b7c93;margin:0 0 12px 0">Por el valor del equipo solicitado (&ge;$300,000) se requieren documentos del obligado solidario (aval).</p>
+      <div class="doc-item" id="d_aval_ine" onclick="toggleDoc('d_aval_ine')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_aval_ine">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="doc-info">
+            <strong>INE del Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>Por ambos lados, vigente</span>
+          </div>
+          <div class="doc-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_aval_ine" style="display:none"
+             ondragover="onDocDragOver(event,'d_aval_ine')" ondragleave="onDocDragLeave(event,'d_aval_ine')" ondrop="onDocDrop(event,'d_aval_ine')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_aval_ine').click()">
+            <input type="file" id="file_d_aval_ine" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_aval_ine')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_aval_ine"></div>
+        </div>
+      </div>
+      <div class="doc-item" id="d_aval_dom" onclick="toggleDoc('d_aval_dom')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_aval_dom">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="doc-info">
+            <strong>Comprobante de domicilio del Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>No mayor a 3 meses</span>
+          </div>
+          <div class="doc-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_aval_dom" style="display:none"
+             ondragover="onDocDragOver(event,'d_aval_dom')" ondragleave="onDocDragLeave(event,'d_aval_dom')" ondrop="onDocDrop(event,'d_aval_dom')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_aval_dom').click()">
+            <input type="file" id="file_d_aval_dom" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_aval_dom')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_aval_dom"></div>
+        </div>
+      </div>
+      <!-- Estado de cuenta del aval -->
+      <div class="doc-item" id="d_aval_ec" onclick="toggleDoc('d_aval_ec')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_aval_ec">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="doc-info">
+            <strong>Estados de cuenta del Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>&Uacute;ltimos 3 meses, con movimientos visibles</span>
+          </div>
+          <div class="doc-arrow"><svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_aval_ec" style="display:none"
+             ondragover="onDocDragOver(event,'d_aval_ec')" ondragleave="onDocDragLeave(event,'d_aval_ec')" ondrop="onDocDrop(event,'d_aval_ec')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_aval_ec').click()">
+            <input type="file" id="file_d_aval_ec" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_aval_ec')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_aval_ec"></div>
+        </div>
+      </div>
+      <!-- Constancia SAT / comprobante ingresos del aval -->
+      <div class="doc-item" id="d_aval_cif" onclick="toggleDoc('d_aval_cif')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_d_aval_cif">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="doc-info">
+            <strong>Constancia de situaci&oacute;n fiscal (SAT) del Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>C&eacute;dula de identificaci&oacute;n fiscal vigente</span>
+          </div>
+          <div class="doc-arrow"><svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="doc-upload-zone" id="zone_d_aval_cif" style="display:none"
+             ondragover="onDocDragOver(event,'d_aval_cif')" ondragleave="onDocDragLeave(event,'d_aval_cif')" ondrop="onDocDrop(event,'d_aval_cif')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_d_aval_cif').click()">
+            <input type="file" id="file_d_aval_cif" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'d_aval_cif')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_d_aval_cif"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -753,9 +902,118 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
   </div>
   <p style="font-size:12px;color:var(--muted)">Tambi&eacute;n puedes enviar a <strong>info&#64;norlab.xyz</strong> con tu folio <strong id="refNum2"></strong></p>
 </div>
+  <!-- Obligado Solidario - Persona Moral (equipos >= $300,000) -->
+  <div id="docs_aval_moral" style="display:none">
+    <div class="card" style="border-left:3px solid #b45309">
+      <div class="card-title" style="color:#b45309">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#b45309" stroke-width="1.8" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Accionista Principal / Obligado Solidario &mdash; requerido por monto del equipo
+      </div>
+      <p style="font-size:13px;color:#6b7c93;margin:0 0 12px 0">Por el valor del equipo solicitado (&ge;$300,000) se requieren documentos del accionista principal o aval.</p>
+      <div class="doc-item" id="dm_aval_ine" onclick="toggleDoc('dm_aval_ine')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_aval_ine">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="doc-info">
+            <strong>INE del Accionista / Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>Por ambos lados, vigente</span>
+          </div>
+          <div class="doc-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_aval_ine" style="display:none"
+             ondragover="onDocDragOver(event,'dm_aval_ine')" ondragleave="onDocDragLeave(event,'dm_aval_ine')" ondrop="onDocDrop(event,'dm_aval_ine')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_aval_ine').click()">
+            <input type="file" id="file_dm_aval_ine" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_aval_ine')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_aval_ine"></div>
+        </div>
+      </div>
+      <div class="doc-item" id="dm_aval_dom" onclick="toggleDoc('dm_aval_dom')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_aval_dom">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="doc-info">
+            <strong>Domicilio del Accionista / Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>No mayor a 3 meses</span>
+          </div>
+          <div class="doc-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_aval_dom" style="display:none"
+             ondragover="onDocDragOver(event,'dm_aval_dom')" ondragleave="onDocDragLeave(event,'dm_aval_dom')" ondrop="onDocDrop(event,'dm_aval_dom')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_aval_dom').click()">
+            <input type="file" id="file_dm_aval_dom" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_aval_dom')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_aval_dom"></div>
+        </div>
+      </div>
+      <!-- Estado de cuenta del aval moral -->
+      <div class="doc-item" id="dm_aval_ec" onclick="toggleDoc('dm_aval_ec')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_aval_ec"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="doc-info">
+            <strong>Estados de cuenta del Accionista / Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>&Uacute;ltimos 3 meses, con movimientos visibles</span>
+          </div>
+          <div class="doc-arrow"><svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_aval_ec" style="display:none"
+             ondragover="onDocDragOver(event,'dm_aval_ec')" ondragleave="onDocDragLeave(event,'dm_aval_ec')" ondrop="onDocDrop(event,'dm_aval_ec')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_aval_ec').click()">
+            <input type="file" id="file_dm_aval_ec" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_aval_ec')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_aval_ec"></div>
+        </div>
+      </div>
+      <!-- Constancia SAT del aval moral -->
+      <div class="doc-item" id="dm_aval_cif" onclick="toggleDoc('dm_aval_cif')">
+        <div class="doc-header">
+          <div class="doc-cb" id="cb_dm_aval_cif"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="doc-info">
+            <strong>Constancia fiscal (SAT) del Accionista / Obligado Solidario <span class="doc-req">OBLIGATORIO</span></strong>
+            <span>C&eacute;dula de identificaci&oacute;n fiscal vigente</span>
+          </div>
+          <div class="doc-arrow"><svg viewBox="0 0 24 24" width="18" height="18" stroke="#6b7c93" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="doc-upload-zone" id="zone_dm_aval_cif" style="display:none"
+             ondragover="onDocDragOver(event,'dm_aval_cif')" ondragleave="onDocDragLeave(event,'dm_aval_cif')" ondrop="onDocDrop(event,'dm_aval_cif')">
+          <div class="doc-upload-inner" onclick="event.stopPropagation();document.getElementById('file_dm_aval_cif').click()">
+            <input type="file" id="file_dm_aval_cif" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="onDocFileSelect(event,'dm_aval_cif')">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="#2A5870" stroke-width="1.8" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Haz clic o arrastra tu archivo</span>
+            <span style="font-size:11px;color:#90a4ae">PDF, JPG o PNG &bull; M&aacute;x. 10MB</span>
+          </div>
+          <div class="fi-list" id="flist_dm_aval_cif"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
-<script src="solicitud.js?v=202602202045"></script>
+<script src="solicitud.js?v=202602202130"></script>
 <script>
 // Show install note for renta and comodato
 var _origOnPlanChange = onPlanChange;
