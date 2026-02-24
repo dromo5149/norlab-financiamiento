@@ -1,5 +1,5 @@
 
-const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbxyC5X7asl7NkvRTl40Ya8AK8DWwG2xHu01WXWtjB3d8S1iMUaPazSInx5bnDSG5E62/exec';
+const EQ_JSON_URL = 'https://script.google.com/macros/s/AKfycbyLGKE2HFTDYe8FOK1VblTAm7oIczGpuiqdGfhtPiIv7L4B4QCF_J5PafFmX8ZCTIdz/exec';
 const EQ_FALLBACK = [
   {id:1,  n:"BA88A",   m:"Mindray", c:"Química Clínica", p:39990,   co:30000,  mr:null, pl:["fin"],             mx:6,  dm:0, mc:0,  nota:"0% de interés hasta 4 meses · máximo 6 meses"},
   {id:2,  n:"AQ-200i", m:"Meril",   c:"Química Clínica", p:184338,  co:131670, mr:0.40, pl:["fin","com"],       mx:24, dm:3, mc:48, nota:null},
@@ -183,26 +183,10 @@ function render() {
 }
 
 function initPortal() {
-  var cbName = 'nlEQ_' + Date.now();
-  var script = document.createElement('script');
-  var timeout = setTimeout(function() {
-    if (document.head.contains(script)) document.head.removeChild(script);
-    delete window[cbName]; render();
-  }, 5000);
-  window[cbName] = function(data) {
-    clearTimeout(timeout);
-    if (document.head.contains(script)) document.head.removeChild(script);
-    delete window[cbName];
-    if (Array.isArray(data) && data.length > 0) EQ = data;
-    render();
-  };
-  script.src = EQ_JSON_URL + '?callback=' + cbName + '&ts=' + Date.now();
-  script.onerror = function() {
-    clearTimeout(timeout);
-    if (document.head.contains(script)) document.head.removeChild(script);
-    delete window[cbName]; render();
-  };
-  document.head.appendChild(script);
+  fetch(EQ_JSON_URL + '?ts=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(data) { if (Array.isArray(data) && data.length > 0) EQ = data; render(); })
+    .catch(function() { render(); });
 }
 initPortal();
 

@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyC5X7asl7NkvRTl40Ya8AK8DWwG2xHu01WXWtjB3d8S1iMUaPazSInx5bnDSG5E62/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLGKE2HFTDYe8FOK1VblTAm7oIczGpuiqdGfhtPiIv7L4B4QCF_J5PafFmX8ZCTIdz/exec';
 const WA_NUM = '525621836094';
 
 // Financial constants
@@ -614,6 +614,7 @@ function submitForm(){
     zoho_ultima:zohoData&&zohoData.found?(zohoData.ultima_compra||''):'',
     zoho_pagadas:zohoData&&zohoData.found?((zohoData.facturas_pagadas||0)+'/'+(zohoData.total_facturas||0)):'',
     zoho_pendiente:zohoData&&zohoData.found?String(zohoData.saldo_pendiente||0):'',
+    zoho_dias_vencido:zohoData&&zohoData.found?String(zohoData.dias_vencido||0):'',
     zoho_comportamiento:zohoData&&zohoData.found?(zohoData.comportamiento||''):''
   };
   var qs=Object.keys(data).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(data[k]||'');}).join('&');
