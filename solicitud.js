@@ -76,13 +76,10 @@ function buildProgress(){
 
 // ── Equipment ─────────────────────────────────────────────────────────────────
 function loadEquipos(){
-  var cb='nlEQ_'+Date.now(),sc=document.createElement('script');
-  var to=setTimeout(function(){cleanup();populateEquipos([]);},7000);
-  window[cb]=function(data){clearTimeout(to);cleanup();EQ=Array.isArray(data)?data:[];populateEquipos(EQ);};
-  sc.src=SCRIPT_URL+'?callback='+cb+'&ts='+Date.now();
-  sc.onerror=function(){clearTimeout(to);cleanup();populateEquipos([]);};
-  document.head.appendChild(sc);
-  function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
+  fetch(SCRIPT_URL+'?ts='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(data){EQ=Array.isArray(data)?data:[];populateEquipos(EQ);})
+    .catch(function(){populateEquipos([]);});
 }
 function populateEquipos(list){
   document.getElementById('eq_loading').style.display='none';
@@ -320,13 +317,13 @@ function loadReactivosComodato(reactMin){
   loading.style.display='block';
   loading.textContent='Cargando cat\u00e1logo de reactivos...';
   if(reactivosCache){renderReactivosGrid(reactivosCache,reactMin);return;}
-  var cb='nlRX_'+Date.now(),sc=document.createElement('script');
-  var to=setTimeout(function(){cleanup();loading.textContent='No se pudo cargar el cat\u00e1logo. Cont\u00e1ctanos para detalle de precios.';},6000);
-  window[cb]=function(data){clearTimeout(to);cleanup();reactivosCache=Array.isArray(data)?data:[];renderReactivosGrid(reactivosCache,reactMin);};
-  sc.src=SCRIPT_URL+'?action=reactivos_comodato&callback='+cb;
-  sc.onerror=function(){clearTimeout(to);cleanup();loading.textContent='No se pudo cargar el cat\u00e1logo.';};
-  document.head.appendChild(sc);
-  function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
+  fetch(SCRIPT_URL+'?action=reactivos_comodato')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      reactivosCache=d.reactivos||[];
+      renderReactivosGrid(reactivosCache,reactMin);
+    })
+    .catch(function(){loading.textContent='No se pudo cargar el cat\u00e1logo.';});
 }
 function renderReactivosGrid(list,reactMin){
   var grid=document.getElementById('com_reactivos_grid');
@@ -419,13 +416,10 @@ function doZohoLookup(t){
   var box=document.getElementById('zoho_'+t);
   box.className='zoho-box loading show';
   box.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="#1976d2" stroke-width="2" fill="none" style="animation:spin .8s linear infinite;margin-right:6px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Verificando en nuestro sistema...';
-  var cb='zl_'+Date.now(),sc=document.createElement('script');
-  var to=setTimeout(function(){cleanup();box.className='zoho-box notfound show';box.innerHTML='No se pudo verificar. Continuaremos con revisi\u00f3n manual.';},8000);
-  window[cb]=function(data){clearTimeout(to);cleanup();zohoData=data;renderZoho(box,data,t);};
-  sc.src=SCRIPT_URL+'?action=zoho_lookup&email='+encodeURIComponent(email)+'&callback='+cb+'&ts='+Date.now();
-  sc.onerror=function(){clearTimeout(to);cleanup();box.className='zoho-box notfound show';box.innerHTML='Error de conexi\u00f3n.';};
-  document.head.appendChild(sc);
-  function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
+  fetch(SCRIPT_URL+'?action=zoho_lookup&email='+encodeURIComponent(email)+'&ts='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(data){zohoData=data;renderZoho(box,data,t);})
+    .catch(function(){box.className='zoho-box notfound show';box.innerHTML='Error de conexi\u00f3n.';});
 }
 function renderZoho(box,d,t){
   if(!d||!d.found){
@@ -493,14 +487,11 @@ function checkDoc(id){
   if(curStep===4) buildResumen();
 }
 function updateDocWarn(){
-  var req=tipo==='fisica'?REQ_FISICA:REQ_MORAL;
-  var miss=req.filter(function(x){return !checkedDocs.has(x);});
   var req2=getReqDocs();
   var docsOk2=req2.filter(function(x){return checkedDocs.has(x);}).length;
   var warnId=tipo==='fisica'?'warn_fisica':'warn_moral';
   var warnEl2=document.getElementById(warnId);
   if(warnEl2)warnEl2.style.display=docsOk2<req2.length?'flex':'none';
-  document.getElementById(warnId).classList.toggle('on',miss.length>0);
 }
 function onDocDrop(e,docId){e.preventDefault();var z=document.getElementById('zone_'+docId);if(z)z.querySelector('.doc-upload-inner').classList.remove('drag');processDocFiles(Array.from(e.dataTransfer.files),docId);}
 function onDocDragOver(e,docId){e.preventDefault();var z=document.getElementById('zone_'+docId);if(z)z.querySelector('.doc-upload-inner').classList.add('drag');}
@@ -625,14 +616,10 @@ function submitForm(){
     zoho_pendiente:zohoData&&zohoData.found?String(zohoData.saldo_pendiente||0):'',
     zoho_comportamiento:zohoData&&zohoData.found?(zohoData.comportamiento||''):''
   };
-  var cb='sub_'+Date.now(),sc=document.createElement('script');
-  var to=setTimeout(function(){cleanup();showSuccess(curFolio,data);},8000);
-  window[cb]=function(){clearTimeout(to);cleanup();showSuccess(curFolio,data);};
   var qs=Object.keys(data).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(data[k]||'');}).join('&');
-  sc.src=SCRIPT_URL+'?'+qs+'&callback='+cb;
-  sc.onerror=function(){clearTimeout(to);cleanup();showSuccess(curFolio,data);};
-  document.head.appendChild(sc);
-  function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb];}
+  fetch(SCRIPT_URL+'?'+qs)
+    .then(function(){showSuccess(curFolio,data);})
+    .catch(function(){showSuccess(curFolio,data);});
 }
 function showSuccess(ref,data){
   for(var i=1;i<=4;i++)document.getElementById('s'+i).classList.remove('active');

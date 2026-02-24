@@ -292,17 +292,15 @@ function loadData(){
 }
 
 function callScript(params, cb, timeout){
-  var cb_name='_cb'+Date.now();
-  var sc=document.createElement('script');
-  var to=setTimeout(function(){cleanup();cb({error:'Timeout - sin respuesta del servidor'});}, timeout||10000);
-  window[cb_name]=function(d){clearTimeout(to);cleanup();cb(d);};
   var qs=Object.keys(params).map(function(k){
     return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);
   }).join('&');
-  sc.src=SCRIPT+'?'+qs+'&callback='+cb_name+'&ts='+Date.now();
-  sc.onerror=function(){clearTimeout(to);cleanup();cb({error:'Error de conexion'});};
-  document.head.appendChild(sc);
-  function cleanup(){if(document.head.contains(sc))document.head.removeChild(sc);delete window[cb_name];}
+  var controller=new AbortController();
+  var to=setTimeout(function(){controller.abort();cb({error:'Timeout - sin respuesta del servidor'});}, timeout||10000);
+  fetch(SCRIPT+'?'+qs+'&ts='+Date.now(), {signal:controller.signal})
+    .then(function(r){return r.json();})
+    .then(function(d){clearTimeout(to);cb(d);})
+    .catch(function(e){clearTimeout(to);if(e.name!=='AbortError')cb({error:'Error de conexion: '+e.message});});
 }
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
