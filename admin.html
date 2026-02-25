@@ -416,6 +416,7 @@ function closeDetail(){
 }
 
 function renderDetail(d){
+function renderDetail(d){
   var score=Number(d['Score'])||0;
   var rec=(d['Recomendacion']||d['Recomendación']||'').replace(/[\u2705\u{1F7E1}\u{1F534}]/gu,'').trim();
   var scoreCls=score>=70?'var(--green)':score>=40?'var(--yellow)':'var(--red)';
@@ -458,6 +459,12 @@ function renderDetail(d){
     ? '$' + Number(saldo).toLocaleString('es-MX') + (diasVencido > 0 ? ' <span style="color:' + (diasVencido > 15 ? '#c62828' : '#f57c00') + ';font-weight:700">' + diasVencido + ' días vencido' + (diasVencido > 15 ? ' ⚠️' : '') + '</span>' : '')
     : '$0';
 
+  // Extraer valores numéricos de Mensualidad y Enganche
+  var mensualidadStr = d['Mensualidad'] || '';
+  var engancheStr = d['Enganche'] || '';
+  var mensualidadVal = parseFloat(mensualidadStr.replace(/[^0-9.-]/g, '')) || 0;
+  var engancheVal = parseFloat(engancheStr.replace(/[^0-9.-]/g, '')) || 0;
+
   document.getElementById('dp-body').innerHTML=
     '<div class="score-big">'+
       '<div class="sn" style="color:'+scoreCls+'">'+score+'<span style="font-size:20px;color:var(--muted)">/100</span></div>'+
@@ -466,7 +473,37 @@ function renderDetail(d){
     '</div>'+
     '<div class="dp-section">'+
       '<div class="dp-section-title">Plan solicitado</div>'+
-      row2('Equipo',d['Equipo'])+row2('Plan',d['Plan'])+row2('Plazo',d['Plazo']?d['Plazo']+' meses':'')+row2('Mensualidad',d['Mensualidad'])+row2('Enganche',d['Enganche'])+
+      row2('Equipo',d['Equipo'])+
+      row2('Plan',d['Plan'])+
+      row2('Plazo',d['Plazo']?d['Plazo']+' meses':'')+
+      // ─── CAMPOS EDITABLES PARA MENSUALIDAD Y ENGANCHE ───
+      '<div class="dp-row">'+
+        '<span>Mensualidad</span>'+
+        '<div style="display:flex;gap:6px;align-items:center;flex:1;justify-content:flex-end">'+
+          '<span style="font-size:13px;color:var(--muted)">$</span>'+
+          '<input type="number" id="edit_mensualidad_'+d['Folio']+'" value="'+mensualidadVal+'" '+
+            'style="width:120px;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;'+
+            'font-size:13px;font-weight:600;text-align:right;font-family:inherit" '+
+            'step="0.01" min="0">'+
+          '<button onclick="guardarMonto(\''+d['Folio']+'\',\'Mensualidad\')" '+
+            'style="padding:5px 10px;background:var(--blue2);color:#fff;border:none;border-radius:6px;'+
+            'font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Guardar</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="dp-row" style="border-bottom:none">'+
+        '<span>Enganche</span>'+
+        '<div style="display:flex;gap:6px;align-items:center;flex:1;justify-content:flex-end">'+
+          '<span style="font-size:13px;color:var(--muted)">$</span>'+
+          '<input type="number" id="edit_enganche_'+d['Folio']+'" value="'+engancheVal+'" '+
+            'style="width:120px;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;'+
+            'font-size:13px;font-weight:600;text-align:right;font-family:inherit" '+
+            'step="0.01" min="0">'+
+          '<button onclick="guardarMonto(\''+d['Folio']+'\',\'Enganche\')" '+
+            'style="padding:5px 10px;background:var(--blue2);color:#fff;border:none;border-radius:6px;'+
+            'font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Guardar</button>'+
+        '</div>'+
+      '</div>'+
+      '<div id="msg_montos_'+d['Folio']+'" style="font-size:11px;margin-top:6px;display:none"></div>'+
     '</div>'+
     '<div class="dp-section">'+
       '<div class="dp-section-title">Solicitante</div>'+
@@ -546,6 +583,43 @@ function renderDetail(d){
       if(sel.options[i].value===d['Estado']){sel.selectedIndex=i;break;}
     }
   }
+}
+
+// ── NUEVA FUNCIÓN: Guardar montos editables ─────────────────────────────────
+function guardarMonto(folio, campo) {
+  var inputId = 'edit_' + campo.toLowerCase() + '_' + folio;
+  var valor = parseFloat(document.getElementById(inputId).value) || 0;
+  var msgEl = document.getElementById('msg_montos_' + folio);
+  
+  if (valor <= 0) {
+    msgEl.textContent = '⚠ El monto debe ser mayor a 0';
+    msgEl.style.color = '#c62828';
+    msgEl.style.display = 'block';
+    setTimeout(function(){ msgEl.style.display = 'none'; }, 3000);
+    return;
+  }
+  
+  msgEl.textContent = 'Guardando...';
+  msgEl.style.color = 'var(--muted)';
+  msgEl.style.display = 'block';
+  
+  callScript({
+    action: 'actualizar_monto',
+    pwd: userPwd,
+    folio: folio,
+    campo: campo,
+    valor: valor
+  }, function(d) {
+    if (d.ok) {
+      msgEl.textContent = '✓ ' + campo + ' actualizado correctamente';
+      msgEl.style.color = '#2e7d32';
+      setTimeout(function(){ msgEl.style.display = 'none'; loadData(); }, 2000);
+    } else {
+      msgEl.textContent = '✗ Error: ' + (d.error || 'No se pudo guardar');
+      msgEl.style.color = '#c62828';
+      setTimeout(function(){ msgEl.style.display = 'none'; }, 4000);
+    }
+  }, 10000);
 }
 
 function row2(l,v){
