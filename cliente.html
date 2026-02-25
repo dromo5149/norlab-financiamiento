@@ -5,7 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mi Portal — NORLAB</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.conekta.io/assets/lib/conekta-2.0.0.min.js" onerror="window.Conekta=null;console.warn('Conekta no cargó')"></script>
+<script>
+// Cargar Conekta de forma no bloqueante
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://cdn.conekta.io/assets/lib/conekta-2.0.0.min.js';
+  s.onerror = function(){ window.Conekta = null; console.warn('Conekta no cargó'); };
+  s.onload = function(){
+    if(window.Conekta && window.Conekta.setPublicKey){
+}
+  };
+  document.head.appendChild(s);
+})();
+</script>
 <style>
 :root {
   --navy:   #1A3A4A;
@@ -771,9 +783,7 @@ function pagarTarjeta() {
 
   var btn = document.getElementById('btn-pay-card');
   btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span> Procesando...';
-
-  Conekta.setPublicKey(CONEKTA_PUBLIC_KEY);
-  var tokenData = {
+var tokenData = {
     card: {
       name: name, number: number,
       exp_year: '20' + exp[1].trim(), exp_month: exp[0].trim(),
@@ -892,4 +902,9 @@ function formatExp(el) {
 }
 
 // Enter en login
-document.getElementById('inp-folio').addEventListene
+document.getElementById('inp-folio').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('inp-email').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+</script>
+</body>
+</html>
