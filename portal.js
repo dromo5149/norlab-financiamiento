@@ -111,18 +111,19 @@ function render() {
   const wm = "Hola NORLAB quiero cotizar el equipo " + eq.n + " " + eq.m;
 
   if (sTab === "ren") {
-    const mn = eq.p*0.025;
-    CP = {eq: eq.n+' · '+eq.m, plan:'Renta Mensual', ml:'Renta mensual', mv:fmt2(mn)+' + IVA', el:'Mantenimiento', ev:'Incluido', details:'Tasa: 3.6% mensual | Sin enganche'};
+    const mn = eq.p*0.04;  // Cambiar de 0.025 a 0.04 (4% mensual)
+    const mnConIVA = mn * 1.16;  // Agregar IVA
+    CP = {eq: eq.n+' · '+eq.m, plan:'Renta Mensual', ml:'Renta mensual', mv:fmt2(mnConIVA), el:'Mantenimiento', ev:'Incluido', details:'Tasa: 4% mensual | Incluye IVA'};
     box.innerHTML = '<div class="res">' +
       '<div class="r-lbl">📅 Renta Mensual</div>' +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="r-ml">Renta mensual estimada</div>' +
-      '<div class="r-mv">' + fmt2(mn) + '</div>' +
-      '<div class="r-ms">+ IVA · Sin enganche</div>' +
+      '<div class="r-mv">' + fmt2(mnConIVA) + '</div>' +
+      '<div class="r-ms">Incluye IVA · Plazo mínimo 3 años</div>' +
       '<div class="rr"><span class="rl">Enganche</span><span class="rv">No aplica</span></div>' +
-      '<div class="rr"><span class="rl">Plazo</span><span class="rv">Sin plazo fijo</span></div>' +
+      '<div class="rr"><span class="rl">Plazo mínimo</span><span class="rv">36 meses</span></div>' +
       '<div class="rr"><span class="rl">Mantenimiento</span><span class="rv" style="color:#a5d6a7">Incluido ✓</span></div>' +
-      '<div class="rr"><span class="rl">Tasa</span><span class="rv">3.6% mensual</span></div>' +
+      '<div class="rr"><span class="rl">Tasa</span><span class="rv">4% mensual</span></div>' +
       '<div class="r-note">Estimado sujeto a propuesta formal.</div>' +
       '<div class="r-cta">' +
       '<button class="r-btn" onclick="openMd()">Solicitar renta →</button>' +
@@ -133,13 +134,15 @@ function render() {
   }
 
   if (sTab === "com") {
-    const {mr, dep, gan} = calcCom(eq), gv = eq.p-eq.co, mejor = gan>gv;
-    CP = {eq: eq.n+' · '+eq.m, plan:'Comodato', ml:'Compra mínima/mes', mv:fmt(mr), el:'Depósito', ev:fmt(dep), details:'Compra mínima: '+fmt(mr)+'/mes | Depósito: '+fmt(dep)+' | Duración: '+eq.mc+' meses'};
+    const {mr, dep, gan} = calcCom(eq);
+    const mrConIVA = mr * 1.16;  // Agregar IVA a reactivos
+    const gv = eq.p-eq.co, mejor = gan>gv;
+    CP = {eq: eq.n+' · '+eq.m, plan:'Comodato', ml:'Compra mínima/mes', mv:fmt(mrConIVA), el:'Depósito', ev:fmt(dep), details:'Compra mínima: '+fmt(mrConIVA)+'/mes | Depósito: '+fmt(dep)+' | Duración: '+eq.mc+' meses'};
     box.innerHTML = '<div class="res">' +
       '<div class="r-lbl">🤝 Comodato</div>' +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="z-badge">$0 de adquisición</div>' +
-      '<div class="com-box"><div class="com-lbl">Compra mínima mensual de reactivos</div><div class="com-val">' + fmt(mr) + '</div><div class="com-sub">Durante ' + eq.mc + ' meses · 20% colchón</div></div>' +
+      '<div class="com-box"><div class="com-lbl">Compra mínima mensual de reactivos</div><div class="com-val">' + fmt(mrConIVA) + '</div><div class="com-sub">Durante ' + eq.mc + ' meses · 20% colchón</div></div>' +
       '<div class="rr"><span class="rl">Costo adquisición</span><span class="rv" style="color:#a5d6a7">$0</span></div>' +
       '<div class="rr"><span class="rl">Depósito garantía</span><span class="rv">' + fmt(dep) + '</span></div>' +
       '<div class="rr"><span class="rl">Duración</span><span class="rv">' + eq.mc + ' meses</span></div>' +
@@ -159,16 +162,22 @@ function render() {
   const m  = eq.id===1 ? Math.min(sMes,6) : sMes;
   const ep = eq.id===1 ? 30 : sEng;
   const {e, cap, mn, int, tot} = calcFin(eq.p, ep, m, t);
-  CP = {eq: eq.n+' · '+eq.m, plan:'Financiamiento '+m+' meses', ml:'Mensualidad', mv:fmt2(mn)+' + IVA', el:'Total a pagar', ev:fmt2(tot), details:'Enganche ('+ep+'%): '+fmt(e)+' | Capital: '+fmt(cap)+' | Total: '+fmt2(tot)};
+
+  // Calcular IVA
+  const engancheConIVA = e * 1.16;
+  const mensualidadConIVA = mn * 1.16;
+  const totalConIVA = engancheConIVA + (mensualidadConIVA * m);
+
+  CP = {eq: eq.n+' · '+eq.m, plan:'Financiamiento '+m+' meses', ml:'Mensualidad', mv:fmt2(mensualidadConIVA), el:'Total a pagar', ev:fmt2(totalConIVA), details:'Enganche ('+ep+'%): '+fmt(engancheConIVA)+' | Capital: '+fmt(cap)+' | Total: '+fmt2(totalConIVA)};
 
   box.innerHTML = '<div class="res">' +
     '<div class="r-lbl">💳 Financiamiento</div>' +
     '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
     '<div class="r-ml">Mensualidad</div>' +
-    '<div class="r-mv">' + fmt2(mn) + '</div>' +
-    '<div class="r-ms">+ IVA · ' + m + ' pagos</div>' +
+    '<div class="r-mv">' + fmt2(mensualidadConIVA) + '</div>' +
+    '<div class="r-ms">Incluye IVA · ' + m + ' pagos</div>' +
     '<div class="rr"><span class="rl">Precio equipo</span><span class="rv">' + fmt(eq.p) + '</span></div>' +
-    '<div class="rr"><span class="rl">Enganche (' + ep + '%)</span><span class="rv">' + fmt(e) + '</span></div>' +
+    '<div class="rr"><span class="rl">Enganche (' + ep + '%)</span><span class="rv">' + fmt(engancheConIVA) + '</span></div>' +
     '<div class="rr"><span class="rl">Capital financiado</span><span class="rv">' + fmt(cap) + '</span></div>' +
     '<div class="rr"><span class="rl">Tasa mensual</span><span class="rv">' + (t===0 ? "0% sin intereses 🎉" : "2% mensual") + '</span></div>' +
     '<div class="rr"><span class="rl">Intereses totales</span><span class="rv" style="color:' + (int>0 ? "#ffb74d" : "#a5d6a7") + '">' + fmt(int) + '</span></div>' +
