@@ -38,6 +38,8 @@ function getReqDocs(){
 }
 
 var curStep=1, tipo='', selEq=null, zohoData=null, uploadedFiles=[], curFolio='', curMensualidad=0, curPrecio=0;
+var curEngancheNum = 0;  // Valor numérico del enganche (con IVA)
+var curMensualNum = 0;   // Valor numérico de la mensualidad (con IVA)
 var checkedDocs=new Set();
 var expandedDoc=null;
 var EQ=[];
@@ -181,19 +183,31 @@ function onPlanChange(){
   }else if(code==='ren'){
     pw.style.display='none';ew.style.display='none';mw.style.display='flex';
     if(mantWrap)mantWrap.style.display='flex';
-    var rentaMensual=calcRenta(selEq);
+    var rentaMensual=selEq.p*0.04;  // Cambiar de calcRenta() a 4% directo
+    var rentaConIVA=rentaMensual*1.16;
     var mantMensual=selEq.p*TASA_MANT/12;
-    document.getElementById('p_mensual').value='$'+rentaMensual.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA/mes';
+    
+    // Guardar valores numéricos
+    curMensualNum = rentaConIVA;
+    curEngancheNum = 0;
+    
+    document.getElementById('p_mensual').value='$'+rentaConIVA.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+'/mes';
     document.getElementById('p_mant').value='Incluido en renta ($'+Math.round(mantMensual).toLocaleString('es-MX')+'/mes estimado)';
 
   }else if(code==='com'){
     pw.style.display='none';ew.style.display='flex';mw.style.display='flex';
     if(mantWrap)mantWrap.style.display='flex';
     var reactMin=calcComodatoReactivos(selEq);
+    var reactMinConIVA=reactMin*1.16;
     var dep=calcComodatoDeposito(selEq);
     var mantMensualCom=selEq.p*TASA_MANT/12;
-    document.getElementById('p_mensual').value='Compra min. $'+Math.round(reactMin).toLocaleString('es-MX')+'/mes en reactivos';
-    document.getElementById('p_enganche').value='Dep\u00f3sito: $'+Math.round(dep).toLocaleString('es-MX')+' (2 meses de reactivos)';
+    
+    // Guardar valores numéricos
+    curMensualNum = reactMinConIVA;
+    curEngancheNum = dep;
+    
+    document.getElementById('p_mensual').value='Compra min. $'+Math.round(reactMinConIVA).toLocaleString('es-MX')+'/mes';
+    document.getElementById('p_enganche').value='Dep\u00f3sito: $'+Math.round(dep).toLocaleString('es-MX');
     document.getElementById('p_mant').value='Incluido en c\u00e1lculo. BE equipo = 24 meses';
     // Mostrar selector de reactivos comodato
     loadReactivosComodato(reactMin);
@@ -207,8 +221,17 @@ function calcPreview(){
   var e=selEq.p*0.30,cap=selEq.p-e;
   var tasa=(selEq.nota&&selEq.nota.indexOf('0%')!==-1)?0:0.02;
   var mn=tasa===0?cap/m:cap*tasa*Math.pow(1+tasa,m)/(Math.pow(1+tasa,m)-1);
-  document.getElementById('p_enganche').value='$'+Math.round(e).toLocaleString('es-MX')+' (30%)';
-  document.getElementById('p_mensual').value='$'+mn.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+' + IVA';
+  
+  // Calcular IVA
+  var engancheConIVA=e*1.16;
+  var mensualidadConIVA=mn*1.16;
+  
+  // Guardar valores numéricos
+  curEngancheNum = engancheConIVA;
+  curMensualNum = mensualidadConIVA;
+  
+  document.getElementById('p_enganche').value='$'+Math.round(engancheConIVA).toLocaleString('es-MX')+' (30%)';
+  document.getElementById('p_mensual').value='$'+mensualidadConIVA.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
@@ -609,7 +632,10 @@ function submitForm(){
   var pc=document.getElementById('p_plan').value;
   var planName=({fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'})[pc]||pc;
   var data={action:'solicitud',folio:curFolio,equipo:selEq?(selEq.n+' - '+selEq.m):'',plan:planName,
-    plazo:g('p_plazo'),mensual:g('p_mensual'),enganche:g('p_enganche'),tipo:tipo,
+    plazo:g('p_plazo'),
+    mensual: curMensualNum > 0 ? '$' + curMensualNum.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}) : '',
+    enganche: curEngancheNum > 0 ? '$' + curEngancheNum.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}) : '',
+    tipo:tipo,
     nombre:g('f_nombre'),rfc:g('f_rfc')||g('m_rfc'),curp:g('f_curp'),
     tel:g('f_tel')||g('m_tel'),email:g('f_email')||g('m_email'),
     negocio:g('f_negocio'),dir:g('f_dir')||g('m_dir'),ciudad:g('f_ciudad')||g('m_ciudad'),
