@@ -199,14 +199,12 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
           </button>
         </div>
       </div>
-      
       <div id="contratosLoading" style="display:none;">
         <div class="loading-spinner">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="#2A5870" stroke-width="2" fill="none" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
           Cargando contratos...
         </div>
       </div>
-      
       <div id="contratosEmpty" style="display:none;">
         <div class="empty-state">
           <div style="font-size:48px;margin-bottom:12px;">📄</div>
@@ -214,7 +212,6 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
           <div style="font-size:12px;margin-top:4px;">Los expedientes aprobados aparecerán aquí</div>
         </div>
       </div>
-      
       <div id="contratosTable"></div>
     </div>
   </div><!-- /tabContratos -->
@@ -901,7 +898,9 @@ function switchTab(tab) {
 
 // ── Contratos ─────────────────────────────────────────────────────────────────
 
-// ── Contratos: Nuevas funciones ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+// NUEVAS FUNCIONES PARA GESTIÓN DE CONTRATOS
+// ══════════════════════════════════════════════════════════════════════════
 var allContracts = [];
 
 function loadContratos() {
@@ -948,10 +947,10 @@ function generarContratos(folio) {
     folio: folio
   }, function(d) {
     if (d.ok) {
-      alert('✅ Carpeta creada exitosamente\n\n' + d.mensaje);
+      alert('Carpeta creada exitosamente');
       loadContratos();
     } else {
-      alert('❌ Error: ' + (d.error || 'No se pudo generar'));
+      alert('Error: ' + (d.error || 'No se pudo generar'));
       btn.disabled = false;
       btn.innerHTML = '📝 Generar';
     }
@@ -971,10 +970,10 @@ function enviarZohoSign(folio) {
     folio: folio
   }, function(d) {
     if (d.ok) {
-      alert('✅ ' + d.mensaje);
+      alert(d.mensaje || 'Enviado correctamente');
       loadContratos();
     } else {
-      alert('❌ Error: ' + (d.error || 'No se pudo enviar'));
+      alert('Error: ' + (d.error || 'No se pudo enviar'));
       btn.disabled = false;
       btn.innerHTML = '📧 Enviar a Firma';
     }
@@ -994,22 +993,13 @@ function renderContratos(contratos) {
   
   contratos.forEach(function(c) {
     html += '<tr style="border-bottom:1px solid var(--border);">';
-    
-    // Folio
     html += '<td><span style="font-weight:600;">' + c.folio + '</span></td>';
-    
-    // Cliente
     html += '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;" title="' + c.nombre + '">' + c.nombre + '</td>';
-    
-    // Plan
     html += '<td><span class="badge badge-blue">' + c.plan + '</span></td>';
     
-    // Estado
     var estado = c.estado_contrato || 'Pendiente Generación';
-    var estadoBadge = getEstadoBadge(estado);
-    html += '<td>' + estadoBadge + '</td>';
+    html += '<td>' + getEstadoBadge(estado) + '</td>';
     
-    // Archivos
     html += '<td>';
     if (c.carpeta_drive) {
       html += '<a href="https://drive.google.com/drive/folders/' + c.carpeta_drive + '" target="_blank" style="color:var(--blue);text-decoration:none;font-size:12px;">📁 Carpeta</a>';
@@ -1018,11 +1008,7 @@ function renderContratos(contratos) {
     }
     html += '</td>';
     
-    // Acciones
-    html += '<td style="text-align:center;">';
-    html += getBotonesAccion(c);
-    html += '</td>';
-    
+    html += '<td style="text-align:center;">' + getBotonesAccion(c) + '</td>';
     html += '</tr>';
   });
   
@@ -1045,9 +1031,9 @@ function getBotonesAccion(c) {
   var html = '<div style="display:flex;gap:8px;justify-content:center;">';
   
   if (estado === 'Pendiente Generación') {
-    html += '<button onclick="generarContratos('' + c.folio + '')" style="padding:6px 12px;background:var(--blue);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">📝 Generar</button>';
+    html += '<button onclick="generarContratos(\'' + c.folio + '\')" style="padding:6px 12px;background:var(--blue);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">📝 Generar</button>';
   } else if (estado === 'Generado') {
-    html += '<button onclick="enviarZohoSign('' + c.folio + '')" style="padding:6px 12px;background:#7b1fa2;color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">📧 Enviar a Firma</button>';
+    html += '<button onclick="enviarZohoSign(\'' + c.folio + '\')" style="padding:6px 12px;background:#7b1fa2;color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">📧 Enviar a Firma</button>';
   } else if (estado === 'Enviado a Firma') {
     html += '<button disabled style="padding:6px 12px;background:var(--muted);color:white;border:none;border-radius:6px;font-size:12px;opacity:0.6;">⏳ Esperando...</button>';
   } else if (estado === 'Firmado') {
@@ -1057,97 +1043,6 @@ function getBotonesAccion(c) {
   html += '</div>';
   return html;
 }
-
-
-  var icoDoc  = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
-  var icoDl   = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
-  var icoFold = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
-  var icoSign = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>';
-  var icoPag  = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
-
-  var html = '';
-  rows.forEach(function(row) {
-    var folio       = row['Folio']   || '';
-    var nombre      = row['Nombre']  || '';
-    var equipo      = row['Equipo']  || '';
-    var plan        = row['Plan']    || '';
-    var fecha       = row['Fecha']   || '';
-    var estado      = row['Estado']  || 'Pendiente revision';
-    var docViewUrl  = row['contrato_view_url'] || '';
-    var docDocxUrl  = row['contrato_docx_url'] || '';
-    var carpetaUrl  = row['carpeta_url']       || '';
-    var firmadoUrl  = row['firmado_url']        || '';
-    var signId      = row['Zoho Sign ID']      || '';
-    var driveIdRev  = row['Drive ID Revisado'] || '';
-    var pagareLinks = row['pagare_links']       || [];
-    var pagareCount = parseInt(row['pagare_count'] || '0') || 0;
-
-    var badgeClass = 'ct-badge-pend';
-    if (estado.indexOf('Revisado') > -1)  badgeClass = 'ct-badge-rev';
-    if (estado.indexOf('Sign') > -1)      badgeClass = 'ct-badge-sign';
-    if (estado === 'Firmado')             badgeClass = 'ct-badge-firmado';
-
-    html += '<div class="ct-card" id="ctcard_'+folio+'">';
-    html += '<div class="ct-card-head">';
-    html +=   '<span class="ct-folio">'+folio+'</span>';
-    html +=   '<span class="ct-name">'+nombre+'</span>';
-    html +=   '<span class="ct-equipo">'+equipo+'</span>';
-    html +=   '<span style="font-size:11px;color:var(--muted)">'+plan+'</span>';
-    html +=   '<span style="font-size:11px;color:var(--muted);margin-left:auto">'+fecha+'</span>';
-    html += '</div>';
-    html += '<div class="ct-card-body">';
-    html += '<span class="'+badgeClass+'">'+estado+'</span>';
-
-    // Contrato
-    html += '<div class="ct-doc-row">';
-    html +=   '<span style="font-size:12px;font-weight:600;color:var(--dark);min-width:90px">Contrato</span>';
-    if (docViewUrl)  html += '<a href="'+docViewUrl+'" target="_blank" class="ct-btn ct-btn-gdoc">'+icoDoc+' Ver/Editar</a>';
-    if (docDocxUrl)  html += '<a href="'+docDocxUrl+'" target="_blank" class="ct-btn ct-btn-word">'+icoDl+' .docx</a>';
-    if (carpetaUrl)  html += '<a href="'+carpetaUrl+'" target="_blank" class="ct-btn" style="background:#e8f0fe;color:#1a73e8">'+icoFold+' Drive</a>';
-    html += '</div>';
-
-    // Pagarés
-    if (pagareCount > 0) {
-      html += '<div class="ct-doc-row">';
-      html +=   '<span style="font-size:12px;font-weight:600;color:var(--dark);min-width:90px">Pagarés</span>';
-      html +=   '<div style="display:flex;flex-wrap:wrap;gap:4px">';
-      if (Array.isArray(pagareLinks)) {
-        pagareLinks.forEach(function(pl, idx) {
-          html += '<a href="'+pl.docx+'" target="_blank" class="ct-btn" style="background:#fff3e0;color:#e65100;font-size:11px">'+icoPag+' #'+(idx+1)+'</a>';
-        });
-      }
-      html +=   '</div>';
-      html += '</div>';
-    }
-
-    // Firmado
-    if (firmadoUrl) {
-      html += '<div class="ct-doc-row">';
-      html +=   '<span style="font-size:12px;font-weight:600;color:#2e7d32;min-width:90px">Firmado</span>';
-      html +=   '<a href="'+firmadoUrl+'" target="_blank" class="ct-btn" style="background:#e8f5e9;color:#2e7d32">'+icoDl+' PDF firmado</a>';
-      html += '</div>';
-    }
-
-    // Upload
-    html += '<div class="ct-upload-area" style="margin-top:10px">';
-    html +=   '<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Subir contrato revisado (.docx o .pdf):</label>';
-    html +=   '<div style="display:flex;gap:8px;align-items:center">';
-    html +=     '<input type="file" accept=".pdf,.docx" class="ct-upload-input" id="file_'+folio+'" onchange="onFileSelect(\''+folio+'\')">';
-    html +=     '<button class="ct-btn-upload" id="btnUpload_'+folio+'" onclick="subirContrato(\''+folio+'\')" disabled>Subir</button>';
-    html +=   '</div>';
-    html += '</div>';
-
-    // Zoho Sign
-    var signDisabled = (estado === 'Firmado') ? 'disabled' : (signId ? 'disabled' : (driveIdRev ? '' : 'disabled'));
-    var signLabel = (estado === 'Firmado') ? '✓ Firmado' : (signId ? 'En Zoho Sign' : icoSign+' Enviar a Zoho Sign');
-    html += '<button class="ct-btn ct-btn-sign" '+signDisabled+' id="btnSign_'+folio+'" onclick="enviarASign(\''+folio+'\')" style="margin-top:8px">'+signLabel+'</button>';
-    html += '<div id="ctmsg_'+folio+'" style="width:100%;margin-top:6px"></div>';
-    html += '</div>';
-    html += '</div>';
-  });
-  area.innerHTML = html;
-}
-
 
 function onFileSelect(folio) {
   var fileInput = document.getElementById('file_'+folio);
