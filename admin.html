@@ -251,6 +251,22 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 var SCRIPT = 'https://script.google.com/macros/s/AKfycbweqVhdnkpT1zXPpOs-cddJq92sy5NEGgtRw7X7AuWvJvHfCwMjRqUd5UOmq-iYg2w/exec';
 var allRows = [], userPwd = '';
 
+// ── Función de formateo robusta ────────────────────────────────────────────────
+function formatearMonto(valor) {
+  if (!valor && valor !== 0) return '$0.00';
+  if (typeof valor === 'string') {
+    valor = valor.replace(/[$,\s]/g, '').split(/[+()]/)[0];
+  }
+  const num = parseFloat(valor);
+  if (isNaN(num)) return '$0.00';
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(num);
+}
+
 // ── Auth ──────────────────────────────────────────────────────────────────────
 function doLogin(){
   var pwd = document.getElementById('pwdInput').value.trim();
@@ -469,8 +485,8 @@ function renderDetail(d){
       row2('Equipo',d['Equipo'])+row2('Plan',d['Plan'])+row2('Plazo',d['Plazo']?d['Plazo']+' meses':'')+
       // Campos editables para Mensualidad y Enganche
       (function(){
-        var mensualidadVal = parseFloat((d['Mensualidad']||'').replace(/[^0-9.-]/g, '')) || 0;
-        var engancheVal = parseFloat((d['Enganche']||'').replace(/[^0-9.-]/g, '')) || 0;
+        var mensualidadVal = parseFloat(String(d['Mensualidad']||'').replace(/[^0-9.-]/g, '')) || 0;
+        var engancheVal = parseFloat(String(d['Enganche']||'').replace(/[^0-9.-]/g, '')) || 0;
         return '<div class="dp-row">'+
           '<span>Mensualidad</span>'+
           '<div style="display:flex;gap:6px;align-items:center;flex:1;justify-content:flex-end">'+
