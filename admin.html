@@ -180,16 +180,45 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
   <!-- TAB: CONTRATOS -->
   <div id="tabContratos" class="tab-panel">
     <div class="ct-wrap">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:16px;font-weight:700;color:var(--navy)">Contratos aprobados</div>
-        <button class="btn-refresh" onclick="loadContratos()">
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          Actualizar
-        </button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--navy)">📄 Gestión de Contratos</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Genera y envía contratos para expedientes aprobados</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <select id="filtroEstadoContrato" onchange="filtrarContratos()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
+            <option value="">Todos los estados</option>
+            <option value="Pendiente Generación">⏳ Pendiente</option>
+            <option value="Generado">📝 Generado</option>
+            <option value="Enviado a Firma">📧 Enviado</option>
+            <option value="Firmado">✅ Firmado</option>
+          </select>
+          <button class="btn-refresh" onclick="loadContratos()">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Actualizar
+          </button>
+        </div>
       </div>
-      <div id="contratosArea"><div class="loading-spinner">Haz clic en Actualizar para cargar contratos</div></div>
+      
+      <div id="contratosLoading" style="display:none;">
+        <div class="loading-spinner">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="#2A5870" stroke-width="2" fill="none" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          Cargando contratos...
+        </div>
+      </div>
+      
+      <div id="contratosEmpty" style="display:none;">
+        <div class="empty-state">
+          <div style="font-size:48px;margin-bottom:12px;">📄</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);">No hay expedientes con contratos</div>
+          <div style="font-size:12px;margin-top:4px;">Los expedientes aprobados aparecerán aquí</div>
+        </div>
+      </div>
+      
+      <div id="contratosTable"></div>
     </div>
   </div><!-- /tabContratos -->
+
 
   <!-- TAB: REACTIVOS -->
   <div id="tabReactivos" class="tab-panel">
@@ -871,21 +900,164 @@ function switchTab(tab) {
 }
 
 // ── Contratos ─────────────────────────────────────────────────────────────────
+
+// ── Contratos: Nuevas funciones ──────────────────────────────────────────────
+var allContracts = [];
+
 function loadContratos() {
-  var area = document.getElementById('contratosArea');
-  area.innerHTML = '<div class="loading-spinner"><svg viewBox="0 0 24 24" width="20" height="20" stroke="#2A5870" stroke-width="2" fill="none" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Cargando contratos...</div>';
-  callScript({action:'contratos_lista', pwd:userPwd}, function(d) {
-    if (!d.ok) { area.innerHTML = '<div class="empty-state">Error: '+(d.error||'desconocido')+'</div>'; return; }
-    renderContratos(d.contratos || []);
+  document.getElementById('contratosLoading').style.display = 'block';
+  document.getElementById('contratosTable').style.display = 'none';
+  document.getElementById('contratosEmpty').style.display = 'none';
+  
+  callScript({action:'admin_list_contratos', pwd:userPwd}, function(d) {
+    document.getElementById('contratosLoading').style.display = 'none';
+    
+    if (d.ok && d.contratos && d.contratos.length > 0) {
+      allContracts = d.contratos;
+      renderContratos(allContracts);
+      document.getElementById('contratosTable').style.display = 'block';
+    } else {
+      document.getElementById('contratosEmpty').style.display = 'block';
+    }
   }, 15000);
 }
 
-function renderContratos(rows) {
-  var area = document.getElementById('contratosArea');
-  if (!rows.length) {
-    area.innerHTML = '<div class="empty-state">No hay contratos todavía. Los contratos aparecen aquí cuando se aprueba una solicitud.</div>';
-    return;
+function filtrarContratos() {
+  var filtro = document.getElementById('filtroEstadoContrato').value;
+  if (!filtro) {
+    renderContratos(allContracts);
+  } else {
+    var filtrados = allContracts.filter(function(c) {
+      var estado = c.estado_contrato || 'Pendiente Generación';
+      return estado === filtro;
+    });
+    renderContratos(filtrados);
   }
+}
+
+function generarContratos(folio) {
+  if (!confirm('¿Generar contrato y pagarés para ' + folio + '?')) return;
+  
+  var btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Generando...';
+  
+  callScript({
+    action: 'generar_contratos',
+    pwd: userPwd,
+    folio: folio
+  }, function(d) {
+    if (d.ok) {
+      alert('✅ Carpeta creada exitosamente\n\n' + d.mensaje);
+      loadContratos();
+    } else {
+      alert('❌ Error: ' + (d.error || 'No se pudo generar'));
+      btn.disabled = false;
+      btn.innerHTML = '📝 Generar';
+    }
+  }, 30000);
+}
+
+function enviarZohoSign(folio) {
+  if (!confirm('¿Enviar contrato a firma electrónica para ' + folio + '?')) return;
+  
+  var btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Enviando...';
+  
+  callScript({
+    action: 'enviar_zoho_sign',
+    pwd: userPwd,
+    folio: folio
+  }, function(d) {
+    if (d.ok) {
+      alert('✅ ' + d.mensaje);
+      loadContratos();
+    } else {
+      alert('❌ Error: ' + (d.error || 'No se pudo enviar'));
+      btn.disabled = false;
+      btn.innerHTML = '📧 Enviar a Firma';
+    }
+  }, 30000);
+}
+
+function renderContratos(contratos) {
+  var html = '<table>';
+  html += '<thead><tr>';
+  html += '<th>Folio</th>';
+  html += '<th>Cliente</th>';
+  html += '<th>Plan</th>';
+  html += '<th>Estado Contrato</th>';
+  html += '<th>Archivos</th>';
+  html += '<th style="text-align:center;">Acciones</th>';
+  html += '</tr></thead><tbody>';
+  
+  contratos.forEach(function(c) {
+    html += '<tr style="border-bottom:1px solid var(--border);">';
+    
+    // Folio
+    html += '<td><span style="font-weight:600;">' + c.folio + '</span></td>';
+    
+    // Cliente
+    html += '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;" title="' + c.nombre + '">' + c.nombre + '</td>';
+    
+    // Plan
+    html += '<td><span class="badge badge-blue">' + c.plan + '</span></td>';
+    
+    // Estado
+    var estado = c.estado_contrato || 'Pendiente Generación';
+    var estadoBadge = getEstadoBadge(estado);
+    html += '<td>' + estadoBadge + '</td>';
+    
+    // Archivos
+    html += '<td>';
+    if (c.carpeta_drive) {
+      html += '<a href="https://drive.google.com/drive/folders/' + c.carpeta_drive + '" target="_blank" style="color:var(--blue);text-decoration:none;font-size:12px;">📁 Carpeta</a>';
+    } else {
+      html += '<span style="color:var(--muted);font-size:12px;">Sin archivos</span>';
+    }
+    html += '</td>';
+    
+    // Acciones
+    html += '<td style="text-align:center;">';
+    html += getBotonesAccion(c);
+    html += '</td>';
+    
+    html += '</tr>';
+  });
+  
+  html += '</tbody></table>';
+  document.getElementById('contratosTable').innerHTML = html;
+}
+
+function getEstadoBadge(estado) {
+  var badges = {
+    'Pendiente Generación': '<span class="badge badge-yellow">⏳ Pendiente</span>',
+    'Generado': '<span class="badge badge-blue">📝 Generado</span>',
+    'Enviado a Firma': '<span class="badge" style="background:#f3e5f5;color:#7b1fa2;">📧 Enviado</span>',
+    'Firmado': '<span class="badge badge-green">✅ Firmado</span>'
+  };
+  return badges[estado] || '<span class="badge badge-gray">' + estado + '</span>';
+}
+
+function getBotonesAccion(c) {
+  var estado = c.estado_contrato || 'Pendiente Generación';
+  var html = '<div style="display:flex;gap:8px;justify-content:center;">';
+  
+  if (estado === 'Pendiente Generación') {
+    html += '<button onclick="generarContratos('' + c.folio + '')" style="padding:6px 12px;background:var(--blue);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">📝 Generar</button>';
+  } else if (estado === 'Generado') {
+    html += '<button onclick="enviarZohoSign('' + c.folio + '')" style="padding:6px 12px;background:#7b1fa2;color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">📧 Enviar a Firma</button>';
+  } else if (estado === 'Enviado a Firma') {
+    html += '<button disabled style="padding:6px 12px;background:var(--muted);color:white;border:none;border-radius:6px;font-size:12px;opacity:0.6;">⏳ Esperando...</button>';
+  } else if (estado === 'Firmado') {
+    html += '<button disabled style="padding:6px 12px;background:#2e7d32;color:white;border:none;border-radius:6px;font-size:12px;">✅ Firmado</button>';
+  }
+  
+  html += '</div>';
+  return html;
+}
+
 
   var icoDoc  = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
   var icoDl   = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
