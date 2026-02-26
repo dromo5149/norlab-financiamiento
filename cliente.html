@@ -429,7 +429,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text);
           Comunícate con tu ejecutivo NORLAB para cualquier duda sobre tu contrato.
         </p>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="/cdn-cgi/l/email-protection#f79e999198b79998859b9695d98f8e8d" class="btn-descargar" style="text-decoration:none">
+          <a href="/cdn-cgi/l/email-protection#e78e898188a78988958b8685c99f9e9d" class="btn-descargar" style="text-decoration:none">
             ✉ <span class="__cf_email__" data-cfemail="630a0d050c230d0c110f02014d1b1a19">[email&#160;protected]</span>
           </a>
           <a href="https://wa.me/525621836094" target="_blank" class="btn-descargar" style="text-decoration:none;background:#e8faf0;color:#0d7c66">
@@ -898,12 +898,12 @@ function formatCardNum(el) {
 function formatExp(el) {
   var v = el.value.replace(/\D/g,'').substring(0,4);
   if (v.length >= 3) v = v.substring(0,2) + '/' + v.substring(2);
-document.getElementById('folioInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') doLogin();
-});
-document.getElementById('emailInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') doLogin();
-});
+  el.value = v;
+}
+
+// Enter en login
+document.getElementById('inp-folio').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('inp-email').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
 
 </script>
 </body>
