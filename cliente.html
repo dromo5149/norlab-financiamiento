@@ -13,7 +13,8 @@
   s.onerror = function(){ window.Conekta = null; console.warn('Conekta no cargó'); };
   s.onload = function(){
     if(window.Conekta && window.Conekta.setPublicKey){
-}
+      window.Conekta.setPublicKey('key_PU34jYGKJmA1PtJx8HBNNRg');
+    }
   };
   document.head.appendChild(s);
 })();
@@ -429,8 +430,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text);
           Comunícate con tu ejecutivo NORLAB para cualquier duda sobre tu contrato.
         </p>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="/cdn-cgi/l/email-protection#e78e898188a78988958b8685c99f9e9d" class="btn-descargar" style="text-decoration:none">
-            ✉ <span class="__cf_email__" data-cfemail="630a0d050c230d0c110f02014d1b1a19">[email&#160;protected]</span>
+          <a href="mailto:info@norlab.xyz" class="btn-descargar" style="text-decoration:none">
+            ✉ info@norlab.xyz
           </a>
           <a href="https://wa.me/525621836094" target="_blank" class="btn-descargar" style="text-decoration:none;background:#e8faf0;color:#0d7c66">
             WhatsApp +52 56 2183 6094
@@ -620,10 +621,23 @@ function mostrarDashboard(d) {
   document.getElementById('res-pagados').textContent = totalPagado + '/' + totalPagos;
   document.getElementById('res-pagados-sub').textContent = 'mensualidades';
 
-  // Saldo pendiente
+  // ── SALDO PENDIENTE CORREGIDO ──────────────────────────────────────────────
+  // Calcular correctamente: enganche + (mensualidades totales * monto mensual) - pagos realizados
+  var enganche = Number(d.enganche) || 0;
   var mensual = Number(d.mensualidad) || 0;
-  var saldoPend = (totalPagos - totalPagado) * mensual;
-  document.getElementById('res-saldo').textContent = '$' + saldoPend.toLocaleString('es-MX');
+  var enganchePagado = d.enganche_pagado ? enganche : 0;
+  
+  // Total del contrato = enganche + (mensualidades * plazo)
+  var totalContrato = enganche + (mensual * totalPagos);
+  
+  // Pagos realizados = enganche (si está pagado) + mensualidades pagadas
+  var montoPagadoMensualidades = totalPagado * mensual;
+  var totalPagadoReal = enganchePagado + montoPagadoMensualidades;
+  
+  // Saldo pendiente = total del contrato - pagos realizados
+  var saldoPend = totalContrato - totalPagadoReal;
+  
+  document.getElementById('res-saldo').textContent = '$' + Math.max(0, saldoPend).toLocaleString('es-MX');
   document.getElementById('res-saldo-sub').textContent = 'MXN restantes';
 
   // Próximo pago
