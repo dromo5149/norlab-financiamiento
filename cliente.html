@@ -834,11 +834,33 @@ var tokenData = {
 }
 
 // ── SPEI ────────────────────────────────────────────────────────────────────
+
+function safeCustomerName() {
+  // Deriva un nombre seguro (solo letras y espacios) para pasarlo al backend (Conekta suele validar el formato).
+  var raw = '';
+  try {
+    // Si el backend mandó algún nombre, úsalo
+    raw = (session && session.data && (session.data.nombre || session.data.cliente_nombre || session.data.cliente)) ? 
+      String(session.data.nombre || session.data.cliente_nombre || session.data.cliente) : '';
+  } catch(e) {}
+  if (!raw) {
+    // Fallback: parte local del email
+    raw = (session && session.email) ? String(session.email).split('@')[0] : 'Cliente';
+  }
+  // Limpieza: reemplaza caracteres no letra por espacios, colapsa espacios, recorta
+  raw = raw.normalize ? raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : raw; // quita acentos si aplica
+  raw = raw.replace(/[^A-Za-z\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!raw) raw = 'Cliente';
+  // Limita longitud para evitar validaciones estrictas
+  if (raw.length > 60) raw = raw.slice(0, 60).trim();
+  return raw;
+}
+
 function generarSPEI() {
   var btn = document.getElementById('btn-gen-spei');
   btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span> Generando CLABE...';
 
-  fetchJSON(SCRIPT_URL + '?action=pago_spei' + '&folio=' + encodeURIComponent(session.folio) + '&email=' + encodeURIComponent(session.email) + '&monto=' + encodeURIComponent(pagoActual.monto) + '&concepto=' + encodeURIComponent(pagoActual.concepto) + '&tipo=' + encodeURIComponent(pagoActual.tipo) + '&ts=' + Date.now())
+  fetchJSON(SCRIPT_URL + '?action=pago_spei' + '&folio=' + encodeURIComponent(session.folio) + '&email=' + encodeURIComponent(session.email) + '&monto=' + encodeURIComponent(pagoActual.monto) + '&concepto=' + encodeURIComponent(pagoActual.concepto) + '&tipo=' + encodeURIComponent(pagoActual.tipo) + '&name=' + encodeURIComponent(safeCustomerName()) + '&nombre=' + encodeURIComponent(safeCustomerName()) + '&ts=' + Date.now())
     .then(function(d){
       if (d.ok) { mostrarInstruccionesSPEI(d); }
       else { btn.disabled = false; btn.textContent = 'Generar referencia SPEI'; showPayError(d.error||'Error al generar SPEI.'); }
