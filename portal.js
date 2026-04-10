@@ -120,6 +120,7 @@ function render() {
       '<div class="r-ml">Renta mensual estimada</div>' +
       '<div class="r-mv">' + fmt2(mnConIVA) + '</div>' +
       '<div class="r-ms">Incluye IVA · Plazo mínimo 3 años</div>' +
+        '<div class="rr"><span class="rl">Sin IVA (deducible)</span><span class="rv">' + fmt2(mn) + '</span></div>' +
       '<div class="rr"><span class="rl">Enganche</span><span class="rv">No aplica</span></div>' +
       '<div class="rr"><span class="rl">Plazo mínimo</span><span class="rv">36 meses</span></div>' +
       '<div class="rr"><span class="rl">Mantenimiento</span><span class="rv" style="color:#a5d6a7">Incluido ✓</span></div>' +
@@ -142,7 +143,7 @@ function render() {
       '<div class="r-lbl">🤝 Comodato</div>' +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="z-badge">$0 de adquisición</div>' +
-      '<div class="com-box"><div class="com-lbl">Compra mínima mensual de reactivos</div><div class="com-val">' + fmt(mrConIVA) + '</div><div class="com-sub">Durante ' + eq.mc + ' meses · 20% colchón</div></div>' +
+      '<div class="com-box"><div class="com-lbl">Compra mínima mensual de reactivos</div><div class="com-val">' + fmt(mrConIVA) + '</div><div class="com-sub">Durante ' + eq.mc + ' meses · 20% colchón</div><div style="font-size:10px;opacity:.7;margin-top:2px">Sin IVA (deducible): ' + fmt(mr) + '/mes</div></div>' +
       '<div class="rr"><span class="rl">Costo adquisición</span><span class="rv" style="color:#a5d6a7">$0</span></div>' +
       '<div class="rr"><span class="rl">Depósito garantía</span><span class="rv">' + fmt(dep) + '</span></div>' +
       '<div class="rr"><span class="rl">Duración</span><span class="rv">' + eq.mc + ' meses</span></div>' +
@@ -180,8 +181,9 @@ function render() {
     '<div class="rr"><span class="rl">Enganche (' + ep + '%)</span><span class="rv">' + fmt(engancheConIVA) + '</span></div>' +
     '<div class="rr"><span class="rl">Capital financiado</span><span class="rv">' + fmt(cap) + '</span></div>' +
     '<div class="rr"><span class="rl">Tasa mensual</span><span class="rv">' + (t===0 ? "0% sin intereses 🎉" : "2% mensual") + '</span></div>' +
-    '<div class="rr"><span class="rl">Intereses totales</span><span class="rv" style="color:' + (int>0 ? "#ffb74d" : "#a5d6a7") + '">' + fmt(int) + '</span></div>' +
-    '<div class="r-tot"><span class="rtl">Total a pagar</span><span class="rtv">' + fmt2(tot) + '</span></div>' +
+    '<div class="rr"><span class="rl">Intereses totales</span><span class="rv" style="color:' + (int>0 ? "#ffb74d" : "#a5d6a7") + '">' + fmt(int) + ' s/IVA</span></div>' +
+    '<div class="rr"><span class="rl">Total sin IVA (deducible)</span><span class="rv">' + fmt2(tot) + '</span></div>' +
+        '<div class="r-tot"><span class="rtl">Total con IVA</span><span class="rtv">' + fmt2(totalConIVA) + '</span></div>' +
     (t===0 ? '<div class="r-green">🎉 Sin intereses — Financiamiento al 0%</div>' : '') +
     (eq.nota ? '<div class="r-note">ℹ️ ' + eq.nota + '</div>' : '') +
     '<div class="r-cta">' +
