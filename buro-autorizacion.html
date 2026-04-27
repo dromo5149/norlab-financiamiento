@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="theme-color" content="#0b1f3a">
+<title>Autorización Buró de Crédito — NORLAB</title>
+<style>
+:root {
+  --navy:#0b1f3a; --navy2:#132d52; --blue:#1565c0; --blue2:#2D7EA8; --blue3:#2A5870;
+  --bl:#D6EAF5; --light:#f7f9fc; --border:#e8edf5; --text:#0F2430;
+  --muted:#6b7c93; --green:#1E8449; --red:#C0392B; --amber:#B45309;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text); background: var(--light); min-height: 100vh;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@keyframes spin { to { transform: rotate(360deg) } }
+
+nav {
+  background: #fff; padding: 0 24px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.nav-logo img { height: 38px; object-fit: contain; }
+.nav-back {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600;
+}
+
+.shell {
+  max-width: 720px; margin: 32px auto; padding: 0 16px;
+  animation: fadeUp 0.4s ease-out;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue2) 100%);
+  color: #fff; padding: 28px 24px; border-radius: 16px;
+  margin-bottom: 20px;
+}
+.hero-tag {
+  display: inline-block; background: rgba(255,255,255,0.15);
+  padding: 4px 10px; border-radius: 99px; font-size: 11px;
+  font-weight: 700; letter-spacing: 0.5px; margin-bottom: 12px;
+}
+.hero-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
+.hero-sub { font-size: 14px; opacity: 0.92; line-height: 1.5; }
+
+.section-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 14px;
+  padding: 24px 20px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.sec-title {
+  font-size: 16px; font-weight: 700; color: var(--navy);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+}
+.sec-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+
+.legal-box {
+  background: var(--light); border-left: 3px solid var(--blue2);
+  padding: 14px 16px; border-radius: 8px; margin-bottom: 16px;
+  font-size: 12.5px; color: var(--text); line-height: 1.6;
+}
+.legal-box strong { color: var(--navy); }
+
+.tabs { display: flex; gap: 4px; background: var(--light); padding: 4px; border-radius: 10px; margin-bottom: 18px; }
+.tab {
+  flex: 1; padding: 9px 12px; text-align: center; cursor: pointer;
+  background: transparent; border: 0; border-radius: 7px;
+  font-family: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
+  transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+.field { margin-bottom: 14px; }
+.field label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text); margin-bottom: 6px;
+}
+.field label .req { color: var(--red); }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-family: inherit; font-size: 14px;
+  background: #fff; color: var(--text); transition: border .15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--blue2); outline: none;
+}
+.field .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.field .err { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
+.field.has-error input, .field.has-error select { border-color: var(--red); }
+.field.has-error .err { display: block; }
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 540px) { .row { grid-template-columns: 1fr; } }
+
+.signature-wrap {
+  border: 2px dashed var(--border); border-radius: 10px;
+  background: #FAFBFD; padding: 8px; margin-bottom: 8px;
+  position: relative;
+}
+.signature-canvas {
+  width: 100%; height: 180px; cursor: crosshair;
+  display: block; touch-action: none; background: #fff; border-radius: 6px;
+}
+.signature-empty {
+  position: absolute; inset: 8px; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 13px; pointer-events: none;
+}
+.sig-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+.sig-clear {
+  background: none; border: 0; color: var(--muted); cursor: pointer;
+  font-size: 12px; font-weight: 600; padding: 4px 8px;
+}
+.sig-clear:hover { color: var(--red); }
+
+.checkbox-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--light); margin-bottom: 14px; cursor: pointer;
+}
+.checkbox-row input { margin-top: 2px; }
+.checkbox-row span { font-size: 12.5px; color: var(--text); line-height: 1.5; }
+
+.btn-primary {
+  width: 100%; padding: 14px; border: 0; border-radius: 10px;
+  background: linear-gradient(135deg, var(--blue2) 0%, var(--navy) 100%);
+  color: #fff; font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: opacity .2s; box-shadow: 0 4px 12px rgba(45,126,168,0.3);
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary:hover:not(:disabled) { opacity: 0.92; }
+
+.spinner {
+  width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite;
+  display: inline-block; vertical-align: middle; margin-right: 6px;
+}
+
+.success-card, .error-card {
+  background: #fff; border-radius: 16px; padding: 32px 24px; text-align: center;
+  border: 1px solid var(--border); margin-bottom: 16px;
+}
+.success-card .icon {
+  width: 64px; height: 64px; border-radius: 50%; background: #D5F5E3;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+  color: var(--green); font-size: 32px; font-weight: 700;
+}
+.error-card .icon {
+  width: 64px; height: 64px; border-radius: 50%; background: #FADBD8;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+  color: var(--red); font-size: 32px;
+}
+.success-card h2, .error-card h2 { color: var(--navy); margin-bottom: 8px; font-size: 20px; }
+.success-card p, .error-card p { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 14px; }
+.btn-pdf {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 8px; background: var(--blue2);
+  color: #fff; text-decoration: none; font-size: 13px; font-weight: 600;
+}
+
+.folio-pill {
+  background: var(--bl); color: var(--blue3); padding: 4px 10px;
+  border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600;
+  display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://norlab.com.mx" style="text-decoration:none">
+    <span class="nav-logo">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzJBNTg3MCIvPjx0ZXh0IHg9IjE2IiB5PSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjIyIiBmaWxsPSJ3aGl0ZSI+TjwvdGV4dD48L3N2Zz4=" alt="NORLAB">
+    </span>
+  </a>
+  <a href="https://financiamiento.norlab.xyz/" class="nav-back">← Volver</a>
+</nav>
+
+<div class="shell">
+
+  <!-- Hero -->
+  <div class="hero-card">
+    <span class="hero-tag">📋 AUTORIZACIÓN BURÓ DE CRÉDITO</span>
+    <h1 class="hero-title">Autoriza la consulta a tu Buró</h1>
+    <p class="hero-sub">
+      Necesitamos tu firma para consultar tu historial crediticio. La consulta se realiza
+      con Círculo de Crédito y solo se usa para evaluar tu solicitud de financiamiento.
+    </p>
+    <div id="folioBox" style="margin-top:14px;display:none;">
+      <span style="font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.5px;">Folio asociado:</span>
+      <div id="folioVal" class="folio-pill" style="margin-top:4px;background:rgba(255,255,255,0.2);color:#fff;"></div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form id="buroForm" novalidate>
+
+    <!-- Tipo persona -->
+    <div class="section-card">
+      <h2 class="sec-title">Tipo de persona</h2>
+      <p class="sec-sub">Selecciona si la solicitud es a tu nombre personal o a nombre de una empresa.</p>
+      <div class="tabs">
+        <button type="button" class="tab active" data-tipo="fisica">Persona física</button>
+        <button type="button" class="tab" data-tipo="moral">Persona moral</button>
+      </div>
+    </div>
+
+    <!-- Datos personales / empresa -->
+    <div class="section-card">
+      <h2 class="sec-title">Datos del titular</h2>
+
+      <!-- Persona física -->
+      <div id="campos-fisica">
+        <div class="field">
+          <label>Nombre completo <span class="req">*</span></label>
+          <input type="text" name="nombre_completo" placeholder="Como aparece en tu INE">
+          <div class="err">Captura tu nombre completo</div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>RFC con homoclave <span class="req">*</span></label>
+            <input type="text" name="rfc_fisica" maxlength="13" placeholder="ABCD800101AB1" style="text-transform:uppercase;font-family:'DM Mono',monospace;">
+            <div class="err">RFC inválido (13 caracteres)</div>
+          </div>
+          <div class="field">
+            <label>CURP <span class="req">*</span></label>
+            <input type="text" name="curp" maxlength="18" placeholder="ABCD800101HDFXYZ01" style="text-transform:uppercase;font-family:'DM Mono',monospace;">
+            <div class="err">CURP inválido</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Fecha de nacimiento <span class="req">*</span></label>
+            <input type="date" name="fecha_nacimiento">
+            <div class="err">Captura tu fecha de nacimiento</div>
+          </div>
+          <div class="field">
+            <label>Nacionalidad</label>
+            <input type="text" name="nacionalidad" value="Mexicana">
+          </div>
+        </div>
+      </div>
+
+      <!-- Persona moral -->
+      <div id="campos-moral" style="display:none;">
+        <div class="field">
+          <label>Razón social <span class="req">*</span></label>
+          <input type="text" name="razon_social" placeholder="Nombre de la empresa S.A. de C.V.">
+          <div class="err">Captura la razón social</div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>RFC empresa <span class="req">*</span></label>
+            <input type="text" name="rfc_moral" maxlength="12" placeholder="ABC800101AB1" style="text-transform:uppercase;font-family:'DM Mono',monospace;">
+            <div class="err">RFC moral inválido (12 caracteres)</div>
+          </div>
+          <div class="field">
+            <label>Fecha de constitución <span class="req">*</span></label>
+            <input type="date" name="fecha_constitucion">
+            <div class="err">Requerida</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Nombre del representante legal <span class="req">*</span></label>
+          <input type="text" name="representante_nombre" placeholder="Nombre completo del representante">
+          <div class="err">Requerido</div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>RFC del representante <span class="req">*</span></label>
+            <input type="text" name="representante_rfc" maxlength="13" placeholder="ABCD800101AB1" style="text-transform:uppercase;font-family:'DM Mono',monospace;">
+            <div class="err">RFC inválido</div>
+          </div>
+          <div class="field">
+            <label>CURP del representante <span class="req">*</span></label>
+            <input type="text" name="representante_curp" maxlength="18" placeholder="ABCD800101HDFXYZ01" style="text-transform:uppercase;font-family:'DM Mono',monospace;">
+            <div class="err">CURP inválido</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contacto -->
+    <div class="section-card">
+      <h2 class="sec-title">Contacto</h2>
+      <div class="row">
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="correo@ejemplo.com">
+          <div class="err">Email inválido</div>
+        </div>
+        <div class="field">
+          <label>Teléfono <span class="req">*</span></label>
+          <input type="tel" name="telefono" placeholder="55 1234 5678">
+          <div class="err">Teléfono inválido</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domicilio -->
+    <div class="section-card">
+      <h2 class="sec-title">Domicilio</h2>
+      <div class="field">
+        <label>Calle y número <span class="req">*</span></label>
+        <input type="text" name="domicilio_calle" placeholder="Av. Ejemplo 123">
+        <div class="err">Requerido</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Colonia <span class="req">*</span></label>
+          <input type="text" name="domicilio_colonia">
+          <div class="err">Requerido</div>
+        </div>
+        <div class="field">
+          <label>Código postal <span class="req">*</span></label>
+          <input type="text" name="domicilio_cp" maxlength="5" placeholder="01234" style="font-family:'DM Mono',monospace;">
+          <div class="err">CP inválido (5 dígitos)</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Ciudad / Municipio <span class="req">*</span></label>
+          <input type="text" name="domicilio_ciudad">
+          <div class="err">Requerido</div>
+        </div>
+        <div class="field">
+          <label>Estado <span class="req">*</span></label>
+          <input type="text" name="domicilio_estado" placeholder="CDMX, Jalisco…">
+          <div class="err">Requerido</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Texto legal y firma -->
+    <div class="section-card">
+      <h2 class="sec-title">Autorización y firma</h2>
+
+      <div class="legal-box">
+        Por medio de la presente autorizo expresamente a <strong>Grupo Rohmnos S. de R.L. de C.V.</strong>
+        (RFC GRO1903139Z6), en su carácter de empresa NORLAB Financiera, a llevar a cabo investigaciones
+        sobre mi comportamiento crediticio en <strong>Círculo de Crédito S.A. de C.V.</strong>, sociedad
+        de información crediticia. Conozco la naturaleza, alcance y uso que NORLAB hará de tal información
+        y de este modo autorizo expresamente la consulta de mis registros crediticios.
+        <br><br>
+        Esta autorización tiene una vigencia de <strong>3 años</strong> a partir de su firma, o mientras
+        mantenga relación contractual con NORLAB.
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" name="acepta_legal" required>
+        <span>He leído y acepto los términos arriba descritos. Autorizo la consulta a Buró de Crédito.</span>
+      </label>
+
+      <label style="display:block;font-size:12px;font-weight:600;margin-bottom:8px;">
+        Firma <span class="req">*</span>
+      </label>
+      <div class="signature-wrap">
+        <canvas id="sigCanvas" class="signature-canvas"></canvas>
+        <div id="sigEmpty" class="signature-empty">✍️ Firma con el dedo (móvil) o el mouse (desktop)</div>
+      </div>
+      <div class="sig-actions">
+        <button type="button" class="sig-clear" id="sigClear">Borrar firma</button>
+        <span style="font-size:11px;color:var(--muted);">Tu firma se guarda como imagen y se incrusta en el PDF de autorización.</span>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary" id="submitBtn">
+      Autorizar consulta a Buró
+    </button>
+
+  </form>
+
+  <!-- Estados ocultos -->
+  <div id="successPanel" class="success-card" style="display:none;">
+    <div class="icon">✓</div>
+    <h2>Autorización registrada</h2>
+    <p id="successMsg">Hemos generado tu carta de autorización firmada. Te enviamos copia al email que registraste.</p>
+    <a id="pdfLink" href="#" target="_blank" class="btn-pdf">📄 Descargar PDF de autorización</a>
+    <p style="margin-top:16px;font-size:12px;">
+      Folio Buró: <span id="successFolio" class="folio-pill"></span>
+    </p>
+  </div>
+
+  <div id="errorPanel" class="error-card" style="display:none;">
+    <div class="icon">!</div>
+    <h2>Algo falló</h2>
+    <p id="errorMsg">No pudimos registrar tu autorización. Intenta de nuevo o escríbenos por WhatsApp.</p>
+    <a href="https://wa.me/525621836094?text=Necesito%20ayuda%20con%20la%20autorizacion%20a%20Buro" target="_blank" class="btn-pdf">📱 Contactar por WhatsApp</a>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// Configuración
+// ═══════════════════════════════════════════════════════════════════════════
+const ENDPOINT = 'https://os.norlab.xyz/api/buro-query';
+const RFC_FISICA = /^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$/;
+const RFC_MORAL  = /^[A-ZÑ&]{3}\d{6}[A-Z0-9]{3}$/;
+const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]{2}$/;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Folio desde query string (cuando llega desde admin)
+// ═══════════════════════════════════════════════════════════════════════════
+const params = new URLSearchParams(window.location.search);
+const folioParam = params.get('folio') || '';
+if (folioParam) {
+  document.getElementById('folioBox').style.display = 'block';
+  document.getElementById('folioVal').textContent = folioParam;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Tabs persona física / moral
+// ═══════════════════════════════════════════════════════════════════════════
+let tipoPersona = 'fisica';
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    tipoPersona = btn.dataset.tipo;
+    document.getElementById('campos-fisica').style.display = tipoPersona === 'fisica' ? 'block' : 'none';
+    document.getElementById('campos-moral').style.display  = tipoPersona === 'moral'  ? 'block' : 'none';
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Signature pad (canvas)
+// ═══════════════════════════════════════════════════════════════════════════
+const canvas = document.getElementById('sigCanvas');
+const sigEmpty = document.getElementById('sigEmpty');
+const ctx = canvas.getContext('2d');
+let drawing = false, hasSignature = false;
+let lastX = 0, lastY = 0;
+
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#0F2430';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+}
+
+function startDraw(e) {
+  e.preventDefault();
+  drawing = true;
+  hasSignature = true;
+  sigEmpty.style.display = 'none';
+  const p = getPos(e);
+  lastX = p.x; lastY = p.y;
+  ctx.beginPath();
+  ctx.moveTo(p.x, p.y);
+}
+function moveDraw(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  const p = getPos(e);
+  ctx.lineTo(p.x, p.y);
+  ctx.stroke();
+  lastX = p.x; lastY = p.y;
+}
+function endDraw(e) {
+  if (!drawing) return;
+  drawing = false;
+}
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', moveDraw);
+canvas.addEventListener('mouseup', endDraw);
+canvas.addEventListener('mouseleave', endDraw);
+canvas.addEventListener('touchstart', startDraw, { passive: false });
+canvas.addEventListener('touchmove', moveDraw, { passive: false });
+canvas.addEventListener('touchend', endDraw);
+
+document.getElementById('sigClear').addEventListener('click', () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hasSignature = false;
+  sigEmpty.style.display = 'flex';
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Validación + submit
+// ═══════════════════════════════════════════════════════════════════════════
+function setError(name, hasErr) {
+  const field = document.querySelector(`[name="${name}"]`);
+  if (!field) return;
+  const wrap = field.closest('.field');
+  if (wrap) wrap.classList.toggle('has-error', hasErr);
+}
+
+function validate(form) {
+  let firstErr = null;
+  // Limpiar errores previos
+  document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+
+  const required = tipoPersona === 'fisica'
+    ? ['nombre_completo', 'rfc_fisica', 'curp', 'fecha_nacimiento']
+    : ['razon_social', 'rfc_moral', 'fecha_constitucion', 'representante_nombre', 'representante_rfc', 'representante_curp'];
+
+  required.push('email', 'telefono', 'domicilio_calle', 'domicilio_colonia', 'domicilio_cp', 'domicilio_ciudad', 'domicilio_estado');
+
+  for (const name of required) {
+    const v = (form[name]?.value || '').trim();
+    if (!v) {
+      setError(name, true);
+      if (!firstErr) firstErr = name;
+    }
+  }
+
+  // Validaciones específicas
+  if (tipoPersona === 'fisica') {
+    const rfc = (form.rfc_fisica.value || '').trim().toUpperCase();
+    if (rfc && !RFC_FISICA.test(rfc)) { setError('rfc_fisica', true); if (!firstErr) firstErr = 'rfc_fisica'; }
+    const curp = (form.curp.value || '').trim().toUpperCase();
+    if (curp && !CURP_REGEX.test(curp)) { setError('curp', true); if (!firstErr) firstErr = 'curp'; }
+  } else {
+    const rfc = (form.rfc_moral.value || '').trim().toUpperCase();
+    if (rfc && !RFC_MORAL.test(rfc)) { setError('rfc_moral', true); if (!firstErr) firstErr = 'rfc_moral'; }
+    const repRfc = (form.representante_rfc.value || '').trim().toUpperCase();
+    if (repRfc && !RFC_FISICA.test(repRfc)) { setError('representante_rfc', true); if (!firstErr) firstErr = 'representante_rfc'; }
+    const repCurp = (form.representante_curp.value || '').trim().toUpperCase();
+    if (repCurp && !CURP_REGEX.test(repCurp)) { setError('representante_curp', true); if (!firstErr) firstErr = 'representante_curp'; }
+  }
+
+  // Email
+  const email = (form.email.value || '').trim();
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('email', true); if (!firstErr) firstErr = 'email'; }
+
+  // CP
+  const cp = (form.domicilio_cp.value || '').trim();
+  if (cp && !/^\d{5}$/.test(cp)) { setError('domicilio_cp', true); if (!firstErr) firstErr = 'domicilio_cp'; }
+
+  // Acepta legal
+  if (!form.acepta_legal.checked) {
+    if (!firstErr) firstErr = 'acepta_legal';
+    alert('Debes aceptar la autorización legal.');
+    return false;
+  }
+
+  // Firma
+  if (!hasSignature) {
+    if (!firstErr) firstErr = 'sig';
+    alert('Necesitas firmar el documento.');
+    return false;
+  }
+
+  if (firstErr && firstErr !== 'acepta_legal' && firstErr !== 'sig') {
+    const el = document.querySelector(`[name="${firstErr}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  }
+  return true;
+}
+
+document.getElementById('buroForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  if (!validate(form)) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Procesando…';
+
+  // Construir payload
+  const fd = new FormData(form);
+  const payload = {
+    folio: folioParam || null,
+    tipo_persona: tipoPersona,
+    email: fd.get('email'),
+    telefono: fd.get('telefono'),
+    domicilio: {
+      calle: fd.get('domicilio_calle'),
+      colonia: fd.get('domicilio_colonia'),
+      cp: fd.get('domicilio_cp'),
+      ciudad: fd.get('domicilio_ciudad'),
+      estado: fd.get('domicilio_estado'),
+    },
+    firma_image_base64: canvas.toDataURL('image/png'),
+    autorizado_at: new Date().toISOString(),
+  };
+
+  if (tipoPersona === 'fisica') {
+    payload.nombre_completo = fd.get('nombre_completo');
+    payload.rfc = (fd.get('rfc_fisica') || '').toUpperCase();
+    payload.curp = (fd.get('curp') || '').toUpperCase();
+    payload.fecha_nacimiento = fd.get('fecha_nacimiento');
+    payload.nacionalidad = fd.get('nacionalidad') || 'Mexicana';
+  } else {
+    payload.razon_social = fd.get('razon_social');
+    payload.rfc = (fd.get('rfc_moral') || '').toUpperCase();
+    payload.fecha_constitucion = fd.get('fecha_constitucion');
+    payload.representante = {
+      nombre: fd.get('representante_nombre'),
+      rfc: (fd.get('representante_rfc') || '').toUpperCase(),
+      curp: (fd.get('representante_curp') || '').toUpperCase(),
+    };
+  }
+
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Error desconocido');
+
+    // Éxito — ocultar form, mostrar success
+    form.style.display = 'none';
+    document.getElementById('successPanel').style.display = 'block';
+    document.getElementById('successFolio').textContent = data.id || '—';
+    if (data.pdf_url) {
+      document.getElementById('pdfLink').href = data.pdf_url;
+    } else {
+      document.getElementById('pdfLink').style.display = 'none';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    document.getElementById('errorPanel').style.display = 'block';
+    document.getElementById('errorMsg').textContent = err.message
+      ? `${err.message}. Si persiste, contáctanos por WhatsApp.`
+      : 'No pudimos registrar tu autorización. Intenta de nuevo.';
+    btn.disabled = false;
+    btn.textContent = 'Autorizar consulta a Buró';
+    window.scrollTo({ top: document.getElementById('errorPanel').offsetTop - 80, behavior: 'smooth' });
+  }
+});
+</script>
+
+</body>
+</html>
