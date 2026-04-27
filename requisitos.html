@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Requisitos — NORLAB Financiera</title>
+<meta name="description" content="Documentos requeridos para solicitar financiamiento NORLAB. Lista clara para Persona Física y Persona Moral. Acepta PDF, JPG y PNG.">
+<link rel="stylesheet" href="/_shared.css">
+<style>
+.req-tabs {
+  display: flex; max-width: 480px; margin: 0 auto 32px;
+  background: var(--light); border: 1px solid var(--border);
+  border-radius: 14px; padding: 5px;
+}
+.req-tab {
+  flex: 1; padding: 12px; border: none; background: transparent;
+  font-size: 14px; font-weight: 700; color: var(--muted);
+  border-radius: 10px; cursor: pointer; transition: all .25s;
+  font-family: inherit;
+}
+.req-tab.on { background: #fff; color: var(--blue2); box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+
+.req-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px; max-width: 1100px; margin: 0 auto;
+}
+.req-doc {
+  background: #fff; border: 1px solid var(--border); border-radius: 14px;
+  padding: 22px; transition: all .2s;
+}
+.req-doc:hover { border-color: var(--blue2); box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+.req-doc-head {
+  display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;
+}
+.req-doc-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--bl); display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.req-doc h3 {
+  font-size: 15px; color: var(--navy); font-weight: 700; margin-bottom: 2px;
+}
+.req-doc-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: .6px;
+}
+.req-doc-tag.req { background: var(--red-light); color: var(--red); }
+.req-doc-tag.opt { background: var(--amber-light); color: var(--amber); }
+.req-doc p {
+  font-size: 13px; color: var(--muted); line-height: 1.65;
+  margin-bottom: 10px;
+}
+.req-doc-meta {
+  display: flex; gap: 10px; font-size: 11px; color: var(--muted);
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+}
+.req-doc-meta span {
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+.req-section { display: none; }
+.req-section.active { display: block; animation: fadeInUp .3s ease; }
+
+.formats-bar {
+  background: var(--bl); border-radius: 14px; padding: 18px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1100px; margin: 0 auto 32px;
+  flex-wrap: wrap; gap: 12px;
+}
+.formats-bar-title {
+  font-size: 13px; font-weight: 700; color: var(--navy);
+}
+.formats-list {
+  display: flex; gap: 10px; font-size: 12px; color: var(--muted);
+  flex-wrap: wrap;
+}
+.formats-list span {
+  background: #fff; padding: 4px 10px; border-radius: 8px;
+  font-weight: 600; border: 1px solid var(--border);
+}
+
+.tips-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px; max-width: 1100px; margin: 32px auto 0;
+}
+.tip-card {
+  background: var(--green-light); border-left: 4px solid var(--green);
+  border-radius: 10px; padding: 16px 18px;
+}
+.tip-card.warn { background: var(--amber-light); border-left-color: var(--amber); }
+.tip-card h4 { font-size: 13px; color: var(--navy); font-weight: 800; margin-bottom: 6px; }
+.tip-card p { font-size: 12.5px; color: var(--text); line-height: 1.55; }
+</style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<section class="page-hero">
+  <div class="page-hero-badge">Lista de documentos</div>
+  <h1>Lo que necesitas para <span>aplicar</span></h1>
+  <p>Cero burocracia, máxima claridad. Estos son los documentos que pedimos según el tipo de cliente. Los analizamos con IA antes de que tú llegues a hablar con un humano.</p>
+</section>
+
+<section class="sec sec-lt">
+  <div class="container">
+    <div class="formats-bar">
+      <div class="formats-bar-title">Formatos aceptados:</div>
+      <div class="formats-list">
+        <span>📄 PDF</span>
+        <span>🖼 JPG · JPEG</span>
+        <span>🖼 PNG</span>
+        <span>📦 Hasta 10 MB por archivo</span>
+      </div>
+    </div>
+
+    <div class="req-tabs">
+      <button class="req-tab on" data-section="fisica" type="button">Persona Física</button>
+      <button class="req-tab" data-section="moral" type="button">Persona Moral</button>
+    </div>
+
+    <!-- ─── PERSONA FÍSICA ──────────────────────────────── -->
+    <div class="req-section active" id="sec-fisica">
+      <div class="req-grid">
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🪪</div>
+            <div>
+              <h3>INE / Identificación oficial</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Frente y reverso de tu credencial vigente. También aceptamos pasaporte mexicano.</p>
+          <div class="req-doc-meta"><span>Vigente</span><span>•</span><span>Frente + reverso</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🏠</div>
+            <div>
+              <h3>Comprobante de domicilio</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Recibo de luz, agua, predial, gas o teléfono fijo. Que coincida con la dirección que pongas en la solicitud.</p>
+          <div class="req-doc-meta"><span>Máx. 3 meses de antigüedad</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🆔</div>
+            <div>
+              <h3>CURP</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Constancia de la CURP descargada del portal oficial. La aceptamos en PDF o imagen clara.</p>
+          <div class="req-doc-meta"><span>renapo.gob.mx</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🏛️</div>
+            <div>
+              <h3>Constancia de Situación Fiscal</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Constancia del SAT vigente. Incluye RFC, régimen fiscal y domicilio fiscal.</p>
+          <div class="req-doc-meta"><span>SAT · vigente</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🏦</div>
+            <div>
+              <h3>Estados de cuenta bancarios</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>3 meses más recientes de tu cuenta principal de operación. Demuestra capacidad de pago.</p>
+          <div class="req-doc-meta"><span>3 meses</span><span>•</span><span>PDF preferido</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🤝</div>
+            <div>
+              <h3>Datos de Obligado Solidario</h3>
+              <span class="req-doc-tag opt">Opcional · Mejora score</span>
+            </div>
+          </div>
+          <p>Si quieres reforzar tu solicitud, agregar un aval (familiar, socio, garante) acelera la aprobación. Necesitarás INE y comprobante de domicilio del obligado.</p>
+          <div class="req-doc-meta"><span>INE + Comp. domicilio + EC</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">📊</div>
+            <div>
+              <h3>Comprobantes de ingresos</h3>
+              <span class="req-doc-tag opt">Opcional · Acelera aprobación</span>
+            </div>
+          </div>
+          <p>Recibos de honorarios, declaraciones SAT, comprobantes de nómina o facturas emitidas. Cualquier documento que muestre flujo de ingresos consistente.</p>
+          <div class="req-doc-meta"><span>Últimos 3 meses</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">📋</div>
+            <div>
+              <h3>Autorización Buró de Crédito</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Autorización firmada digitalmente conforme al Art. 28 LRSIC. Se firma en la solicitud, no la subes tú.</p>
+          <div class="req-doc-meta"><span>Firma digital · 3 años de vigencia</span></div>
+        </div>
+      </div>
+
+      <div class="tips-row">
+        <div class="tip-card">
+          <h4>💡 Tip pro</h4>
+          <p>Ten todo escaneado en alta calidad antes de empezar. Imágenes borrosas o cortadas requieren re-envío y atrasan el proceso 1-2 días.</p>
+        </div>
+        <div class="tip-card warn">
+          <h4>⚠️ Cuidado con</h4>
+          <p>Comprobantes de domicilio mayores a 3 meses, INE vencidas, o estados de cuenta editados. Nuestro IA los detecta y rechaza al instante.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PERSONA MORAL ──────────────────────────────── -->
+    <div class="req-section" id="sec-moral">
+      <div class="req-grid">
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">📜</div>
+            <div>
+              <h3>Acta constitutiva</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Acta inicial de constitución de la sociedad, completa con todas las hojas. Si tienes modificaciones recientes, súbelas también.</p>
+          <div class="req-doc-meta"><span>Inscrita en RPP</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">⚖️</div>
+            <div>
+              <h3>Poder notarial del representante</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Documento que acredita las facultades del representante legal para firmar contratos y obligarse a nombre de la empresa.</p>
+          <div class="req-doc-meta"><span>Vigente</span><span>•</span><span>Acto: para suscribir títulos de crédito</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🏛️</div>
+            <div>
+              <h3>Constancia de Situación Fiscal de la empresa</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>CSF actualizada del SAT a nombre de la persona moral. Incluye RFC, régimen y domicilio fiscal.</p>
+          <div class="req-doc-meta"><span>SAT · vigente</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🏠</div>
+            <div>
+              <h3>Comprobante de domicilio fiscal</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Recibo de luz, agua, predial, gas o teléfono fijo a nombre de la empresa o del representante en el domicilio fiscal.</p>
+          <div class="req-doc-meta"><span>Máx. 3 meses</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🪪</div>
+            <div>
+              <h3>INE del Representante Legal</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Identificación oficial vigente del representante. Frente y reverso, legible.</p>
+          <div class="req-doc-meta"><span>Vigente</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🆔</div>
+            <div>
+              <h3>RFC y CURP del Representante</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Constancias del SAT y RENAPO del representante legal. Validamos la coherencia con el poder y el acta.</p>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🏦</div>
+            <div>
+              <h3>Estados de cuenta de la empresa</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>3 meses más recientes de la cuenta operativa de la persona moral. Idealmente la misma cuenta donde caen las transferencias de clientes.</p>
+          <div class="req-doc-meta"><span>3 meses</span><span>•</span><span>A nombre de la empresa</span></div>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">📊</div>
+            <div>
+              <h3>Estados financieros</h3>
+              <span class="req-doc-tag opt">Opcional · Acelera aprobación</span>
+            </div>
+          </div>
+          <p>Balance general y estado de resultados del último ejercicio fiscal cerrado, firmado por contador.</p>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">🤝</div>
+            <div>
+              <h3>Datos del Obligado Solidario</h3>
+              <span class="req-doc-tag opt">Recomendado</span>
+            </div>
+          </div>
+          <p>Para empresas jóvenes (menos de 3 años), es muy recomendable contar con un obligado solidario. Necesitarás INE, comprobante domicilio y EC del aval.</p>
+        </div>
+
+        <div class="req-doc">
+          <div class="req-doc-head">
+            <div class="req-doc-icon">📋</div>
+            <div>
+              <h3>Autorización Buró de Crédito</h3>
+              <span class="req-doc-tag req">Obligatorio</span>
+            </div>
+          </div>
+          <p>Autorización firmada digitalmente para consultar el historial crediticio de la persona moral y el representante legal. Se firma en la solicitud.</p>
+          <div class="req-doc-meta"><span>Firma digital · 3 años de vigencia</span></div>
+        </div>
+      </div>
+
+      <div class="tips-row">
+        <div class="tip-card">
+          <h4>💡 Tip pro</h4>
+          <p>Si tu empresa tiene menos de 2 años, agregar un obligado solidario con buen historial crediticio mejora tu score significativamente y acelera la aprobación.</p>
+        </div>
+        <div class="tip-card warn">
+          <h4>⚠️ Cuidado con</h4>
+          <p>Si el poder del representante es muy antiguo o limitado (solo "actos de administración"), te pediremos uno con facultades para "suscribir títulos de crédito".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-wh">
+  <div class="container" style="text-align: center;">
+    <h2 class="sec-h">¿Listo para empezar?</h2>
+    <p class="sec-s">Junta los documentos, abre la solicitud y ten todo listo en 10 minutos.</p>
+    <div class="cta-row">
+      <a class="btn-p" href="/solicitud.html">Empezar mi solicitud →</a>
+      <a class="btn-wa" href="https://wa.me/525621836094?text=Hola%20NORLAB%20tengo%20dudas%20sobre%20requisitos%20para%20financiamiento" target="_blank">
+        <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Tengo dudas
+      </a>
+    </div>
+  </div>
+</section>
+
+<div id="footer"></div>
+
+<script src="/_partials.js"></script>
+<script>
+  mount('req')
+  document.querySelectorAll('.req-tab').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.req-tab').forEach(x => x.classList.remove('on'))
+      document.querySelectorAll('.req-section').forEach(x => x.classList.remove('active'))
+      b.classList.add('on')
+      document.getElementById('sec-' + b.dataset.section).classList.add('active')
+    })
+  })
+</script>
+
+</body>
+</html>

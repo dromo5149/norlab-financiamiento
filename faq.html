@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preguntas frecuentes — NORLAB Financiera</title>
+<meta name="description" content="Respuestas a las preguntas más comunes sobre financiamiento, renta y comodato de equipo médico y de laboratorio.">
+<link rel="stylesheet" href="/_shared.css">
+<style>
+.faq-cats {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  max-width: 880px; margin: 0 auto 32px;
+  justify-content: center;
+}
+.faq-cat {
+  padding: 8px 18px; border-radius: 24px;
+  background: #fff; border: 1.5px solid var(--border);
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  cursor: pointer; transition: all .2s; font-family: inherit;
+}
+.faq-cat:hover { border-color: var(--blue2); color: var(--blue2); }
+.faq-cat.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+.faq-list { max-width: 880px; margin: 0 auto; }
+.faq-item {
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 12px; overflow: hidden; transition: all .2s;
+}
+.faq-item.hide { display: none; }
+.faq-item:hover { border-color: var(--blue2); }
+.faq-q {
+  padding: 18px 24px; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: transparent; border: none; width: 100%; text-align: left;
+  font-family: inherit; font-size: 15px; font-weight: 700; color: var(--navy);
+}
+.faq-q:hover { background: var(--light); }
+.faq-q-cat {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .8px;
+  padding: 3px 10px; border-radius: 12px; margin-right: 12px;
+  background: var(--bl); color: var(--blue);
+}
+.faq-q-text { flex: 1; }
+.faq-icon {
+  width: 28px; height: 28px; flex-shrink: 0;
+  border-radius: 50%; background: var(--bl); color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; transition: transform .2s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--blue2); color: #fff; }
+.faq-a {
+  padding: 0 24px; max-height: 0; overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+  font-size: 14.5px; color: var(--text); line-height: 1.7;
+}
+.faq-item.open .faq-a { padding: 0 24px 22px; max-height: 800px; }
+.faq-a strong { color: var(--navy); }
+.faq-a a { color: var(--blue); text-decoration: none; font-weight: 600; }
+.faq-a a:hover { text-decoration: underline; }
+.faq-a ul { margin-top: 8px; padding-left: 20px; }
+.faq-a li { margin-bottom: 4px; }
+
+.search-bar {
+  max-width: 540px; margin: 0 auto 32px; position: relative;
+}
+.search-bar input {
+  width: 100%; padding: 14px 20px 14px 48px;
+  border: 1.5px solid var(--border); border-radius: 30px;
+  font-size: 14px; outline: none; font-family: inherit;
+  transition: border-color .2s;
+}
+.search-bar input:focus { border-color: var(--blue2); }
+.search-bar svg {
+  position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+  color: var(--muted);
+}
+.no-results {
+  text-align: center; padding: 40px; color: var(--muted);
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<section class="page-hero">
+  <div class="page-hero-badge">Preguntas frecuentes</div>
+  <h1>Tus dudas, <span>respondidas</span></h1>
+  <p>Las preguntas más comunes sobre financiamiento de equipo médico, agrupadas por categoría. Si no encuentras tu respuesta, escríbenos por WhatsApp.</p>
+</section>
+
+<section class="sec sec-lt">
+  <div class="container">
+    <div class="search-bar">
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" id="faq-search" placeholder="Buscar por palabra clave (ej. enganche, contrato, IVA)…">
+    </div>
+
+    <div class="faq-cats">
+      <button class="faq-cat on" data-cat="todas" type="button">Todas</button>
+      <button class="faq-cat" data-cat="producto" type="button">Producto</button>
+      <button class="faq-cat" data-cat="proceso" type="button">Proceso</button>
+      <button class="faq-cat" data-cat="financiero" type="button">Financiero</button>
+      <button class="faq-cat" data-cat="legal" type="button">Legal</button>
+      <button class="faq-cat" data-cat="postventa" type="button">Postventa</button>
+    </div>
+
+    <div class="faq-list" id="faq-list">
+
+      <!-- ── PRODUCTO ─────────────────────────────────────── -->
+      <div class="faq-item" data-cat="producto">
+        <button class="faq-q"><span><span class="faq-q-cat">Producto</span><span class="faq-q-text">¿Qué diferencia hay entre financiamiento, renta y comodato?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          <strong>Financiamiento:</strong> compras el equipo en mensualidades fijas con tasa 2% mensual. Al final del plazo, el equipo es tuyo. Ideal si vas a usar el equipo más de 4 años.<br><br>
+          <strong>Renta:</strong> pagas una mensualidad fija por usar el equipo. NORLAB se queda con la propiedad y puedes renovar al equipo más nuevo cada cierto tiempo. Mantenimiento incluido.<br><br>
+          <strong>Comodato:</strong> NORLAB te entrega el equipo gratis (con depósito en garantía). A cambio, te comprometes a comprar un volumen mínimo mensual de reactivos. Ideal si tu volumen de pruebas justifica la compra recurrente de insumos.<br><br>
+          La calculadora te muestra los tres cálculos lado a lado para que compares: <a href="/index.html#simulador">simular ahora</a>.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="producto">
+        <button class="faq-q"><span><span class="faq-q-cat">Producto</span><span class="faq-q-text">¿Qué equipos puedo financiar?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Financiamos cualquier equipo del catálogo NORLAB: analizadores de hematología, química clínica, inmunoensayo, biología molecular, electrolitos, gases en sangre, equipos POCT, microscopios, centrífugas, equipos veterinarios y mucho más. Si el equipo no está en el simulador, escríbenos por WhatsApp y lo evaluamos caso por caso.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="producto">
+        <button class="faq-q"><span><span class="faq-q-cat">Producto</span><span class="faq-q-text">¿Puedo incluir reactivos e instalación en el financiamiento?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Sí. La instalación se incluye automáticamente en el monto financiado. Para reactivos podemos armar un paquete combinado de equipo + reactivos del primer año, o si prefieres comodato, los reactivos los compras mes a mes según tu consumo real.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="producto">
+        <button class="faq-q"><span><span class="faq-q-cat">Producto</span><span class="faq-q-text">¿Hay opción de meses sin intereses (MSI)?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Sí. Ofrecemos MSI de 3, 6, 9 y 12 meses, ya sea con NORLAB directo (sin necesidad de tarjeta) o vía tarjeta de crédito participante. Es la mejor opción si puedes pagar el equipo en menos de un año, porque tienes cero intereses. <a href="/planes.html">Ver detalles</a>.
+        </div>
+      </div>
+
+      <!-- ── PROCESO ──────────────────────────────────────── -->
+      <div class="faq-item" data-cat="proceso">
+        <button class="faq-q"><span><span class="faq-q-cat">Proceso</span><span class="faq-q-text">¿Cuánto tarda la aprobación?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          <ul>
+            <li><strong>Pre-aprobación:</strong> 24 horas hábiles desde que subes todos los documentos.</li>
+            <li><strong>Dictamen final:</strong> 48-72 horas hábiles, después de la consulta a Buró de Crédito.</li>
+            <li><strong>Entrega del equipo:</strong> 2 a 5 días hábiles después de firmar contrato y pagar enganche.</li>
+          </ul>
+          Si tienes documentación incompleta o requiere aclaraciones, el proceso puede tardar más. Te avisamos por WhatsApp y email en cada cambio de estado.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="proceso">
+        <button class="faq-q"><span><span class="faq-q-cat">Proceso</span><span class="faq-q-text">¿Necesito firmar en papel?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          No. Todo el proceso es 100% digital. El contrato y pagarés se firman con <strong>Zoho Sign</strong>, que tiene validez legal conforme a la NOM-151 y a la Ley de Firma Electrónica Avanzada. La firma puedes hacerla desde tu celular en menos de 5 minutos.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="proceso">
+        <button class="faq-q"><span><span class="faq-q-cat">Proceso</span><span class="faq-q-text">¿Qué documentos necesito?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Depende si solicitas como Persona Física o Persona Moral. Tenemos una <a href="/requisitos.html">lista detallada</a> con todos los documentos requeridos, opcionales y los que aceleran tu aprobación. Aceptamos PDF, JPG y PNG hasta 10 MB por archivo.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="proceso">
+        <button class="faq-q"><span><span class="faq-q-cat">Proceso</span><span class="faq-q-text">¿Puedo aplicar si soy Persona Física sin actividad empresarial?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Sí, siempre y cuando puedas demostrar capacidad de pago con estados de cuenta o comprobantes de ingresos. Si eres médico, dentista, veterinario o profesional independiente con consultorio o práctica privada, generalmente es directo. Si trabajas como empleado de un laboratorio, podemos pedirte un obligado solidario.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="proceso">
+        <button class="faq-q"><span><span class="faq-q-cat">Proceso</span><span class="faq-q-text">¿Y si me rechazan?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Si tu solicitud no procede, te explicamos el motivo y te ofrecemos alternativas: aumentar enganche, agregar un obligado solidario, o cambiar a renta/comodato (que tienen criterios distintos al financiamiento). El 70% de las solicitudes inicialmente "no aptas" terminan aprobándose con ajustes.
+        </div>
+      </div>
+
+      <!-- ── FINANCIERO ───────────────────────────────────── -->
+      <div class="faq-item" data-cat="financiero">
+        <button class="faq-q"><span><span class="faq-q-cat">Financiero</span><span class="faq-q-text">¿Los precios incluyen IVA?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Los precios de equipo se publican <strong>SIN IVA</strong> para que veas el precio base. La mensualidad y el enganche que el simulador calcula <strong>SÍ incluyen el 16% de IVA</strong> aplicable. En el desglose puedes ver ambos números separados.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="financiero">
+        <button class="faq-q"><span><span class="faq-q-cat">Financiero</span><span class="faq-q-text">¿Qué tasa de interés cobran?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Para financiamiento es <strong>2% mensual</strong> sobre saldos insolutos. En meses sin intereses (MSI) es <strong>0%</strong>. Para renta y comodato no hay tasa explícita; el costo está implícito en la mensualidad o en el margen de los reactivos.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="financiero">
+        <button class="faq-q"><span><span class="faq-q-cat">Financiero</span><span class="faq-q-text">¿Cómo pago las mensualidades?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Desde tu <a href="https://norlab.com.mx/portal/" target="_blank">portal cliente</a> con dos métodos:<ul>
+            <li><strong>Tarjeta:</strong> crédito o débito procesada por Conekta (con cargos automáticos opcionales).</li>
+            <li><strong>SPEI:</strong> referencia bancaria con vigencia de 72 horas, sin comisión.</li>
+          </ul>
+          Día de pago: 5 de cada mes. Te recordamos por WhatsApp 3 días antes.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="financiero">
+        <button class="faq-q"><span><span class="faq-q-cat">Financiero</span><span class="faq-q-text">¿Qué pasa si me atraso en un pago?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Tienes 5 días de gracia sin penalización. A partir del día 6, se causa un interés moratorio del 5% mensual sobre el saldo vencido. Si tienes una situación temporal, escríbenos antes de la fecha de pago: revisamos tu caso y podemos ofrecer reestructura.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="financiero">
+        <button class="faq-q"><span><span class="faq-q-cat">Financiero</span><span class="faq-q-text">¿Puedo pagar anticipado?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Sí, en cualquier momento, sin penalización. Pagar anticipado reduce los intereses totales que vas a pagar. Desde tu portal cliente puedes simular el ahorro antes de hacer el pago.
+        </div>
+      </div>
+
+      <!-- ── LEGAL ────────────────────────────────────────── -->
+      <div class="faq-item" data-cat="legal">
+        <button class="faq-q"><span><span class="faq-q-cat">Legal</span><span class="faq-q-text">¿Qué es la consulta de Buró de Crédito?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Es una revisión de tu historial crediticio que necesitamos para evaluar tu solicitud. Conforme al <strong>Art. 28 de la Ley para Regular las Sociedades de Información Crediticia (LRSIC)</strong>, requerimos tu autorización expresa por escrito o firma digital. La autorización dura 3 años. Sin esta autorización no podemos procesar el financiamiento.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="legal">
+        <button class="faq-q"><span><span class="faq-q-cat">Legal</span><span class="faq-q-text">¿La consulta a Buró afecta mi score?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Una consulta puntual NO afecta significativamente tu score. Lo que afecta es tener muchas consultas en poco tiempo (señal de que andas pidiendo crédito en muchos lados). Como NORLAB consulta una sola vez al evaluar, el impacto es mínimo y temporal.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="legal">
+        <button class="faq-q"><span><span class="faq-q-cat">Legal</span><span class="faq-q-text">¿El equipo es mío desde el día uno?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          <strong>En financiamiento:</strong> sí, la propiedad pasa a ti desde la firma del contrato. Operamos bajo modalidad de "reserva de dominio" durante el plazo, lo que significa que mientras pagas, NORLAB conserva ciertos derechos de garantía.<br><br>
+          <strong>En renta y comodato:</strong> el equipo permanece propiedad de NORLAB. En renta puedes ejercer opción a compra al final.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="legal">
+        <button class="faq-q"><span><span class="faq-q-cat">Legal</span><span class="faq-q-text">¿Necesito un aval / obligado solidario?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          No siempre. Depende del monto, plazo y de tu historial crediticio. Para empresas con menos de 2 años o solicitudes mayores a $200,000 MXN sí lo recomendamos. El obligado solidario refuerza tu solicitud y puede acelerar la aprobación.
+        </div>
+      </div>
+
+      <!-- ── POSTVENTA ────────────────────────────────────── -->
+      <div class="faq-item" data-cat="postventa">
+        <button class="faq-q"><span><span class="faq-q-cat">Postventa</span><span class="faq-q-text">¿Quién instala el equipo?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          NORLAB. Una vez aprobado y pagado el enganche, coordinamos con un técnico certificado de la marca para instalar el equipo en tu laboratorio. Incluye conexión, calibración inicial, capacitación operativa y validación de primeras pruebas. Sin costo adicional.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="postventa">
+        <button class="faq-q"><span><span class="faq-q-cat">Postventa</span><span class="faq-q-text">¿Qué garantía tiene el equipo?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          La garantía del fabricante (típicamente 12 a 24 meses contra defectos de fabricación). En modalidades de <strong>renta y comodato</strong>, NORLAB cubre el mantenimiento preventivo de por vida del contrato. En <strong>financiamiento</strong>, puedes contratar un plan de mantenimiento separado.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="postventa">
+        <button class="faq-q"><span><span class="faq-q-cat">Postventa</span><span class="faq-q-text">¿Y si el equipo se descompone durante el plazo?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          Reportas la falla por WhatsApp o desde el portal cliente. Si está dentro de la garantía o el plan de mantenimiento, lo reparamos sin costo. Mientras tanto, te asignamos un equipo de respaldo si el tiempo de reparación supera 48 horas.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="postventa">
+        <button class="faq-q"><span><span class="faq-q-cat">Postventa</span><span class="faq-q-text">¿Puedo terminar el contrato antes?</span></span><span class="faq-icon">+</span></button>
+        <div class="faq-a">
+          <strong>En financiamiento:</strong> sí, pagando anticipado. Sin penalización; ahorras los intereses futuros.<br>
+          <strong>En renta y comodato:</strong> sí, con aviso previo de 30 días. Si el contrato tiene cláusula de permanencia mínima y no la cumpliste, hay una pena convencional (típicamente 10-20% del valor restante).
+        </div>
+      </div>
+
+    </div>
+
+    <div class="no-results" id="no-results" style="display: none;">
+      <p>Sin resultados para esa búsqueda. Pregunta directamente por WhatsApp:</p>
+      <div class="cta-row" style="margin-top: 20px;">
+        <a class="btn-wa" href="https://wa.me/525621836094?text=Hola%20NORLAB%20tengo%20una%20pregunta%20sobre%20financiamiento" target="_blank">
+          <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Preguntar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer"></div>
+
+<script src="/_partials.js"></script>
+<script>
+  mount('faq')
+
+  // Toggle accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      q.parentElement.classList.toggle('open')
+    })
+  })
+
+  // Filtro por categoría
+  document.querySelectorAll('.faq-cat').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.faq-cat').forEach(x => x.classList.remove('on'))
+      b.classList.add('on')
+      const cat = b.dataset.cat
+      let visible = 0
+      document.querySelectorAll('.faq-item').forEach(item => {
+        const show = cat === 'todas' || item.dataset.cat === cat
+        item.classList.toggle('hide', !show)
+        if (show) visible++
+      })
+      document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none'
+    })
+  })
+
+  // Búsqueda
+  function norm(s) {
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  }
+  document.getElementById('faq-search').addEventListener('input', (e) => {
+    const q = norm(e.target.value.trim())
+    let visible = 0
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const text = norm(item.textContent)
+      const show = !q || text.includes(q)
+      item.classList.toggle('hide', !show)
+      if (show) visible++
+    })
+    // Reset cat filter
+    document.querySelectorAll('.faq-cat').forEach(x => x.classList.remove('on'))
+    document.querySelector('.faq-cat[data-cat="todas"]').classList.add('on')
+    document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none'
+  })
+</script>
+
+</body>
+</html>

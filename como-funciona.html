@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo funciona — NORLAB Financiera</title>
+<meta name="description" content="Conoce el proceso de financiamiento NORLAB en 5 pasos: simula, solicita, sube documentos, recibe evaluación y firma digital. Aprobación en 24 a 72 horas.">
+<link rel="stylesheet" href="/_shared.css">
+<style>
+/* ── Timeline ─────────────────────────────────────────────── */
+.timeline {
+  max-width: 880px; margin: 0 auto; position: relative;
+}
+.timeline::before {
+  content: ''; position: absolute; left: 32px; top: 32px; bottom: 32px;
+  width: 2px; background: linear-gradient(to bottom, var(--blue2), var(--bl));
+}
+.t-step {
+  position: relative; padding: 0 0 48px 88px;
+}
+.t-step:last-child { padding-bottom: 0; }
+.t-num {
+  position: absolute; left: 0; top: 0;
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue2), var(--blue));
+  color: #fff; font-size: 26px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 28px rgba(25,118,210,.35);
+  border: 4px solid #fff;
+}
+.t-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 16px;
+  padding: 28px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.05);
+  transition: all .3s;
+}
+.t-card:hover { transform: translateX(4px); box-shadow: 0 12px 32px rgba(0,0,0,.08); }
+.t-time {
+  display: inline-block; background: var(--bl); color: var(--blue);
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .8px; padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 12px;
+}
+.t-card h3 {
+  font-size: 22px; color: var(--navy); margin-bottom: 10px; font-weight: 800;
+}
+.t-card > p {
+  color: var(--muted); font-size: 14.5px; line-height: 1.7; margin-bottom: 16px;
+}
+.t-bullets {
+  background: var(--light); border-radius: 12px; padding: 16px 20px;
+  margin-top: 14px;
+}
+.t-bullets li {
+  list-style: none; padding-left: 24px; position: relative;
+  font-size: 13.5px; color: var(--text); margin-bottom: 8px; line-height: 1.55;
+}
+.t-bullets li:last-child { margin-bottom: 0; }
+.t-bullets li::before {
+  content: '✓'; position: absolute; left: 0; top: 0;
+  color: var(--green); font-weight: 800;
+}
+.t-cta {
+  margin-top: 16px; display: inline-flex; align-items: center; gap: 6px;
+  color: var(--blue); font-size: 13px; font-weight: 700; text-decoration: none;
+}
+.t-cta:hover { color: var(--navy); }
+.t-cta::after { content: '→'; transition: transform .2s; }
+.t-cta:hover::after { transform: translateX(4px); }
+
+@media (max-width: 600px) {
+  .t-step { padding: 0 0 40px 64px; }
+  .timeline::before { left: 22px; }
+  .t-num { width: 44px; height: 44px; font-size: 18px; }
+  .t-card { padding: 20px; }
+  .t-card h3 { font-size: 18px; }
+}
+
+/* ── Final CTA section ────────────────────────────────────── */
+.cta-box {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+  border-radius: 24px; padding: 56px 40px; text-align: center;
+  color: #fff; max-width: 880px; margin: 0 auto;
+}
+.cta-box h2 { font-size: 28px; margin-bottom: 12px; font-weight: 800; }
+.cta-box p { color: rgba(255,255,255,.75); margin-bottom: 28px; font-size: 15px; max-width: 540px; margin-left: auto; margin-right: auto; }
+
+/* ── KPI bar ──────────────────────────────────────────────── */
+.kpi-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  max-width: 880px; margin: 0 auto 48px;
+  background: #fff; border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.05);
+}
+.kpi-cell { padding: 24px; text-align: center; border-right: 1px solid var(--border); }
+.kpi-cell:last-child { border-right: none; }
+.kpi-num { font-size: 28px; font-weight: 800; color: var(--navy); }
+.kpi-num span { color: var(--blue2); }
+.kpi-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; font-weight: 600; }
+@media (max-width: 600px) {
+  .kpi-bar { grid-template-columns: 1fr 1fr; }
+  .kpi-cell:nth-child(2) { border-right: none; }
+  .kpi-cell:nth-child(1), .kpi-cell:nth-child(2) { border-bottom: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<section class="page-hero">
+  <div class="page-hero-badge">Proceso 100% digital</div>
+  <h1>Así funciona <span>NORLAB Financiera</span></h1>
+  <p>Cinco pasos. Tres días. Cero papeleo en oficina. Diseñamos un proceso pensado en laboratorios y clínicas que no tienen tiempo que perder.</p>
+</section>
+
+<section class="sec sec-lt">
+  <div class="container">
+    <div class="kpi-bar">
+      <div class="kpi-cell"><div class="kpi-num">5</div><div class="kpi-lbl">Pasos totales</div></div>
+      <div class="kpi-cell"><div class="kpi-num">24<span>h</span></div><div class="kpi-lbl">Pre-aprobación</div></div>
+      <div class="kpi-cell"><div class="kpi-num">72<span>h</span></div><div class="kpi-lbl">Dictamen final</div></div>
+      <div class="kpi-cell"><div class="kpi-num">2-5<span> días</span></div><div class="kpi-lbl">Entrega del equipo</div></div>
+    </div>
+
+    <div class="timeline">
+
+      <div class="t-step">
+        <div class="t-num">1</div>
+        <div class="t-card">
+          <span class="t-time">2 minutos</span>
+          <h3>Simula tu plan</h3>
+          <p>Elige el equipo que necesitas, captura el monto, plazo y enganche. Te calculamos al instante el costo total con desglose de IVA y opción de comparar las 4 modalidades disponibles.</p>
+          <ul class="t-bullets">
+            <li>15+ equipos de laboratorio precargados con precio actualizado</li>
+            <li>Plazos de 6 a 48 meses según el equipo</li>
+            <li>Comparativo automático: financiamiento vs renta vs comodato vs MSI</li>
+            <li>Genera PDF de cotización para compartir con tu equipo</li>
+          </ul>
+          <a href="/index.html#simulador" class="t-cta">Ir al simulador</a>
+        </div>
+      </div>
+
+      <div class="t-step">
+        <div class="t-num">2</div>
+        <div class="t-card">
+          <span class="t-time">10 minutos</span>
+          <h3>Solicita en línea</h3>
+          <p>Llenas un formulario de 4 pasos con tus datos personales o de tu empresa. Si ya eres cliente NORLAB, jalamos automáticamente tu información de Zoho para acelerarte el proceso.</p>
+          <ul class="t-bullets">
+            <li>Datos personales o de la empresa (Persona Física o Moral)</li>
+            <li>Detalles del negocio: ubicación, años de operación, especialidad</li>
+            <li>Opcional: datos de obligado solidario / aval para mejorar score</li>
+            <li>Verificación automática Zoho si ya nos compras</li>
+          </ul>
+          <a href="/solicitud.html" class="t-cta">Empezar solicitud</a>
+        </div>
+      </div>
+
+      <div class="t-step">
+        <div class="t-num">3</div>
+        <div class="t-card">
+          <span class="t-time">15 minutos</span>
+          <h3>Sube tus documentos</h3>
+          <p>Cargas los documentos requeridos directo en la plataforma. Aceptamos PDF, JPG y PNG. Cada archivo lo analizamos automáticamente con IA para detectar problemas de vigencia, identidad o inconsistencias antes de enviarlo a revisión humana.</p>
+          <ul class="t-bullets">
+            <li><strong>Persona Física:</strong> INE, CURP, comprobante domicilio, 3 estados de cuenta, constancia SAT</li>
+            <li><strong>Persona Moral:</strong> Acta constitutiva, poder del representante, RFC empresa, domicilio fiscal, estados financieros</li>
+            <li>Análisis automático con IA: vigencia, capacidad de pago, alertas</li>
+            <li>Almacenamiento seguro en Google Drive con acceso restringido</li>
+          </ul>
+          <a href="/requisitos.html" class="t-cta">Ver lista completa de documentos</a>
+        </div>
+      </div>
+
+      <div class="t-step">
+        <div class="t-num">4</div>
+        <div class="t-card">
+          <span class="t-time">24 a 72 horas</span>
+          <h3>Evaluación y dictamen</h3>
+          <p>Nuestro sistema combina IA + Buró de Crédito + revisión humana para darte una respuesta rápida y justa. Te notificamos por email y WhatsApp en cada cambio de estado.</p>
+          <ul class="t-bullets">
+            <li><strong>Score automático</strong> basado en historial NORLAB, antigüedad del negocio, capacidad de pago y completitud de documentos</li>
+            <li><strong>Consulta a Buró de Crédito</strong> con tu autorización (Art. 28 LRSIC)</li>
+            <li><strong>Dictamen IA</strong> que sintetiza todo en un resumen ejecutivo</li>
+            <li><strong>Revisión humana</strong> del director de crédito antes de cualquier aprobación final</li>
+            <li>Resultados posibles: aprobado, aprobado con condiciones, revisión adicional, rechazado</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="t-step">
+        <div class="t-num">5</div>
+        <div class="t-card">
+          <span class="t-time">2 a 5 días hábiles</span>
+          <h3>Firma digital y recibe tu equipo</h3>
+          <p>Con la aprobación lista, te enviamos el contrato y los pagarés por <strong>Zoho Sign</strong>. Firmas en línea desde tu celular en menos de 5 minutos. Pagas el enganche con tarjeta o SPEI desde el portal y coordinamos la entrega e instalación de tu equipo.</p>
+          <ul class="t-bullets">
+            <li>Contrato y pagarés generados automáticamente con tu información</li>
+            <li>Firma electrónica con validez legal (Zoho Sign + NOM-151)</li>
+            <li>Pago del enganche por tarjeta de crédito/débito o transferencia SPEI</li>
+            <li>Coordinación de entrega e instalación con técnico NORLAB</li>
+            <li>Acceso a tu portal cliente para ver mensualidades y pagar mes con mes</li>
+          </ul>
+          <a href="https://norlab.com.mx/portal/" class="t-cta" target="_blank">Conocer el portal cliente</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-wh">
+  <div class="cta-box">
+    <h2>¿Listo para empezar?</h2>
+    <p>Si ya simulaste tu plan, comienza tu solicitud ahora. Si tienes dudas, escríbenos por WhatsApp y un asesor te acompaña paso a paso.</p>
+    <div class="cta-row">
+      <a class="btn-p" href="/solicitud.html">Empezar mi solicitud →</a>
+      <a class="btn-wa" href="https://wa.me/525621836094?text=Hola%20NORLAB%20quiero%20informacion%20sobre%20financiamiento" target="_blank">
+        <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Hablar con un asesor
+      </a>
+    </div>
+  </div>
+</section>
+
+<div id="footer"></div>
+
+<script src="/_partials.js"></script>
+<script>mount('como')</script>
+
+</body>
+</html>
