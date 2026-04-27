@@ -28,7 +28,7 @@ function renderHeader(activeKey) {
   ).join('')
   return `
     <nav class="topbar">
-      <a href="/" class="nav-logo">${LOGO_IMG}</a>
+      <a href="https://norlab.com.mx" class="nav-logo">${LOGO_IMG}</a>
       <div class="nav-links">${links}</div>
       <div class="nav-right">
         <a class="btn-wa-sm" href="${waLink()}" target="_blank">${WA_ICON} WhatsApp</a>
@@ -69,7 +69,7 @@ function renderFooter() {
         <div class="footer-col">
           <h4>NORLAB</h4>
           <ul>
-            <li><a href="https://norlab.com.mx/inicio" target="_blank">Inicio</a></li>
+            <li><a href="https://norlab.com.mx" target="_blank">Inicio</a></li>
             <li><a href="https://norlab.com.mx/analizadores-de-laboratorio" target="_blank">Equipos</a></li>
             <li><a href="https://os.norlab.xyz/p/precios" target="_blank">Catálogo con precios</a></li>
             <li><a href="https://norlab.com.mx/contactanos" target="_blank">Contacto</a></li>
