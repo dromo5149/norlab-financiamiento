@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto — NORLAB Financiera</title>
+<meta name="description" content="Habla directo con un asesor NORLAB Financiera. WhatsApp, email o agenda una llamada. Atención personalizada para evaluar tu solicitud de financiamiento de equipo de laboratorio.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="theme-color" content="#0b1f3a">
+<link rel="stylesheet" href="/shared.css">
+<style>
+.hero-contacto {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue3) 100%);
+  color: #fff; padding: 70px 24px 50px; text-align: center;
+}
+.hero-contacto h1 { font-size: clamp(28px, 4.5vw, 42px); font-weight: 800; margin-bottom: 12px; }
+.hero-contacto p { font-size: 16px; max-width: 600px; margin: 0 auto; opacity: 0.9; line-height: 1.6; }
+.hero-tag-pill {
+  display: inline-block; padding: 6px 14px; border-radius: 99px;
+  background: rgba(255,255,255,0.12); color: #fff;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+
+.contact-grid {
+  max-width: 1080px; margin: 0 auto; padding: 60px 24px;
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 36px;
+}
+@media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; gap: 28px; } }
+
+/* Sidebar — canales rápidos */
+.channels h2 {
+  font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 6px;
+}
+.channels .lead {
+  font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6;
+}
+.channel-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 18px; border-radius: 12px;
+  background: #fff; border: 1px solid var(--border);
+  margin-bottom: 12px; text-decoration: none; color: inherit;
+  transition: all .2s;
+}
+.channel-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(45,126,168,0.08); border-color: var(--blue2); }
+.ch-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 22px;
+}
+.ch-icon.wa  { background: #DCFCE7; color: #16A34A; }
+.ch-icon.em  { background: var(--bl); color: var(--blue3); }
+.ch-icon.ph  { background: #FEF3C7; color: #B45309; }
+.ch-icon.ag  { background: #F3E8FF; color: #7C3AED; }
+.ch-meta .lbl {
+  font-size: 11px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.5px; font-weight: 700; display: block;
+}
+.ch-meta .val {
+  font-size: 15px; font-weight: 700; color: var(--navy); display: block;
+  margin-top: 2px;
+}
+.ch-meta .desc {
+  font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5;
+}
+
+.hours-card {
+  margin-top: 24px; padding: 18px; border-radius: 12px;
+  background: var(--light); border: 1px solid var(--border);
+}
+.hours-card h4 {
+  font-size: 12px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.6px; margin-bottom: 10px;
+}
+.hours-card .row {
+  display: flex; justify-content: space-between; padding: 4px 0;
+  font-size: 13px; color: var(--text);
+}
+.hours-card .row span:first-child { color: var(--muted); }
+
+/* Form */
+.form-wrap {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 14px; padding: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.form-wrap h2 {
+  font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 6px;
+}
+.form-wrap .lead {
+  font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6;
+}
+.field { margin-bottom: 16px; }
+.field label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text); margin-bottom: 6px;
+}
+.field label .req { color: var(--red); }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-family: inherit; font-size: 14px;
+  background: #fff; color: var(--text); transition: border .15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--blue2); outline: none;
+}
+.field textarea { resize: vertical; min-height: 90px; }
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 480px) { .row-2 { grid-template-columns: 1fr; } }
+
+.btn-submit {
+  width: 100%; padding: 14px; border: 0; border-radius: 10px;
+  background: linear-gradient(135deg, var(--blue2) 0%, var(--navy) 100%);
+  color: #fff; font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: opacity .2s; margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(45,126,168,0.3);
+}
+.btn-submit:hover { opacity: 0.92; }
+
+.privacy-note {
+  font-size: 11px; color: var(--muted); margin-top: 12px;
+  line-height: 1.5; text-align: center;
+}
+.privacy-note a { color: var(--blue2); text-decoration: none; }
+.privacy-note a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<section class="hero-contacto">
+  <span class="hero-tag-pill">Hablemos</span>
+  <h1>Estamos a un mensaje de distancia</h1>
+  <p>Cuéntanos qué equipo necesitas y armamos un plan a la medida. Respondemos por el canal que prefieras.</p>
+</section>
+
+<div class="contact-grid">
+
+  <!-- Canales rápidos -->
+  <div class="channels">
+    <h2>Canales directos</h2>
+    <p class="lead">Para una respuesta rápida, cualquiera de estos canales te conecta con un asesor.</p>
+
+    <a class="channel-card" href="https://wa.me/525621836094?text=Hola%20NORLAB%2C%20quiero%20informaci%C3%B3n%20sobre%20financiamiento%20de%20equipo" target="_blank" rel="noopener">
+      <div class="ch-icon wa">💬</div>
+      <div class="ch-meta">
+        <span class="lbl">WhatsApp · más rápido</span>
+        <span class="val">56 2183 6094</span>
+        <span class="desc">Respuesta promedio: 5 minutos en horario laboral.</span>
+      </div>
+    </a>
+
+    <a class="channel-card" href="mailto:financiamiento@norlab.xyz?subject=Solicitud%20de%20informaci%C3%B3n%20-%20Financiamiento">
+      <div class="ch-icon em">✉️</div>
+      <div class="ch-meta">
+        <span class="lbl">Email</span>
+        <span class="val">financiamiento@norlab.xyz</span>
+        <span class="desc">Adjuntar documentos. Respondemos en menos de 24h hábiles.</span>
+      </div>
+    </a>
+
+    <a class="channel-card" href="tel:+525621836094">
+      <div class="ch-icon ph">📞</div>
+      <div class="ch-meta">
+        <span class="lbl">Teléfono</span>
+        <span class="val">+52 56 2183 6094</span>
+        <span class="desc">Lunes a viernes 9:00 a 18:00. Llámanos directo.</span>
+      </div>
+    </a>
+
+    <a class="channel-card" href="https://norlab.com.mx/portal/" target="_blank" rel="noopener">
+      <div class="ch-icon ag">📋</div>
+      <div class="ch-meta">
+        <span class="lbl">Mi portal · clientes</span>
+        <span class="val">norlab.com.mx/portal</span>
+        <span class="desc">Si ya eres cliente, accede a tu plan, facturas y catálogo personalizado.</span>
+      </div>
+    </a>
+
+    <div class="hours-card">
+      <h4>Horario de atención</h4>
+      <div class="row"><span>Lunes a viernes</span><span>9:00 – 18:00</span></div>
+      <div class="row"><span>Sábados</span><span>10:00 – 14:00</span></div>
+      <div class="row"><span>Domingos y feriados</span><span>Cerrado</span></div>
+      <div class="row" style="margin-top:8px;font-size:11px;color:var(--muted);"><span>Hora del centro de México</span></div>
+    </div>
+  </div>
+
+  <!-- Formulario -->
+  <div class="form-wrap">
+    <h2>Cuéntanos en qué te ayudamos</h2>
+    <p class="lead">Llena el formulario y un asesor te contacta en menos de 24h hábiles. Si prefieres rapidez, mejor por WhatsApp →</p>
+
+    <form id="contactForm" novalidate>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Tu nombre <span class="req">*</span></label>
+          <input type="text" name="nombre" required>
+        </div>
+        <div class="field">
+          <label>Empresa / Laboratorio</label>
+          <input type="text" name="empresa">
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="field">
+          <label>Teléfono <span class="req">*</span></label>
+          <input type="tel" name="telefono" required placeholder="55 1234 5678">
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Tipo de cliente</label>
+          <select name="tipo_cliente">
+            <option value="">Selecciona…</option>
+            <option>Laboratorio clínico</option>
+            <option>Hospital privado</option>
+            <option>Consultorio médico</option>
+            <option>Centro de diagnóstico</option>
+            <option>Distribuidor</option>
+            <option>Veterinaria</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>¿Qué te interesa?</label>
+          <select name="interes">
+            <option value="">Selecciona…</option>
+            <option>Financiamiento</option>
+            <option>Renta de equipo</option>
+            <option>Comodato</option>
+            <option>Meses sin intereses (MSI)</option>
+            <option>Solo cotizar equipo</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Cuéntanos brevemente qué necesitas</label>
+        <textarea name="mensaje" placeholder="Ej: Necesito un analizador hematológico de 5 partes para mi laboratorio en CDMX, presupuesto ~$200k, plazo 24 meses."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">Enviar solicitud →</button>
+
+      <p class="privacy-note">
+        Al enviar este formulario aceptas nuestro <a href="/privacidad.html">Aviso de privacidad</a>.
+        Solo usaremos tus datos para contactarte sobre tu solicitud.
+      </p>
+
+    </form>
+  </div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="/partials.js"></script>
+<script>
+mount('contacto');
+
+// Submit del form → WhatsApp con mensaje pre-armado (sin backend por ahora)
+document.getElementById('contactForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const fd = new FormData(f);
+  const lines = [
+    'Hola NORLAB, mi nombre es ' + (fd.get('nombre') || ''),
+    fd.get('empresa') ? 'De: ' + fd.get('empresa') : '',
+    fd.get('tipo_cliente') ? 'Tipo: ' + fd.get('tipo_cliente') : '',
+    fd.get('interes') ? 'Me interesa: ' + fd.get('interes') : '',
+    fd.get('email') ? 'Email: ' + fd.get('email') : '',
+    fd.get('telefono') ? 'Tel: ' + fd.get('telefono') : '',
+    '',
+    fd.get('mensaje') || '',
+  ].filter(Boolean).join('\n');
+  const url = 'https://wa.me/525621836094?text=' + encodeURIComponent(lines);
+  window.open(url, '_blank', 'noopener');
+});
+</script>
+
+</body>
+</html>

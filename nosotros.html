@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nosotros — NORLAB Financiera</title>
+<meta name="description" content="Conoce NORLAB Financiera: la vertical de financiamiento de Grupo Rohmnos, distribuidor de equipo médico desde 2019. Más de 1,200 SKUs, presencia en toda México, procesos 100% digitales.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="theme-color" content="#0b1f3a">
+<link rel="stylesheet" href="/shared.css">
+<style>
+/* ── Hero specific ─────────────────────────────────────── */
+.hero-nosotros {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue2) 100%);
+  color: #fff; padding: 90px 24px 70px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-nosotros::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(74,184,200,0.12) 0%, transparent 50%);
+}
+.hero-nosotros h1 {
+  font-size: clamp(32px, 5vw, 52px); font-weight: 800; margin-bottom: 16px;
+  position: relative; line-height: 1.15;
+}
+.hero-nosotros p {
+  font-size: 17px; max-width: 720px; margin: 0 auto;
+  opacity: 0.9; line-height: 1.6; position: relative;
+}
+.hero-tag-pill {
+  display: inline-block; padding: 6px 14px; border-radius: 99px;
+  background: rgba(255,255,255,0.12); color: #fff;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; margin-bottom: 18px;
+}
+
+/* ── Métricas grandes ──────────────────────────────────── */
+.metrics-strip {
+  background: #fff; padding: 48px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.metrics-grid {
+  max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+  text-align: center;
+}
+.metric .num {
+  font-size: clamp(32px, 4vw, 44px); font-weight: 800; color: var(--blue3);
+  display: block; line-height: 1;
+}
+.metric .lbl {
+  font-size: 13px; color: var(--muted); margin-top: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+@media (max-width: 720px) { .metrics-grid { grid-template-columns: repeat(2,1fr); gap: 24px; } }
+
+/* ── Historia: timeline vertical ────────────────────────── */
+.story-section {
+  padding: 80px 24px; background: var(--light);
+}
+.story-inner { max-width: 880px; margin: 0 auto; }
+.story-title {
+  font-size: 32px; font-weight: 800; color: var(--navy);
+  text-align: center; margin-bottom: 14px;
+}
+.story-sub {
+  font-size: 16px; color: var(--muted); text-align: center;
+  margin-bottom: 56px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6;
+}
+.timeline {
+  position: relative; padding-left: 30px;
+}
+.timeline::before {
+  content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+  width: 2px; background: linear-gradient(to bottom, var(--blue2), var(--bl));
+}
+.tl-item { position: relative; padding-bottom: 36px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before {
+  content: ''; position: absolute; left: -29px; top: 4px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; border: 3px solid var(--blue2);
+  box-shadow: 0 0 0 4px var(--bl);
+}
+.tl-year {
+  font-size: 13px; font-weight: 800; color: var(--blue2);
+  letter-spacing: 1px; margin-bottom: 6px;
+}
+.tl-title {
+  font-size: 18px; font-weight: 700; color: var(--navy);
+  margin-bottom: 8px;
+}
+.tl-desc { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+/* ── Valores: 4 cards ──────────────────────────────────── */
+.values-section { padding: 80px 24px; background: #fff; }
+.values-inner { max-width: 1080px; margin: 0 auto; }
+.values-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+}
+@media (max-width: 900px) { .values-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 540px) { .values-grid { grid-template-columns: 1fr; } }
+.val-card {
+  padding: 28px 22px; border-radius: 14px; background: var(--light);
+  border: 1px solid var(--border); transition: all .25s;
+}
+.val-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(45,126,168,0.12); }
+.val-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--blue2) 0%, var(--navy) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #fff; margin-bottom: 16px;
+}
+.val-title {
+  font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
+}
+.val-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── Equipo / Compromiso ───────────────────────────────── */
+.commit-section {
+  padding: 80px 24px; background: var(--navy); color: #fff;
+}
+.commit-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+.commit-title {
+  font-size: clamp(28px, 4vw, 38px); font-weight: 800; margin-bottom: 20px; line-height: 1.2;
+}
+.commit-sub { font-size: 17px; opacity: 0.85; line-height: 1.7; margin-bottom: 36px; }
+.commit-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--blue2) 0%, var(--teal) 100%);
+  color: #fff; text-decoration: none; font-weight: 700; font-size: 15px;
+  box-shadow: 0 6px 20px rgba(74,184,200,0.3);
+  transition: transform .2s;
+}
+.commit-cta:hover { transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<section class="hero-nosotros">
+  <span class="hero-tag-pill">Sobre nosotros</span>
+  <h1>Hacemos accesible el equipo que tu laboratorio necesita</h1>
+  <p>NORLAB Financiera es la vertical de financiamiento de Grupo Rohmnos, una empresa mexicana especializada en distribución de equipo médico, reactivos y soluciones para laboratorios clínicos desde 2019.</p>
+</section>
+
+<section class="metrics-strip">
+  <div class="metrics-grid">
+    <div class="metric">
+      <span class="num">1,200+</span>
+      <span class="lbl">SKUs en catálogo</span>
+    </div>
+    <div class="metric">
+      <span class="num">6+</span>
+      <span class="lbl">Años de operación</span>
+    </div>
+    <div class="metric">
+      <span class="num">100%</span>
+      <span class="lbl">Procesos digitales</span>
+    </div>
+    <div class="metric">
+      <span class="num">24-72h</span>
+      <span class="lbl">Aprobación financiamiento</span>
+    </div>
+  </div>
+</section>
+
+<section class="story-section">
+  <div class="story-inner">
+    <h2 class="story-title">Nuestra historia</h2>
+    <p class="story-sub">De distribuidor regional a vertical financiera nacional. Cada paso lo dimos pensando en bajar la barrera para que cualquier laboratorio en México acceda al equipo correcto.</p>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">2019</div>
+        <div class="tl-title">Fundación de Grupo Rohmnos</div>
+        <div class="tl-desc">Arrancamos como distribuidor de marcas líderes en equipo de laboratorio (Mindray, Roche, CerTest, Abbott) en el Estado de México.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2021</div>
+        <div class="tl-title">Marca NORLAB y expansión nacional</div>
+        <div class="tl-desc">Consolidamos la marca NORLAB y comenzamos operación con clientes en CDMX, Jalisco, Nuevo León, Yucatán y otros 10 estados.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2023</div>
+        <div class="tl-title">Catálogo digital y precios negociados</div>
+        <div class="tl-desc">Lanzamos catálogo digital con más de 1,000 SKUs curados y precios personalizados por cuenta para nuestros clientes recurrentes.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2025</div>
+        <div class="tl-title">NORLAB Financiera</div>
+        <div class="tl-desc">Lanzamos la vertical de financiamiento con 4 modalidades (financiamiento, renta, comodato, MSI) para que el costo deje de ser obstáculo en la decisión de compra.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2026</div>
+        <div class="tl-title">Plataforma OS unificada</div>
+        <div class="tl-desc">Desplegamos NORLAB OS — un sistema operativo de negocio interno que conecta catálogo, financiamiento, cobranza y operación en una sola plataforma.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="values-section">
+  <div class="values-inner">
+    <h2 class="story-title">En qué creemos</h2>
+    <p class="story-sub">Cuatro principios que guían cómo trabajamos con cada cliente, cada proveedor y cada equipo financiado.</p>
+    <div class="values-grid">
+      <div class="val-card">
+        <div class="val-icon">⚡</div>
+        <div class="val-title">Velocidad real</div>
+        <div class="val-desc">No prometemos tiempos imposibles. Sí cumplimos con respuesta de Buró en 24h hábiles y entrega de equipo en 2-5 días tras aprobación.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-icon">🔍</div>
+        <div class="val-title">Cero letras chiquitas</div>
+        <div class="val-desc">Tasa, plazo, monto y garantías en la primera conversación. Si algo cambia durante la solicitud, te lo decimos antes de que firmes.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-icon">🤝</div>
+        <div class="val-title">Relación, no transacción</div>
+        <div class="val-desc">El 80% de nuestros clientes vuelve por segundo equipo o consumibles. Eso solo pasa si el primer crédito fue justo.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-icon">📊</div>
+        <div class="val-title">Tecnología que ayuda</div>
+        <div class="val-desc">Solicitud digital, expediente en la nube, simulador transparente, portal del cliente. La tecnología te ahorra tiempo, no te lo cuesta.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="commit-section">
+  <div class="commit-inner">
+    <h2 class="commit-title">Detrás de cada solicitud hay personas que conocen tu industria</h2>
+    <p class="commit-sub">Nuestro equipo combina experiencia financiera con conocimiento técnico de equipo médico. Sabemos la diferencia entre un analizador clínico y un equipo de pruebas rápidas — y eso se refleja en cómo evaluamos tu solicitud y diseñamos tu plan.</p>
+    <a href="/contacto.html" class="commit-cta">Conoce a tu asesor →</a>
+  </div>
+</section>
+
+<div id="footer"></div>
+
+<script src="/partials.js"></script>
+<script>mount('nosotros')</script>
+
+</body>
+</html>

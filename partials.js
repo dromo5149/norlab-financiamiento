@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: '/como-funciona.html',    label: 'Cómo funciona', key: 'como' },
   { href: '/requisitos.html',       label: 'Requisitos', key: 'req'  },
   { href: '/faq.html',              label: 'FAQ',        key: 'faq'  },
+  { href: '/contacto.html',         label: 'Contacto',   key: 'contacto' },
   { href: 'https://norlab.com.mx/portal/', label: 'Mi portal', key: 'portal' },
 ]
 
@@ -58,27 +59,39 @@ function renderFooter() {
           </ul>
         </div>
         <div class="footer-col">
+          <h4>NORLAB Financiera</h4>
+          <ul>
+            <li><a href="/nosotros.html">Nosotros</a></li>
+            <li><a href="/casos-exito.html">Casos de éxito</a></li>
+            <li><a href="/contacto.html">Contacto</a></li>
+            <li><a href="/faq.html">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
           <h4>Soporte</h4>
           <ul>
-            <li><a href="/faq.html">Preguntas frecuentes</a></li>
             <li><a href="${waLink()}" target="_blank">WhatsApp</a></li>
             <li><a href="mailto:info@norlab.xyz">info@norlab.xyz</a></li>
             <li><a href="https://norlab.com.mx/portal/" target="_blank">Portal cliente</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>NORLAB</h4>
+          <h4>NORLAB Corporativo</h4>
           <ul>
             <li><a href="https://norlab.com.mx" target="_blank">Inicio</a></li>
             <li><a href="https://norlab.com.mx/analizadores-de-laboratorio" target="_blank">Equipos</a></li>
             <li><a href="https://os.norlab.xyz/p/precios" target="_blank">Catálogo con precios</a></li>
-            <li><a href="https://norlab.com.mx/contactanos" target="_blank">Contacto</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
         <span>© ${year} Grupo Rohmnos S. de R.L. de C.V. · RFC GRO1903139Z6</span>
         <span>Naucalpan de Juárez, Estado de México · WhatsApp 56 2183 6094</span>
+      </div>
+      <div class="footer-legal">
+        <a href="/terminos.html">Términos y condiciones</a>
+        <span class="dot">·</span>
+        <a href="/privacidad.html">Aviso de privacidad</a>
       </div>
     </footer>
   `

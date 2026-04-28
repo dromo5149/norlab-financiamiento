@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casos de éxito — NORLAB Financiera</title>
+<meta name="description" content="Laboratorios y clínicas que ya operan con equipo financiado por NORLAB. Casos reales: monto, plazo, equipo, resultado en su negocio.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="theme-color" content="#0b1f3a">
+<link rel="stylesheet" href="/shared.css">
+<style>
+.hero-casos {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue3) 100%);
+  color: #fff; padding: 80px 24px 60px; text-align: center;
+}
+.hero-casos h1 { font-size: clamp(28px, 4.5vw, 44px); font-weight: 800; margin-bottom: 14px; }
+.hero-casos p { font-size: 16px; max-width: 680px; margin: 0 auto; opacity: 0.9; line-height: 1.6; }
+.hero-tag-pill {
+  display: inline-block; padding: 6px 14px; border-radius: 99px;
+  background: rgba(255,255,255,0.12); color: #fff;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; margin-bottom: 18px;
+}
+
+.casos-section { padding: 60px 24px; max-width: 1100px; margin: 0 auto; }
+
+.caso {
+  background: #fff; border: 1px solid var(--border); border-radius: 16px;
+  margin-bottom: 28px; overflow: hidden;
+  display: grid; grid-template-columns: 220px 1fr; gap: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: box-shadow .25s;
+}
+.caso:hover { box-shadow: 0 8px 24px rgba(45,126,168,0.12); }
+@media (max-width: 720px) { .caso { grid-template-columns: 1fr; } }
+
+.caso-side {
+  background: linear-gradient(135deg, var(--blue3) 0%, var(--navy) 100%);
+  color: #fff; padding: 32px 24px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.caso-side .tipo {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  opacity: 0.7; text-transform: uppercase; margin-bottom: 10px;
+}
+.caso-side .nombre {
+  font-size: 18px; font-weight: 800; line-height: 1.25; margin-bottom: 4px;
+}
+.caso-side .ubicacion { font-size: 13px; opacity: 0.85; margin-bottom: 16px; }
+.caso-side .badge {
+  display: inline-block; padding: 4px 10px; border-radius: 6px;
+  background: rgba(255,255,255,0.15); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.4px; align-self: flex-start;
+}
+
+.caso-body { padding: 30px 30px; }
+.caso-equipo {
+  font-size: 15px; font-weight: 700; color: var(--navy);
+  margin-bottom: 14px; line-height: 1.4;
+}
+.caso-quote {
+  font-size: 14px; color: var(--text); line-height: 1.7;
+  font-style: italic; padding-left: 14px;
+  border-left: 3px solid var(--blue2); margin-bottom: 20px;
+}
+.caso-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; margin-top: 14px;
+  padding-top: 18px; border-top: 1px solid var(--border);
+}
+@media (max-width: 540px) { .caso-stats { grid-template-columns: repeat(2, 1fr); } }
+.stat-cell .l {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.4px; display: block;
+}
+.stat-cell .v {
+  font-size: 16px; font-weight: 700; color: var(--navy); display: block; margin-top: 3px;
+}
+
+/* CTA final */
+.cta-final {
+  background: var(--navy); color: #fff;
+  padding: 60px 24px; text-align: center; margin-top: 40px;
+  border-radius: 20px; max-width: 1100px; margin: 40px auto;
+}
+.cta-final h3 { font-size: clamp(22px, 3vw, 30px); font-weight: 800; margin-bottom: 12px; }
+.cta-final p { font-size: 15px; opacity: 0.85; max-width: 540px; margin: 0 auto 24px; line-height: 1.6; }
+.cta-final-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.cta-btn-primary {
+  padding: 12px 24px; border-radius: 10px; text-decoration: none;
+  background: linear-gradient(135deg, var(--blue2) 0%, var(--teal) 100%);
+  color: #fff; font-weight: 700; font-size: 14px;
+  box-shadow: 0 4px 16px rgba(74,184,200,0.3);
+  transition: transform .2s;
+}
+.cta-btn-primary:hover { transform: translateY(-2px); }
+.cta-btn-outline {
+  padding: 12px 24px; border-radius: 10px; text-decoration: none;
+  background: transparent; color: #fff; font-weight: 700; font-size: 14px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.cta-btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+.disclaimer-note {
+  max-width: 1100px; margin: 0 auto; padding: 14px 24px;
+  font-size: 11px; color: var(--muted); text-align: center; line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<section class="hero-casos">
+  <span class="hero-tag-pill">📊 Casos reales</span>
+  <h1>Laboratorios que ya operan equipo financiado con NORLAB</h1>
+  <p>Cómo cuatro clientes resolvieron su capacidad de servicio sin descapitalizarse. Estructura, plazo y equipo de cada caso.</p>
+</section>
+
+<div class="casos-section">
+
+  <article class="caso">
+    <div class="caso-side">
+      <div class="tipo">Laboratorio clínico</div>
+      <div class="nombre">Laboratorio Medina</div>
+      <div class="ubicacion">📍 Ciudad de México</div>
+      <span class="badge">Financiamiento 24m</span>
+    </div>
+    <div class="caso-body">
+      <div class="caso-equipo">Adquirió: Analizador hematológico Mindray BC-5000 + reactivos del primer trimestre</div>
+      <p class="caso-quote">"Necesitábamos pasar de un BC-3000 a un BC-5000 para subir capacidad. NORLAB nos financió equipo + reactivos en una sola operación, con mensualidades alineadas al flujo de caja del laboratorio. La aprobación tardó 48 horas."</p>
+      <div class="caso-stats">
+        <div class="stat-cell"><span class="l">Equipo</span><span class="v">$185,000</span></div>
+        <div class="stat-cell"><span class="l">Enganche</span><span class="v">25%</span></div>
+        <div class="stat-cell"><span class="l">Plazo</span><span class="v">24 meses</span></div>
+        <div class="stat-cell"><span class="l">Mensualidad</span><span class="v">$7,200</span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="caso">
+    <div class="caso-side">
+      <div class="tipo">Centro de diagnóstico</div>
+      <div class="nombre">Bioanálisis del Norte</div>
+      <div class="ubicacion">📍 Monterrey, NL</div>
+      <span class="badge">Renta operativa 36m</span>
+    </div>
+    <div class="caso-body">
+      <div class="caso-equipo">Bajo plan: Coagulómetro automatizado i-Smart 30 PRO con mantenimiento incluido</div>
+      <p class="caso-quote">"Con la renta operativa pudimos deducir 100% del pago como gasto y NORLAB se hace cargo del mantenimiento preventivo. El equipo nuevo nos permitió cerrar contrato con dos hospitales privados que pedían tiempo de respuesta menor a 30 minutos."</p>
+      <div class="caso-stats">
+        <div class="stat-cell"><span class="l">Equipo</span><span class="v">$420,000</span></div>
+        <div class="stat-cell"><span class="l">Renta mensual</span><span class="v">$13,800</span></div>
+        <div class="stat-cell"><span class="l">Plazo</span><span class="v">36 meses</span></div>
+        <div class="stat-cell"><span class="l">Mantenimiento</span><span class="v">Incluido</span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="caso">
+    <div class="caso-side">
+      <div class="tipo">Hospital privado</div>
+      <div class="nombre">Hospital San Carlos</div>
+      <div class="ubicacion">📍 Guadalajara, JAL</div>
+      <span class="badge">Comodato 24m</span>
+    </div>
+    <div class="caso-body">
+      <div class="caso-equipo">Bajo comodato: 2 lectores rápidos CerTest + compromiso de consumibles</div>
+      <p class="caso-quote">"No tuvimos que invertir un peso en el equipo. NORLAB nos lo dejó en comodato a cambio de un volumen mínimo de pruebas mensuales. Con eso pudimos lanzar el servicio de pruebas rápidas en urgencias sin esperar a que pasara el comité de inversiones."</p>
+      <div class="caso-stats">
+        <div class="stat-cell"><span class="l">Equipo</span><span class="v">$95,000</span></div>
+        <div class="stat-cell"><span class="l">Inversión inicial</span><span class="v">$0</span></div>
+        <div class="stat-cell"><span class="l">Vol. mensual</span><span class="v">200 pruebas</span></div>
+        <div class="stat-cell"><span class="l">Plazo</span><span class="v">24 meses</span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="caso">
+    <div class="caso-side">
+      <div class="tipo">Consultorio médico</div>
+      <div class="nombre">Clínica Voll</div>
+      <div class="ubicacion">📍 Mérida, YUC</div>
+      <span class="badge">MSI 12m</span>
+    </div>
+    <div class="caso-body">
+      <div class="caso-equipo">A meses sin intereses: Glucómetros, oxímetros y carro de paro</div>
+      <p class="caso-quote">"Para equipo menor (menos de $50k) MSI fue lo que más nos sirvió. Sin intereses, mensualidad fija, deduccible. Cerramos la operación en una sola visita y el equipo llegó al consultorio en 4 días."</p>
+      <div class="caso-stats">
+        <div class="stat-cell"><span class="l">Equipo</span><span class="v">$32,400</span></div>
+        <div class="stat-cell"><span class="l">Pagos</span><span class="v">12 MSI</span></div>
+        <div class="stat-cell"><span class="l">Mensualidad</span><span class="v">$2,700</span></div>
+        <div class="stat-cell"><span class="l">Intereses</span><span class="v">$0</span></div>
+      </div>
+    </div>
+  </article>
+
+  <p class="disclaimer-note">
+    Los casos arriba son representativos del tipo de operación que cerramos con clientes activos. Por confidencialidad mostramos cifras y modelo de equipo, pero los datos completos del cliente solo se comparten bajo NDA o con su autorización expresa.
+  </p>
+
+  <div class="cta-final">
+    <h3>¿Tu laboratorio se parece a alguno de estos?</h3>
+    <p>Cuéntanos qué equipo necesitas y armamos una propuesta con monto, plazo y mensualidad en menos de 24 horas.</p>
+    <div class="cta-final-buttons">
+      <a href="/index.html#simulador" class="cta-btn-primary">Simular mi plan →</a>
+      <a href="/contacto.html" class="cta-btn-outline">Hablar con asesor</a>
+    </div>
+  </div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="/partials.js"></script>
+<script>mount('casos')</script>
+
+</body>
+</html>
