@@ -669,6 +669,14 @@ function showSuccess(ref,data){
   var msg='Hola NORLAB, envio documentos de mi solicitud.\n\nFolio: '+ref+'\nSolicitante: '+nombre+'\nEquipo: '+data.equipo+'\nPlan: '+data.plan;
   document.getElementById('wa_link').href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(msg);
   window.scrollTo({top:0,behavior:'smooth'});
+  // Meta Pixel — conversión principal de la vertical financiera
+  try {
+    if (window.finPixel) {
+      var plazo = parseInt(data.plazo, 10) || 0;
+      var monto = (typeof curMensualNum === 'number' ? curMensualNum : 0) * plazo;
+      window.finPixel.solicitudCompletada({ monto: monto, plazo: plazo });
+    }
+  } catch (_) { /* no romper UI por error de tracking */ }
 }
 
 buildProgress();

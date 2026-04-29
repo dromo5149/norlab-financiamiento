@@ -312,6 +312,14 @@ async function submitLead() {
     eq: CP.eq, plan: CP.plan, details: CP.details||""
   };
   await sendKommo(d);
+  // Meta Pixel — lead del simulador (top-of-funnel financiera)
+  try {
+    if (window.finPixel) {
+      var monto = (CP && CP.totalApprox) ? CP.totalApprox : 0;
+      var plazo = (CP && CP.plazo) ? CP.plazo : 0;
+      window.finPixel.solicitudIniciada({ monto: monto, plazo: plazo });
+    }
+  } catch (_) { /* no romper UI por error de tracking */ }
   const waMsg = encodeURIComponent(
     "Hola NORLAB, solicito información sobre este plan:\n\n" +
     "Equipo: " + d.eq + "\nPlan: " + d.plan + "\n" + d.details +
