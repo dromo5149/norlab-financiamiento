@@ -318,6 +318,14 @@ async function submitLead() {
       var monto = (CP && CP.totalApprox) ? CP.totalApprox : 0;
       var plazo = (CP && CP.plazo) ? CP.plazo : 0;
       window.finPixel.solicitudIniciada({ monto: monto, plazo: plazo });
+      // Lead attribution → /api/track-lead con UTMs + datos del lead
+      window.finPixel.trackLead({
+        name: d.nombre,
+        phone: d.tel,
+        email: d.email,
+        conversion_value: monto,
+        form_type: 'simulador_financiera',
+      });
     }
   } catch (_) { /* no romper UI por error de tracking */ }
   const waMsg = encodeURIComponent(

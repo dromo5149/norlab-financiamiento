@@ -675,6 +675,14 @@ function showSuccess(ref,data){
       var plazo = parseInt(data.plazo, 10) || 0;
       var monto = (typeof curMensualNum === 'number' ? curMensualNum : 0) * plazo;
       window.finPixel.solicitudCompletada({ monto: monto, plazo: plazo });
+      // Lead attribution con valor de conversión real
+      window.finPixel.trackLead({
+        name: data.nombre || data.razon,
+        phone: data.tel,
+        email: data.email,
+        conversion_value: monto,
+        form_type: 'solicitud_buro_completa',
+      });
     }
   } catch (_) { /* no romper UI por error de tracking */ }
 }

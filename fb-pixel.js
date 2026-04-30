@@ -112,6 +112,52 @@
     custom: function (eventName, params) {
       fbq('trackCustom', eventName, params || {})
     },
+
+    // Captura de UTMs desde la URL actual + sessionStorage (sobrevive page jumps)
+    getUTMs: function () {
+      try {
+        var p = new URLSearchParams(window.location.search)
+        var utms = {
+          utm_source:   p.get('utm_source'),
+          utm_medium:   p.get('utm_medium'),
+          utm_campaign: p.get('utm_campaign'),
+          utm_content:  p.get('utm_content'),
+          utm_term:     p.get('utm_term'),
+          fbclid:       p.get('fbclid'),
+        }
+        var hasAny = Object.values(utms).some(function (v) { return v != null })
+        if (hasAny) {
+          try { sessionStorage.setItem('norlab_utms', JSON.stringify(utms)) } catch (_) {}
+          return utms
+        }
+        // Si la URL no trae UTMs, usa los guardados en la sesión
+        try {
+          var saved = sessionStorage.getItem('norlab_utms')
+          if (saved) return JSON.parse(saved)
+        } catch (_) {}
+        return {}
+      } catch (e) { return {} }
+    },
+
+    // Manda lead a /api/track-lead (cross-origin a os.norlab.xyz).
+    // Llamarlo en cada submit de form: simulador, solicitud, contacto WA.
+    trackLead: function (extra) {
+      try {
+        var utms = window.finPixel.getUTMs()
+        var body = Object.assign({}, utms, {
+          landing_url: window.location.href,
+          referrer:    document.referrer || null,
+          user_agent:  navigator.userAgent,
+        }, extra || {})
+        // fire-and-forget — no bloquea UI si falla
+        fetch('https://os.norlab.xyz/api/track-lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          keepalive: true,
+        }).catch(function () { /* silent */ })
+      } catch (e) { /* silent */ }
+    },
   }
 
   // Auto-tracking — clicks de WhatsApp/email/tel
