@@ -13,7 +13,7 @@ const NAV_ITEMS = [
   { href: 'https://norlab.com.mx/portal/', label: 'Mi portal', key: 'portal' },
 ]
 
-const WA_NUM = '525621836094'
+const WA_NUM = '525611202177'
 const WA_TXT_DEFAULT = 'Hola NORLAB quiero información sobre financiamiento de equipo de laboratorio'
 const waLink = (txt) => `https://wa.me/${WA_NUM}?text=${encodeURIComponent(txt || WA_TXT_DEFAULT)}`
 

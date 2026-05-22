@@ -1,5 +1,5 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQWCY3SzoYKlXG_HF7D-fll3Zi-5jYWXeaOkSAPi0zJpGO3T_C-DLpW-DQLuHDxasM/exec';
-const WA_NUM = '525621836094';
+const WA_NUM = '525611202177';
 
 // Financial constants
 const TASA_MANT = 0.10; // 10% anual mantenimiento preventivo
