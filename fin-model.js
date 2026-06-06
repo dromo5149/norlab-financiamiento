@@ -16,8 +16,36 @@
 (function (global) {
   'use strict';
 
-  // ── Backend (hoy Apps Script; Fase 3 = Supabase) ───────────────────────────
-  var EQ_SOURCE_URL = 'https://script.google.com/macros/s/AKfycbyQWCY3SzoYKlXG_HF7D-fll3Zi-5jYWXeaOkSAPi0zJpGO3T_C-DLpW-DQLuHDxasM/exec';
+  // ── Backend · Fase 3 = Supabase REST (anon) ────────────────────────────────
+  // El catálogo de equipos vive en la tabla `fin_equipos` (Supabase, proyecto
+  // bbkpxpfhxxakwhrbbxww). RLS sólo permite SELECT anónimo de filas activo=true,
+  // así que la anon key puede ir embebida en este JS estático sin riesgo.
+  // (Legacy: antes leía del Apps Script AKfycbyQWCY… que envolvía el Sheet.)
+  var SB_URL  = 'https://bbkpxpfhxxakwhrbbxww.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJia3B4cGZoeHhha3docmJieHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3OTUyNDgsImV4cCI6MjA4OTM3MTI0OH0.kpKxI6ZLXkRUmy9NkzuBPM9cmSQo8UuTVLv6IrS7qKU';
+  var EQ_SOURCE_URL = SB_URL + '/rest/v1/fin_equipos?select=sku,nombre,marca,categoria,precio,costo,margen_reactivos,planes,plazo_max,deposito_meses,duracion_comodato,nota,orden&activo=eq.true&order=orden.asc';
+
+  // Mapea una fila de `fin_equipos` (claves largas) al shape compacto que
+  // consumen portal.js/solicitud.js: {id,n,m,c,p,co,mr,pl,mx,dm,mc,nota,sku}.
+  // ⚠️ id ← orden: la llave de selección de los UIs y la promo 0% de BA88A
+  // dependen de id===1. BA88A está seedeado con orden=1, así que se preserva.
+  function mapFinEquipo(r) {
+    return {
+      id: r.orden,
+      n:  r.nombre,
+      m:  r.marca || '',
+      c:  r.categoria || '',
+      p:  Number(r.precio) || 0,
+      co: r.costo != null ? Number(r.costo) : null,
+      mr: r.margen_reactivos != null ? Number(r.margen_reactivos) : null,
+      pl: Array.isArray(r.planes) ? r.planes : [],
+      mx: r.plazo_max || 24,
+      dm: r.deposito_meses || 0,
+      mc: r.duracion_comodato || 0,
+      nota: r.nota || null,
+      sku: r.sku,
+    };
+  }
 
   // ── Constantes del modelo · ÚNICO lugar para ajustar tasas ─────────────────
   var CONFIG = {
@@ -74,9 +102,13 @@
     var done = false;
     function finish(list) { if (done) return; done = true; cb(list && list.length ? list : EQ_FALLBACK); }
     try {
-      fetch(EQ_SOURCE_URL + '?ts=' + Date.now())
-        .then(function (r) { return r.json(); })
-        .then(function (data) { finish(Array.isArray(data) ? data : null); })
+      fetch(EQ_SOURCE_URL, {
+        headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON, Accept: 'application/json' },
+      })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          finish(Array.isArray(data) && data.length ? data.map(mapFinEquipo) : null);
+        })
         .catch(function () { finish(null); });
     } catch (e) { finish(null); }
     // Timeout de seguridad para no dejar el simulador colgado
