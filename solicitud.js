@@ -530,6 +530,9 @@ function uploadFile(item){
   var nombre=tipo==='fisica'?(g('f_nombre')||'solicitante'):(g('m_razon')||g('m_rep')||'solicitante');
   var folio=curFolio||('NL-'+String(Math.floor(10000+Math.random()*90000)));
   if(!curFolio||curFolio.indexOf('TEMP_')===0) curFolio=folio;
+  // Dual-write R1: además de Drive, subir a Supabase Storage (fin-docs) +
+  // registrar fin_documentos vía Edge Function. Fire-and-forget.
+  try{ if(FM&&FM.uploadDoc){ FM.uploadDoc({folio:folio,tipo_doc:item.docType,filename:item.docType.replace(/ /g,'_')+'_'+item.name,mime:item.mime,base64:item.b64}); } }catch(_){}
   // Folder will be named: {Nombre}_{Folio}
   fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,

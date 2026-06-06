@@ -38,6 +38,16 @@ El módulo admin del OS (`src/pages/financiamiento/`: Solicitudes/Buró/Contrato
 - **El funnel YA funciona de inicio a fin HOY**: simulador (Supabase) → wizard → solicitud (dual-write Sheet+Supabase) → admin (Apps Script, con análisis/contratos). Y Supabase ya es el system-of-record de los datos.
 - **Recomendación**: dejar el admin del OS sobre el Apps Script (funciona) y tratar la migración total como proyecto aparte deliberado. NO ripear el admin que funciona por ripearlo.
 
+## 🏗️ Rebuild admin financiamiento (decidido: opción 1 = plan + R1) — plan por fases
+- **R1 · Docs → Supabase Storage · ✅ HECHO (aditivo, dual-write)**:
+  - Bucket privado `fin-docs` (10MB), Edge Function `fin-upload-doc` (service-role; `verify_jwt` on → exige anon JWT que el sitio ya tiene). Sube a `fin-docs/{folio}/{archivo}` + INSERT `fin_documentos` (folio, tipo_esperado, archivo, storage_path). Validado e2e (subió + registró + limpieza).
+  - Wizard `solicitud.js uploadFile()` llama `FM.uploadDoc(...)` **además** del POST a Drive (Apps Script). Fire-and-forget. Cache-bust `v=20260607`. Drive sigue siendo el canal "oficial" hasta R2/R3.
+  - Artefacto trivial: queda 1 archivo test `NL-TEST-R1/prueba.txt` (20B) en el bucket (anon no puede borrar por RLS; sin fila en `fin_documentos`). Inocuo.
+- **R2 · Admin lee Supabase**: `Solicitudes.jsx` (+ `api/gas.js`) lee `fin_solicitudes` + docs de Storage (signed URLs) en vez del Apps Script. Mantener fallback al GAS hasta paridad.
+- **R3 · Análisis con Claude**: Edge Function que lee el doc de Storage (Claude vision/PDF), escribe `tipo_detectado/coincide/confianza/...` en `fin_documentos` y score/dictamen en `fin_solicitudes`. Reemplaza `admin_analysis`/`admin_reanalizar` del GAS.
+- **R4 · Contratos + e-sign**: la pieza más compleja (identificar proveedor de firma actual en el GAS: `contratos_a_sign`, `sign_status_folio`). Reimplementar o integrar.
+- **R5 · Retirar Apps Script/Sheet**: cuando R2-R4 tengan paridad → quitar dual-writes (solicitud + doc) y los `action:*` del GAS.
+
 ## Próximos pasos posibles (a elección de David)
 - **(A) Proyecto admin completo**: reconstruir análisis-Claude-sobre-Storage + contratos/e-sign + scoring en Supabase, luego wire admin + retirar Apps Script. Grande.
 - **(B) Dar el funnel por terminado** (recomendado): Supabase = system-of-record; admin sigue en Apps Script. Pasar a otras prioridades (walkthrough Usuarios, fix IDOR portal norlab-site, seed promociones).

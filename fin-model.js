@@ -133,6 +133,24 @@
     } catch (e) { return Promise.resolve(); }
   }
 
+  // ── Subir documento a Supabase Storage (Edge Function service-role) ────────
+  // Dual-write Fase 3 R1: además del upload a Drive (Apps Script), guarda el
+  // doc en Storage (bucket fin-docs) + registra fin_documentos. La Edge Function
+  // usa service-role internamente; aquí va el anon JWT (verify_jwt on).
+  // Fire-and-forget: nunca rompe la subida a Drive.
+  function uploadDoc(payload) {
+    try {
+      return fetch(SB_URL + '/functions/v1/fin-upload-doc', {
+        method: 'POST',
+        headers: {
+          apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }).catch(function () {})
+    } catch (e) { return Promise.resolve() }
+  }
+
   // ── Plazos válidos para un equipo (financiamiento) ─────────────────────────
   function plazosFin(eq) {
     if (!eq) return CONFIG.fin.plazos.slice();
@@ -198,6 +216,7 @@
     fmt: fmt, fmt2: fmt2, iva: iva,
     loadEquipos: loadEquipos,
     insertSolicitud: insertSolicitud,
+    uploadDoc: uploadDoc,
     plazosFin: plazosFin,
     calcFinanciamiento: calcFinanciamiento,
     calcRenta: calcRenta,
