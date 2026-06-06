@@ -29,12 +29,12 @@
   - ✅ **Seed `fin_equipos`** (17 equipos, incluye 6 nuevos: XI-921, XI-931DT, BS-240PRO, BS-360E, NX600, NX700).
   - ✅ **Master-absorb** (commits norlab-os `e24ba52b` + fix `47f9fec5`): `sync-catalog-sheets.js` absorbe `fin_equipos → product_catalog` en CADA corrida (cron */15) + protege esos SKUs del cleanup. Precio financiamiento gana, crea faltantes. **Verificado**: los 17 en `✓ unificado`, `source='financiamiento'`. ⚠️ Bug encontrado y corregido: el batch de updates mandaba filas sin `name` (NOT NULL) → reventaba todo el absorb; ahora reusa el name curado del maestro.
   - ✅ **Wire front (equipos READ)** (`fin-model.js`): `loadEquipos` lee `fin_equipos` de Supabase REST (anon key embebida, RLS-safe) + `mapFinEquipo` (claves largas→cortas). Apps Script retirado del loader; `EQ_FALLBACK` queda como resiliencia. Validado e2e (BA88A 0%, AQ-200i precio fin, NX600 nuevo visible). Cache-bust `v=20260606`.
+  - ✅ **Wire wizard → INSERT `fin_solicitudes`** (dual-write): `solicitud.js submitForm()` ahora, además del POST al Apps Script (que sigue escribiendo Sheet + subiendo docs a Drive), llama `FM.insertSolicitud(...)` → INSERT anon a `fin_solicitudes`. Fire-and-forget (no rompe el wizard). Campos directos + resto en `meta` jsonb (aval, zoho, reactivos, negocio…). Validado e2e (INSERT 201, row correcto, RLS sin SELECT). Cache-bust `solicitud.js?v=20260606`.
 
 ## Próximos sub-pasos Fase 3 (en orden) — AQUÍ NOS QUEDAMOS
-1. **Wire wizard → INSERT `fin_solicitudes`**: `solicitud.js` hoy hace POST al Apps Script (`action:'solicitud'`). Cambiar a INSERT Supabase REST anon (RLS sólo permite INSERT, sin select). Mapear campos del form → columnas. ← SIGUIENTE.
-2. **Wire OS admin** `/financiamiento` (Solicitudes.jsx etc.): leer de Supabase, no del Apps Script. Docs → Supabase Storage (`fin_documentos`).
-3. **Seed `promociones`** (promo IDEC-425 del Sheet) → admin Marketing/Promos. (Alimenta norlab.com.mx, no el simulador; baja prioridad.)
-4. Retirar Apps Script/Sheet.
+1. **Wire OS admin** `/financiamiento` (Solicitudes.jsx etc.): leer `fin_solicitudes` de Supabase (authenticated full), no del Apps Script. Docs → Supabase Storage (`fin_documentos`) — implica reescribir el uploader del paso 4 del wizard (hoy sube a Drive vía Apps Script). ← SIGUIENTE.
+2. **Seed `promociones`** (promo IDEC-425 del Sheet) → admin Marketing/Promos. (Alimenta norlab.com.mx, no el simulador; baja prioridad.)
+3. Retirar Apps Script/Sheet (sólo cuando admin lea de Supabase y docs estén en Storage → quitar el dual-write y el POST al Apps Script).
 - **Fase 2 — UI** (al final): inicio más claro (equipos con foto desde `product_catalog.image_url`), 3 planes diferenciados, wizard limpio/mobile.
 
 ## Confirmaciones de negocio abiertas (están en 1 solo lugar de fin-model.js)

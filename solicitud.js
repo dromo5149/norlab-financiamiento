@@ -628,6 +628,42 @@ function submitForm(){
     zoho_dias_vencido:zohoData&&zohoData.found?String(zohoData.dias_vencido||0):'',
     zoho_comportamiento:zohoData&&zohoData.found?(zohoData.comportamiento||''):''
   };
+  // Dual-write Fase 3: además del Apps Script (Sheet + docs a Drive), registrar
+  // la solicitud en Supabase (fin_solicitudes) para que el admin del OS la lea.
+  // Fire-and-forget, no bloquea ni rompe el wizard si Supabase falla.
+  try {
+    if (FM && FM.insertSolicitud) {
+      FM.insertSolicitud({
+        folio: curFolio,
+        equipo_sku: selEq ? (selEq.sku || null) : null,
+        equipo: data.equipo || null,
+        plan: planName,
+        plazo: parseInt(g('p_plazo'), 10) || null,
+        mensualidad: data.mensual || null,
+        enganche: data.enganche || null,
+        precio: (selEq && selEq.p) || curPrecio || null,
+        tipo: tipo,
+        nombre: data.nombre || data.razon || null,
+        rfc: data.rfc || null,
+        curp: data.curp || null,
+        telefono: data.tel || null,
+        email: data.email || null,
+        ciudad: data.ciudad || null,
+        meta: {
+          negocio: data.negocio || '', dir: data.dir || '', anos: data.anos || '',
+          cliente: data.cliente || '', razon: data.razon || '', rep: data.rep || '',
+          notas: data.notas || '', docs_ok: data.docs_ok, docs_req: data.docs_req,
+          aval: { nombre: data.aval_nombre || '', rfc: data.aval_rfc || '', tel: data.aval_tel || '',
+                  dir: data.aval_dir || '', ciudad: data.aval_ciudad || '', relacion: data.aval_relacion || '' },
+          reactivos_seleccionados: data.reactivos_seleccionados || '',
+          zoho: { cliente: data.zoho_cliente || '', total: data.zoho_total || '', ultima: data.zoho_ultima || '',
+                  pagadas: data.zoho_pagadas || '', pendiente: data.zoho_pendiente || '',
+                  dias_vencido: data.zoho_dias_vencido || '', comportamiento: data.zoho_comportamiento || '' },
+        },
+      });
+    }
+  } catch (_) { /* el dual-write nunca debe romper el envío */ }
+
   var qs=Object.keys(data).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(data[k]||'');}).join('&');
   fetch(SCRIPT_URL+'?'+qs)
     .then(function(){showSuccess(curFolio,data);})

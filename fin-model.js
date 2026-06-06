@@ -115,6 +115,24 @@
     setTimeout(function () { finish(null); }, opts.timeout || 4000);
   }
 
+  // ── INSERT de solicitud a Supabase (anon · RLS sólo permite INSERT) ────────
+  // Fire-and-forget: registra la solicitud en `fin_solicitudes` para que el
+  // admin del OS la lea. NO reemplaza el POST al Apps Script (que sigue
+  // escribiendo Sheet + subiendo docs a Drive) — es dual-write durante la
+  // migración. Devuelve una promesa que nunca rechaza (no rompe el wizard).
+  function insertSolicitud(row) {
+    try {
+      return fetch(SB_URL + '/rest/v1/fin_solicitudes', {
+        method: 'POST',
+        headers: {
+          apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON,
+          'Content-Type': 'application/json', Prefer: 'return=minimal',
+        },
+        body: JSON.stringify(row),
+      }).catch(function () {});
+    } catch (e) { return Promise.resolve(); }
+  }
+
   // ── Plazos válidos para un equipo (financiamiento) ─────────────────────────
   function plazosFin(eq) {
     if (!eq) return CONFIG.fin.plazos.slice();
@@ -179,6 +197,7 @@
     EQ_SOURCE_URL: EQ_SOURCE_URL,
     fmt: fmt, fmt2: fmt2, iva: iva,
     loadEquipos: loadEquipos,
+    insertSolicitud: insertSolicitud,
     plazosFin: plazosFin,
     calcFinanciamiento: calcFinanciamiento,
     calcRenta: calcRenta,
