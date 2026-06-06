@@ -31,10 +31,18 @@
   - ✅ **Wire front (equipos READ)** (`fin-model.js`): `loadEquipos` lee `fin_equipos` de Supabase REST (anon key embebida, RLS-safe) + `mapFinEquipo` (claves largas→cortas). Apps Script retirado del loader; `EQ_FALLBACK` queda como resiliencia. Validado e2e (BA88A 0%, AQ-200i precio fin, NX600 nuevo visible). Cache-bust `v=20260606`.
   - ✅ **Wire wizard → INSERT `fin_solicitudes`** (dual-write): `solicitud.js submitForm()` ahora, además del POST al Apps Script (que sigue escribiendo Sheet + subiendo docs a Drive), llama `FM.insertSolicitud(...)` → INSERT anon a `fin_solicitudes`. Fire-and-forget (no rompe el wizard). Campos directos + resto en `meta` jsonb (aval, zoho, reactivos, negocio…). Validado e2e (INSERT 201, row correcto, RLS sin SELECT). Cache-bust `solicitud.js?v=20260606`.
 
-## Próximos sub-pasos Fase 3 (en orden) — AQUÍ NOS QUEDAMOS
-1. **Wire OS admin** `/financiamiento` (Solicitudes.jsx etc.): leer `fin_solicitudes` de Supabase (authenticated full), no del Apps Script. Docs → Supabase Storage (`fin_documentos`) — implica reescribir el uploader del paso 4 del wizard (hoy sube a Drive vía Apps Script). ← SIGUIENTE.
-2. **Seed `promociones`** (promo IDEC-425 del Sheet) → admin Marketing/Promos. (Alimenta norlab.com.mx, no el simulador; baja prioridad.)
-3. Retirar Apps Script/Sheet (sólo cuando admin lea de Supabase y docs estén en Storage → quitar el dual-write y el POST al Apps Script).
+  - ✅ **Backfill histórico** (12 solicitudes del Sheet → `fin_solicitudes`): vía INSERT anon, `created_at` original preservado, análisis de Claude (score, recomendación, dictamen, resumen IA, Zoho) volcado a `meta`. **Supabase es ahora el registro COMPLETO** (histórico + nuevas del dual-write), no sólo lo nuevo.
+
+## ⚠️ Hallazgo de alcance (admin) — DECISIÓN DE NEGOCIO
+El módulo admin del OS (`src/pages/financiamiento/`: Solicitudes/Buró/Contratos/Cobranza) NO es sólo una lista: está acoplado al **pipeline de análisis con Claude sobre los docs en Drive** (`admin_analysis`, `admin_reanalizar`, scoring), a **contratos + e-sign** (`contratos_a_sign`, `sign_status`), y al **scoring** que vive en el Sheet. Reemplazarlo entero en Supabase = reconstruir ese pipeline (Claude leyendo docs de Storage), el e-sign y el scoring → **proyecto grande**. Hacerlo a medias (sólo cambiar la lista) **regresaría** funciones (perdería score/filtros/análisis).
+- **El funnel YA funciona de inicio a fin HOY**: simulador (Supabase) → wizard → solicitud (dual-write Sheet+Supabase) → admin (Apps Script, con análisis/contratos). Y Supabase ya es el system-of-record de los datos.
+- **Recomendación**: dejar el admin del OS sobre el Apps Script (funciona) y tratar la migración total como proyecto aparte deliberado. NO ripear el admin que funciona por ripearlo.
+
+## Próximos pasos posibles (a elección de David)
+- **(A) Proyecto admin completo**: reconstruir análisis-Claude-sobre-Storage + contratos/e-sign + scoring en Supabase, luego wire admin + retirar Apps Script. Grande.
+- **(B) Dar el funnel por terminado** (recomendado): Supabase = system-of-record; admin sigue en Apps Script. Pasar a otras prioridades (walkthrough Usuarios, fix IDOR portal norlab-site, seed promociones).
+- **Seed `promociones`** (promo IDEC-425) → norlab.com.mx. Independiente, chico.
+- **Fase 2 — UI** del simulador (fotos `product_catalog.image_url`, 3 planes, mobile). Independiente.
 - **Fase 2 — UI** (al final): inicio más claro (equipos con foto desde `product_catalog.image_url`), 3 planes diferenciados, wizard limpio/mobile.
 
 ## Confirmaciones de negocio abiertas (están en 1 solo lugar de fin-model.js)
