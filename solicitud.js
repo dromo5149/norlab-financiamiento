@@ -43,25 +43,17 @@ var curMensualNum = 0;   // Valor numérico de la mensualidad (con IVA)
 var checkedDocs=new Set();
 var expandedDoc=null;
 var EQ=[];
+var FM = window.FinModel;                          // fuente única del modelo (fin-model.js)
+var curEngPct = FM.CONFIG.fin.engancheDefault;     // % enganche traído del simulador (URL)
 
 function g(id){var el=document.getElementById(id);return el?el.value:'';}
 
 // ── Finance helpers ──────────────────────────────────────────────────────────
-function calcRenta(eq){
-  // 3.5% mensual = cubre equipo + mantenimiento preventivo + margen
-  return eq.p * 0.036;
-}
-function calcComodatoReactivos(eq){
-  // Reactivos minimos para liquidar equipo en 24 meses incluyendo mantenimiento
-  // (reactivos * margin) = equipo/24 + mant_mensual
-  // reactivos = (equipo/24 + equipo*0.10/12) / margin
-  var mantMensual = eq.p * TASA_MANT / 12;
-  return Math.ceil((eq.p / MESES_BE_COM + mantMensual) / MARGIN_COM);
-}
-function calcComodatoDeposito(eq){
-  // 2 meses de reactivos como deposito
-  return calcComodatoReactivos(eq) * 2;
-}
+// Helpers delegados a FinModel (fuente única) — antes duplicaban las fórmulas
+// y se contradecían con el simulador (renta 3.6% vs 4%).
+function calcRenta(eq){ return FM.calcRenta(eq).mensual; }
+function calcComodatoReactivos(eq){ return FM.calcComodato(eq).reactivosMin; }
+function calcComodatoDeposito(eq){ return FM.calcComodato(eq).deposito; }
 
 // ── Progress ─────────────────────────────────────────────────────────────────
 function buildProgress(){
@@ -77,23 +69,9 @@ function buildProgress(){
 }
 
 // ── Equipment ─────────────────────────────────────────────────────────────────
-function loadEquipos(retry){
-  fetch(SCRIPT_URL+'?ts='+Date.now())
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(Array.isArray(data) && data.length > 0){
-        EQ = data; populateEquipos(EQ);
-      } else if(!retry) {
-        // Deployment frío — reintentar una vez tras 3 seg
-        setTimeout(function(){ loadEquipos(true); }, 3000);
-      } else {
-        populateEquipos([]);
-      }
-    })
-    .catch(function(){
-      if(!retry){ setTimeout(function(){ loadEquipos(true); }, 3000); }
-      else { populateEquipos([]); }
-    });
+function loadEquipos(){
+  // Loader único de FinModel (mismo catálogo + fallback que el simulador).
+  FM.loadEquipos(function(list){ EQ = list; populateEquipos(EQ); });
 }
 function populateEquipos(list){
   document.getElementById('eq_loading').style.display='none';
@@ -111,6 +89,8 @@ function populateEquipos(list){
   });
   var p=new URLSearchParams(window.location.search);
   curPrecio = parseFloat(p.get('precio') || '0') || 0;
+  var _ep = parseInt(p.get('engPct'), 10);
+  if(!isNaN(_ep)) curEngPct = Math.max(FM.CONFIG.fin.engancheMin, Math.min(FM.CONFIG.fin.engancheMax, _ep));
   if(p.get('equipo')){
     var eqp=decodeURIComponent(p.get('equipo')).split('\u00b7')[0].trim();
     for(var i=0;i<sel.options.length;i++){
@@ -175,7 +155,7 @@ function onPlanChange(){
     pw.style.display='flex';ew.style.display='flex';mw.style.display='flex';
     if(mantWrap)mantWrap.style.display='none';
     var ps2=document.getElementById('p_plazo');ps2.innerHTML='';
-    [6,12,18,24].filter(function(m){return m<=(selEq.mx||24);}).forEach(function(m){
+    FM.plazosFin(selEq).forEach(function(m){
       var o=document.createElement('option');o.value=m;o.textContent=m+' meses';ps2.appendChild(o);
     });
     calcPreview();
@@ -183,8 +163,8 @@ function onPlanChange(){
   }else if(code==='ren'){
     pw.style.display='none';ew.style.display='none';mw.style.display='flex';
     if(mantWrap)mantWrap.style.display='flex';
-    var rentaMensual=selEq.p*0.04;  // Cambiar de calcRenta() a 4% directo
-    var rentaConIVA=rentaMensual*1.16;
+    var _r=FM.calcRenta(selEq);
+    var rentaMensual=_r.mensual, rentaConIVA=_r.mensualIVA;
     var mantMensual=selEq.p*TASA_MANT/12;
     
     // Guardar valores numéricos
@@ -218,20 +198,13 @@ function onPlanChange(){
 function calcPreview(){
   if(!selEq)return;
   var m=parseInt(document.getElementById('p_plazo').value)||12;
-  var e=selEq.p*0.30,cap=selEq.p-e;
-  var tasa=(selEq.nota&&selEq.nota.indexOf('0%')!==-1)?0:0.02;
-  var mn=tasa===0?cap/m:cap*tasa*Math.pow(1+tasa,m)/(Math.pow(1+tasa,m)-1);
-  
-  // Calcular IVA
-  var engancheConIVA=e*1.16;
-  var mensualidadConIVA=mn*1.16;
-  
-  // Guardar valores numéricos
-  curEngancheNum = engancheConIVA;
-  curMensualNum = mensualidadConIVA;
-  
-  document.getElementById('p_enganche').value='$'+Math.round(engancheConIVA).toLocaleString('es-MX')+' (30%)';
-  document.getElementById('p_mensual').value='$'+mensualidadConIVA.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+  // FinModel honra el enganche elegido en el simulador (curEngPct) — antes el
+  // wizard lo forzaba a 30% e ignoraba lo que el cliente había configurado.
+  var f=FM.calcFinanciamiento(selEq, m, curEngPct);
+  curEngancheNum = f.engancheIVA;
+  curMensualNum  = f.mensualIVA;
+  document.getElementById('p_enganche').value='$'+Math.round(f.engancheIVA).toLocaleString('es-MX')+' ('+f.enganchePct+'%)';
+  document.getElementById('p_mensual').value='$'+f.mensualIVA.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
