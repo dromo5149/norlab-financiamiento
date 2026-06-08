@@ -14,11 +14,17 @@
 <script src="/fb-pixel.js"></script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1776113519756804&ev=PageView&noscript=1" alt=""/></noscript>
 <!-- /Meta Pixel -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#0b1f3a;--navy2:#132d52;--blue:#1565c0;--blue2:#1976d2;--bl:#e3f2fd;--light:#f7f9fc;--border:#e8edf5;--text:#1a2a4a;--muted:#6b7c93;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);overflow-x:hidden;}
+body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;line-height:1.6;}
+h1,h2,.hero h1,.sec-h,.r-mv{letter-spacing:-.022em;}
+:focus-visible{outline:2px solid var(--blue2);outline-offset:2px;border-radius:4px;}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
@@ -71,7 +77,7 @@ nav{background:#fff;padding:0 40px;height:68px;display:flex;align-items:center;j
 .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px;max-width:940px;margin:0 auto;}
 .feat-card{background:#fff;border-radius:16px;padding:32px 22px;border:1px solid var(--border);text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.07);transition:all .3s;}
 .feat-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.13);border-color:#c5d8f5;}
-.feat-icon{font-size:36px;margin-bottom:14px;display:block;transition:transform .3s;}
+.feat-icon{width:54px;height:54px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bl),#d6e9fb);border-radius:14px;transition:transform .3s;}
 .feat-card:hover .feat-icon{transform:scale(1.15);}
 .feat-t{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px;}
 .feat-d{font-size:13px;color:var(--muted);line-height:1.65;}
