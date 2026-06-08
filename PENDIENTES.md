@@ -53,7 +53,11 @@ El módulo admin del OS (`src/pages/financiamiento/`: Solicitudes/Buró/Contrato
 - **(B) Dar el funnel por terminado** (recomendado): Supabase = system-of-record; admin sigue en Apps Script. Pasar a otras prioridades (walkthrough Usuarios, fix IDOR portal norlab-site, seed promociones).
 - **Seed `promociones`** (promo IDEC-425) → norlab.com.mx. Independiente, chico.
 - **Fase 2 — UI** del simulador (fotos `product_catalog.image_url`, 3 planes, mobile). Independiente.
-- **Fase 2 — UI** (al final): inicio más claro (equipos con foto desde `product_catalog.image_url`), 3 planes diferenciados, wizard limpio/mobile.
+- **Fase 2 — UI** (en curso):
+  - ✅ **Fotos de equipo** (commit `ce0aaea`): vista `fin_equipos_web` (fin_equipos + product_catalog.image_url) → `fin-model.js` mapea `img` → `portal.js` thumbnail 46px en tarjetas + foto grande en panel de resultado. 11/17 con foto; resto placeholder 🔬. Cache-bust `v=20260608`.
+  - ⏳ **3 planes diferenciados**: hoy los 3 tabs (fin/renta/comodato) comparten el mismo look; diferenciarlos visualmente (color/badge/copy por plan).
+  - ⏳ **Mobile / wizard limpio**: revisar responsive del simulador + wizard en móvil.
+  - ⚠️ **Seguridad (separado)**: la vista y el fetch del front exponen `costo` y `margen_reactivos` al navegador (ya pasaba antes del wire). `costo` se usa para la "opción de compra" del comodato (precio*0.15 si se quita). Para no filtrar costos: precomputar `opcion_compra` en la vista y dejar de mandar `costo`/`margen` — cambia el número mostrado, confirmar antes.
 
 ## Confirmaciones de negocio abiertas (están en 1 solo lugar de fin-model.js)
 - Renta = **4%** mensual (asumido = lo que muestra el simulador hoy).
