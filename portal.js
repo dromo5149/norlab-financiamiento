@@ -12,6 +12,17 @@ var fmt = FM.fmt, fmt2 = FM.fmt2;
 var waLink = function (msg) { return "https://wa.me/525611202177?text=" + encodeURIComponent(msg); };
 var waSvg  = function () { return '<svg width="15" height="15" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; };
 
+// Iconos SVG (reemplazan emojis · stroke=currentColor para heredar color)
+var IC = {
+  fin:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+  ren:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  com:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  flask: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9bb0c9" stroke-width="1.7"><path d="M9 3h6M10 3v5.5L5 17a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3L14 8.5V3"/></svg>',
+  check: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  info:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+};
+var planIcon = { fin: IC.fin, ren: IC.ren, com: IC.com };
+
 var sTab = "fin", sId = null, sMes = 12, sEng = FM.CONFIG.fin.engancheDefault, sCat = "Todos";
 
 // ── FAQ ──────────────────────────────────────────────────────────────────────
@@ -61,7 +72,7 @@ function render() {
     var b = document.createElement("button");
     b.className = "eq" + (sId === eq.id ? " on" : "");
     var thumb = '<div style="flex:0 0 46px;width:46px;height:46px;border-radius:8px;background:#fff;border:1px solid var(--border);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden">' +
-      '<span style="font-size:20px;opacity:.4">🔬</span>' +
+      IC.flask +
       (eq.img ? '<img src="' + eq.img + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff" onerror="this.remove()">' : '') +
       '</div>';
     b.innerHTML = '<div style="display:flex;align-items:center;gap:10px">' + thumb +
@@ -88,18 +99,31 @@ function render() {
     });
     fe.style.display = (eq && eq.id !== 1) ? "block" : "none";
     if (eq && eq.id !== 1) {
-      document.getElementById("engLbl").textContent = "Enganche: " + sEng + "% — " + fmt(eq.p * sEng / 100);
+      var engLbl = document.getElementById("engLbl");
+      engLbl.textContent = "Enganche: " + sEng + "% — " + fmt(eq.p * sEng / 100);
       var sl = document.getElementById("engS");
       sl.min = FM.CONFIG.fin.engancheMin; sl.max = FM.CONFIG.fin.engancheMax;
       sl.value = sEng;
-      sl.oninput = function (ev) { sEng = parseInt(ev.target.value, 10); render(); };
+      // BUGFIX: el slider sólo actualiza label + resultado (NO render() completo).
+      // Antes render() reconstruía equipos/categorías/plazos a media-arrastrada y
+      // el navegador soltaba el drag del slider → "no dejaba subir el enganche".
+      sl.oninput = function (ev) {
+        sEng = parseInt(ev.target.value, 10);
+        engLbl.textContent = "Enganche: " + sEng + "% — " + fmt(eq.p * sEng / 100);
+        renderResult();
+      };
     }
   }
 
-  // Result panel
+  renderResult();
+}
+
+// Renderiza SÓLO el panel de resultado (lo llama render() y el slider de enganche).
+function renderResult() {
   var box = document.getElementById("simR");
+  var eq = EQ.find(function (e) { return e.id === sId; });
   if (!eq) {
-    box.innerHTML = '<div class="empty"><div class="empty-i">🔬</div><div class="empty-t">Selecciona un equipo<br>para ver tu simulación</div></div>';
+    box.innerHTML = '<div class="empty"><div class="empty-i">' + IC.flask + '</div><div class="empty-t">Selecciona un equipo<br>para ver tu simulación</div></div>';
     return;
   }
   var wm = "Hola NORLAB quiero cotizar el equipo " + eq.n + " " + eq.m;
@@ -119,7 +143,7 @@ function render() {
   if (sTab === "ren") {
     var r = FM.calcRenta(eq);
     box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
-      '<div class="r-lbl" style="color:' + TH.lt + '">📅 Renta Mensual</div>' + tagTag + eqImgTag +
+      '<div class="r-lbl" style="color:' + TH.lt + '">' + planIcon.ren + ' Renta Mensual</div>' + tagTag + eqImgTag +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="r-ml">Renta mensual estimada</div>' +
       '<div class="r-mv">' + fmt2(r.mensualIVA) + '</div>' +
@@ -142,7 +166,7 @@ function render() {
   if (sTab === "com") {
     var co = FM.calcComodato(eq);
     box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
-      '<div class="r-lbl" style="color:' + TH.lt + '">🤝 Comodato</div>' + tagTag + eqImgTag +
+      '<div class="r-lbl" style="color:' + TH.lt + '">' + planIcon.com + ' Comodato</div>' + tagTag + eqImgTag +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="z-badge">$0 de adquisición</div>' +
       '<div class="com-box"><div class="com-lbl">Compra mínima mensual de reactivos</div><div class="com-val">' + fmt(co.reactivosMinIVA) + '</div><div class="com-sub">Durante ' + co.duracionMeses + ' meses</div><div style="font-size:10px;opacity:.7;margin-top:2px">Sin IVA (deducible): ' + fmt(co.reactivosMin) + '/mes</div></div>' +
@@ -162,7 +186,7 @@ function render() {
   // ── FINANCIAMIENTO ───────────────────────────────────────────────────────
   var f = FM.calcFinanciamiento(eq, sMes, sEng);
   box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
-    '<div class="r-lbl" style="color:' + TH.lt + '">💳 Financiamiento</div>' + tagTag + eqImgTag +
+    '<div class="r-lbl" style="color:' + TH.lt + '">' + planIcon.fin + ' Financiamiento</div>' + tagTag + eqImgTag +
     '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
     '<div class="r-ml">Mensualidad</div>' +
     '<div class="r-mv">' + fmt2(f.mensualIVA) + '</div>' +
@@ -170,12 +194,12 @@ function render() {
     '<div class="rr"><span class="rl">Precio equipo</span><span class="rv">' + fmt(eq.p) + '</span></div>' +
     '<div class="rr"><span class="rl">Enganche (' + f.enganchePct + '%)</span><span class="rv">' + fmt(f.engancheIVA) + '</span></div>' +
     '<div class="rr"><span class="rl">Capital financiado</span><span class="rv">' + fmt(f.capital) + '</span></div>' +
-    '<div class="rr"><span class="rl">Tasa mensual</span><span class="rv">' + (f.sinIntereses ? "0% sin intereses 🎉" : (f.tasaMensual*100) + "% mensual") + '</span></div>' +
+    '<div class="rr"><span class="rl">Tasa mensual</span><span class="rv">' + (f.sinIntereses ? "0% sin intereses" : (f.tasaMensual*100) + "% mensual") + '</span></div>' +
     '<div class="rr"><span class="rl">Intereses totales</span><span class="rv" style="color:' + (f.intereses>0 ? "#ffb74d" : "#a5d6a7") + '">' + fmt(f.intereses) + ' s/IVA</span></div>' +
     '<div class="rr"><span class="rl">Total sin IVA (deducible)</span><span class="rv">' + fmt2(f.totalSinIVA) + '</span></div>' +
     '<div class="r-tot"><span class="rtl">Total con IVA</span><span class="rtv">' + fmt2(f.totalIVA) + '</span></div>' +
-    (f.sinIntereses ? '<div class="r-green">🎉 Sin intereses — Financiamiento al 0%</div>' : '') +
-    (eq.nota ? '<div class="r-note">ℹ️ ' + eq.nota + '</div>' : '') +
+    (f.sinIntereses ? '<div class="r-green">' + IC.check + ' Sin intereses — Financiamiento al 0%</div>' : '') +
+    (eq.nota ? '<div class="r-note">' + IC.info + ' ' + eq.nota + '</div>' : '') +
     '<div class="r-cta">' +
     '<button class="r-btn" onclick="openMd()">Solicitar este plan →</button>' +
     '<a class="r-wa" href="' + waLink(wm + ' - Financiamiento ' + f.plazoMeses + ' meses mensualidad ' + fmt2(f.mensual)) + '" target="_blank">' + waSvg() + ' Cotizar por WhatsApp</a>' +
