@@ -51,7 +51,12 @@ El módulo admin del OS (`src/pages/financiamiento/`: Solicitudes/Buró/Contrato
     - Crear request: `POST https://sign.zoho.com/api/v1/requests` multipart → `data` = `{"requests":{"request_name":"..."}}` + `file` = PDF. Respuesta: `requests.request_id` + `requests.actions[0].sign_url`. Header `Authorization: Zoho-oauthtoken <token>`.
     - Webhook: `handleSignWebhook` actualiza estado (firmado/cancelado).
   - **Sub-pasos pendientes**:
-    1. **R4b · contrato PDF en el OS** (lo más grande/sensible · legal): portar `crearGoogleDocContrato_` (GAS líneas ~1789-2131) + pagarés. Definir librería PDF (el OS tiene `generate-pdf`/`quote-pdf`).
+    1. **R4b · contrato PDF en el OS** (lo más grande/sensible · LEGAL). **Blueprint del GAS `crearGoogleDocContrato_`** (líneas ~1789-2131): 3 tipos según plan →
+       - **Financiamiento**: "CONTRATO DE FINANCIAMIENTO MERCANTIL CON RESERVA DE DOMINIO, RECONOCIMIENTO DE ADEUDO Y TÍTULO EJECUTIVO". Carátula: Deudor/RFC/Equipo/Precio total (mensual*plazo+enganche)/Enganche/Monto financiado/Plazo/**interés ord. 2% mensual s/saldos**/**moratorio 5% mensual**/día de pago 5. + cláusulas + **pagarés**.
+       - **Arrendamiento** (renta): "CONTRATO DE ARRENDAMIENTO DE EQUIPO". Carátula: Arrendatario/RFC/Equipo/Vigencia/Renta/Depósito (1 mes)/**tasa 3.6% mensual**.
+       - **Comodato**: "CONTRATO DE COMODATO DE EQUIPO". Carátula: Comodatario + Obligado Solidario (aval)/Equipo/Vigencia (PE 24m)/Compra mín mensual + IVA reactivos/Depósito (3 meses)/mantenimiento incluido.
+       - Arrendador/Acreedor/Comodante = **GRUPO ROHMNOS S. de R.L. de C.V., RFC GRO1903139Z6**, domicilio Calle 8 de Mayo 9, Lomas Manuel Ávila Camacho, CP 53910, Naucalpan, Edo Méx; rep. legal David Antonio Romo Martínez RFC ROMD8901235Z3.
+       - **PENDIENTE leer**: cláusulas completas (1918-2131) + generación de pagarés. **Decisión técnica**: lib PDF (el OS tiene `generate-pdf`/`quote-pdf` — revisar cuál: pdfkit/puppeteer/pdf-lib) y reproducir el texto legal **fiel** (es vinculante → revisión legal recomendada). Output → Storage (`fin-docs/{folio}/contrato.pdf`) → lo consume `fin-firma` (R4a, ya hecho).
     2. **R4a · Netlify `fin-firma`**: token Zoho Sign (env `ZOHO_SIGN_*`, DC com) → crea request con el PDF → guarda request_id/sign_url/estado en `fin_contratos`. Auth: JWT Supabase (como fin-analizar). Registrar en `public/_redirects`.
     3. **R4c · webhook `fin-firma-webhook`**: recibe estado de Zoho Sign → update `fin_contratos`. Registrar en `_redirects` + configurar webhook en Zoho Sign.
     4. **R4d · admin UI**: botón "Generar + enviar a firma" + estado en el drawer de Solicitudes.jsx.
