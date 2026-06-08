@@ -53,7 +53,12 @@ function render() {
   lista.forEach(function (eq) {
     var b = document.createElement("button");
     b.className = "eq" + (sId === eq.id ? " on" : "");
-    b.innerHTML = '<span class="eq-n">' + eq.n + '</span><span class="eq-b">' + eq.m + '</span><span class="eq-p">' + fmt(eq.p) + '</span>';
+    var thumb = '<div style="flex:0 0 46px;width:46px;height:46px;border-radius:8px;background:#fff;border:1px solid var(--border);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden">' +
+      '<span style="font-size:20px;opacity:.4">🔬</span>' +
+      (eq.img ? '<img src="' + eq.img + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff" onerror="this.remove()">' : '') +
+      '</div>';
+    b.innerHTML = '<div style="display:flex;align-items:center;gap:10px">' + thumb +
+      '<div style="flex:1;min-width:0"><span class="eq-n">' + eq.n + '</span><span class="eq-b">' + eq.m + '</span><span class="eq-p">' + fmt(eq.p) + '</span></div></div>';
     b.onclick = function () { sId = eq.id; sMes = (eq.id === 1 ? 4 : 12); sEng = FM.CONFIG.fin.engancheDefault; render(); };
     eg.appendChild(b);
   });
@@ -91,12 +96,15 @@ function render() {
     return;
   }
   var wm = "Hola NORLAB quiero cotizar el equipo " + eq.n + " " + eq.m;
+  var eqImgTag = eq.img
+    ? '<div style="text-align:center;margin:4px 0 12px"><img src="' + eq.img + '" alt="' + eq.n + '" referrerpolicy="no-referrer" style="max-height:96px;max-width:72%;object-fit:contain;background:#fff;border-radius:10px;padding:6px" onerror="this.parentNode.style.display=\'none\'"></div>'
+    : '';
 
   // ── RENTA ────────────────────────────────────────────────────────────────
   if (sTab === "ren") {
     var r = FM.calcRenta(eq);
     box.innerHTML = '<div class="res">' +
-      '<div class="r-lbl">📅 Renta Mensual</div>' +
+      '<div class="r-lbl">📅 Renta Mensual</div>' + eqImgTag +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="r-ml">Renta mensual estimada</div>' +
       '<div class="r-mv">' + fmt2(r.mensualIVA) + '</div>' +
@@ -119,7 +127,7 @@ function render() {
   if (sTab === "com") {
     var co = FM.calcComodato(eq);
     box.innerHTML = '<div class="res">' +
-      '<div class="r-lbl">🤝 Comodato</div>' +
+      '<div class="r-lbl">🤝 Comodato</div>' + eqImgTag +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="z-badge">$0 de adquisición</div>' +
       '<div class="com-box"><div class="com-lbl">Compra mínima mensual de reactivos</div><div class="com-val">' + fmt(co.reactivosMinIVA) + '</div><div class="com-sub">Durante ' + co.duracionMeses + ' meses</div><div style="font-size:10px;opacity:.7;margin-top:2px">Sin IVA (deducible): ' + fmt(co.reactivosMin) + '/mes</div></div>' +
@@ -139,7 +147,7 @@ function render() {
   // ── FINANCIAMIENTO ───────────────────────────────────────────────────────
   var f = FM.calcFinanciamiento(eq, sMes, sEng);
   box.innerHTML = '<div class="res">' +
-    '<div class="r-lbl">💳 Financiamiento</div>' +
+    '<div class="r-lbl">💳 Financiamiento</div>' + eqImgTag +
     '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
     '<div class="r-ml">Mensualidad</div>' +
     '<div class="r-mv">' + fmt2(f.mensualIVA) + '</div>' +
