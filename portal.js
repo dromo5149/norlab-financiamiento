@@ -31,6 +31,13 @@ function setTab(t) {
 }
 
 function render() {
+  // Tinta la pestaña activa con el color de su plan (refuerza la diferenciación)
+  var TAB_AC = { fin: '#1976d2', ren: '#0891b2', com: '#2e9e5b' };
+  ['fin', 'ren', 'com'].forEach(function (x) {
+    var el = document.getElementById('t-' + x);
+    if (el) el.style.color = (x === sTab) ? TAB_AC[x] : '';
+  });
+
   // Category pills
   var cats = ["Todos"].concat(Array.from(new Set(EQ.map(function (e) { return e.c; }))));
   var cf = document.getElementById("cats"); cf.innerHTML = "";
@@ -99,12 +106,20 @@ function render() {
   var eqImgTag = eq.img
     ? '<div style="text-align:center;margin:4px 0 12px"><img src="' + eq.img + '" alt="' + eq.n + '" referrerpolicy="no-referrer" style="max-height:96px;max-width:72%;object-fit:contain;background:#fff;border-radius:10px;padding:6px" onerror="this.parentNode.style.display=\'none\'"></div>'
     : '';
+  // Tema visual por plan (diferencia fin/renta/comodato): acento + tagline.
+  var THEMES = {
+    fin: { ac: '#1976d2', lt: '#90caf9', tag: 'Compra el equipo a plazos — enganche + mensualidades' },
+    ren: { ac: '#0891b2', lt: '#67e8f9', tag: 'Úsalo sin comprarlo — mantenimiento incluido' },
+    com: { ac: '#2e9e5b', lt: '#a5d6a7', tag: '$0 de inversión inicial — pagas reactivos' },
+  };
+  var TH = THEMES[sTab] || THEMES.fin;
+  var tagTag = '<div style="font-size:12px;color:#cfd8e3;font-weight:500;margin:2px 0 14px">' + TH.tag + '</div>';
 
   // ── RENTA ────────────────────────────────────────────────────────────────
   if (sTab === "ren") {
     var r = FM.calcRenta(eq);
-    box.innerHTML = '<div class="res">' +
-      '<div class="r-lbl">📅 Renta Mensual</div>' + eqImgTag +
+    box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
+      '<div class="r-lbl" style="color:' + TH.lt + '">📅 Renta Mensual</div>' + tagTag + eqImgTag +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="r-ml">Renta mensual estimada</div>' +
       '<div class="r-mv">' + fmt2(r.mensualIVA) + '</div>' +
@@ -126,8 +141,8 @@ function render() {
   // ── COMODATO ─────────────────────────────────────────────────────────────
   if (sTab === "com") {
     var co = FM.calcComodato(eq);
-    box.innerHTML = '<div class="res">' +
-      '<div class="r-lbl">🤝 Comodato</div>' + eqImgTag +
+    box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
+      '<div class="r-lbl" style="color:' + TH.lt + '">🤝 Comodato</div>' + tagTag + eqImgTag +
       '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
       '<div class="z-badge">$0 de adquisición</div>' +
       '<div class="com-box"><div class="com-lbl">Compra mínima mensual de reactivos</div><div class="com-val">' + fmt(co.reactivosMinIVA) + '</div><div class="com-sub">Durante ' + co.duracionMeses + ' meses</div><div style="font-size:10px;opacity:.7;margin-top:2px">Sin IVA (deducible): ' + fmt(co.reactivosMin) + '/mes</div></div>' +
@@ -146,8 +161,8 @@ function render() {
 
   // ── FINANCIAMIENTO ───────────────────────────────────────────────────────
   var f = FM.calcFinanciamiento(eq, sMes, sEng);
-  box.innerHTML = '<div class="res">' +
-    '<div class="r-lbl">💳 Financiamiento</div>' + eqImgTag +
+  box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
+    '<div class="r-lbl" style="color:' + TH.lt + '">💳 Financiamiento</div>' + tagTag + eqImgTag +
     '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
     '<div class="r-ml">Mensualidad</div>' +
     '<div class="r-mv">' + fmt2(f.mensualIVA) + '</div>' +
