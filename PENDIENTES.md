@@ -55,8 +55,8 @@ El módulo admin del OS (`src/pages/financiamiento/`: Solicitudes/Buró/Contrato
 - **Fase 2 — UI** del simulador (fotos `product_catalog.image_url`, 3 planes, mobile). Independiente.
 - **Fase 2 — UI** (en curso):
   - ✅ **Fotos de equipo** (commit `ce0aaea`): vista `fin_equipos_web` (fin_equipos + product_catalog.image_url) → `fin-model.js` mapea `img` → `portal.js` thumbnail 46px en tarjetas + foto grande en panel de resultado. 11/17 con foto; resto placeholder 🔬. Cache-bust `v=20260608`.
-  - ⏳ **3 planes diferenciados**: hoy los 3 tabs (fin/renta/comodato) comparten el mismo look; diferenciarlos visualmente (color/badge/copy por plan).
-  - ⏳ **Mobile / wizard limpio**: revisar responsive del simulador + wizard en móvil.
+  - ✅ **3 planes diferenciados** (commit `f8dacc3`): cada plan con acento propio (fin=azul, renta=cyan, comodato=verde) en el panel de resultado (borde superior + etiqueta coloreada + tagline explicativo) + pestaña activa tintada. Cache-bust portal.js `v=20260609`.
+  - ✅ **Mobile simulador** (commit `2ecd1dc`): ≤700px panel no-sticky; ≤480px tarjetas a 1 col, número 42→34px, panel con menos padding. Wizard ya era responsive (grids a 540px, solo max-width). Fase 2 completa.
   - ⚠️ **Seguridad (separado)**: la vista y el fetch del front exponen `costo` y `margen_reactivos` al navegador (ya pasaba antes del wire). `costo` se usa para la "opción de compra" del comodato (precio*0.15 si se quita). Para no filtrar costos: precomputar `opcion_compra` en la vista y dejar de mandar `costo`/`margen` — cambia el número mostrado, confirmar antes.
 
 ## Confirmaciones de negocio abiertas (están en 1 solo lugar de fin-model.js)
