@@ -82,7 +82,8 @@ nav{background:#fff;padding:0 40px;height:68px;display:flex;align-items:center;j
 .tab{flex:1;padding:11px 6px;border:none;background:none;font-size:13px;font-weight:600;color:var(--muted);border-radius:10px;cursor:pointer;transition:all .25s;font-family:inherit;text-align:center;}
 .tab.on{background:#fff;color:var(--blue2);box-shadow:0 2px 10px rgba(0,0,0,.1);}
 .sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
-@media(max-width:700px){.sim-grid{grid-template-columns:1fr;}}
+@media(max-width:700px){.sim-grid{grid-template-columns:1fr;}.sim-r{position:static;}}
+@media(max-width:480px){.eq-grid{grid-template-columns:1fr;}.r-mv{font-size:34px;}.res{padding:24px 18px;}}
 .sim-l{display:flex;flex-direction:column;gap:22px;}
 .fl label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;}
 .cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
