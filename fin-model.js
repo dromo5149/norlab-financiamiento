@@ -24,7 +24,10 @@
   var SB_URL  = 'https://bbkpxpfhxxakwhrbbxww.supabase.co';
   var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJia3B4cGZoeHhha3docmJieHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3OTUyNDgsImV4cCI6MjA4OTM3MTI0OH0.kpKxI6ZLXkRUmy9NkzuBPM9cmSQo8UuTVLv6IrS7qKU';
   // Vista pública fin_equipos_web = fin_equipos (activos) + product_catalog.image_url.
-  var EQ_SOURCE_URL = SB_URL + '/rest/v1/fin_equipos_web?select=sku,nombre,marca,categoria,precio,costo,margen_reactivos,planes,plazo_max,deposito_meses,duracion_comodato,nota,orden,image_url,imagen_url&order=orden.asc';
+  // Seguridad: el front NO recibe costo ni margen_reactivos (la vista ya no los
+  // expone a anon). La opción de compra del comodato viene precomputada en
+  // `opcion_compra` (columna generada = 15% del costo).
+  var EQ_SOURCE_URL = SB_URL + '/rest/v1/fin_equipos_web?select=sku,nombre,marca,categoria,precio,planes,plazo_max,deposito_meses,duracion_comodato,nota,orden,image_url,imagen_url,opcion_compra&order=orden.asc';
 
   // Mapea una fila de `fin_equipos` (claves largas) al shape compacto que
   // consumen portal.js/solicitud.js: {id,n,m,c,p,co,mr,pl,mx,dm,mc,nota,sku}.
@@ -37,8 +40,7 @@
       m:  r.marca || '',
       c:  r.categoria || '',
       p:  Number(r.precio) || 0,
-      co: r.costo != null ? Number(r.costo) : null,
-      mr: r.margen_reactivos != null ? Number(r.margen_reactivos) : null,
+      oc: r.opcion_compra != null ? Number(r.opcion_compra) : null,  // opción de compra comodato (15% costo, precomputado)
       pl: Array.isArray(r.planes) ? r.planes : [],
       mx: r.plazo_max || 24,
       dm: r.deposito_meses || 0,
@@ -87,20 +89,21 @@
   };
 
   // ── Catálogo fallback (si la fuente no responde) ───────────────────────────
-  // Campos: id, n(nombre), m(marca), c(categoría), p(precio s/IVA), co(costo),
-  //   mr(margen reactivos legacy), pl(planes: fin/ren/com), mx(plazo máx),
-  //   dm(depósito en meses, legacy), mc(meses comodato legacy), nota.
+  // Campos: id, n(nombre), m(marca), c(categoría), p(precio s/IVA), pl(planes:
+  //   fin/ren/com/msi), mx(plazo máx), dm(depósito meses, legacy), mc(meses
+  //   comodato legacy), nota. SIN costo/margen (no se exponen al front; offline
+  //   la opción de compra del comodato cae a 15% del precio).
   var EQ_FALLBACK = [
-    {id:1,  n:"BA88A",   m:"Mindray",  c:"Química Clínica", p:39990,   co:30000,   mr:null, pl:["fin"],             mx:6,  dm:0, mc:0,  nota:"0% de interés hasta 4 meses · máximo 6 meses"},
-    {id:2,  n:"AQ-200i", m:"Meril",    c:"Química Clínica", p:184338,  co:131670,  mr:0.40, pl:["fin","com"],       mx:24, dm:3, mc:48, nota:null},
-    {id:3,  n:"DH22",    m:"DYMIND",   c:"Hematología",     p:95000,   co:73000,   mr:0.30, pl:["fin","com"],       mx:24, dm:3, mc:36, nota:null},
-    {id:4,  n:"DH36",    m:"DYMIND",   c:"Hematología",     p:106000,  co:82000,   mr:0.30, pl:["fin","com"],       mx:24, dm:3, mc:36, nota:null},
-    {id:5,  n:"DF55",    m:"DYMIND",   c:"Hematología",     p:205000,  co:160800,  mr:0.30, pl:["fin","com"],       mx:24, dm:3, mc:48, nota:null},
-    {id:6,  n:"DH76",    m:"DYMIND",   c:"Hematología",     p:260000,  co:210000,  mr:0.30, pl:["fin","com"],       mx:24, dm:4, mc:48, nota:null},
-    {id:7,  n:"c-5000",  m:"Poclight", c:"Inmunología",     p:90000,   co:57750,   mr:0.40, pl:["fin","com"],       mx:24, dm:3, mc:36, nota:null},
-    {id:8,  n:"X3",      m:"MAGLUMI",  c:"Inmunología",     p:590150,  co:453962,  mr:0.30, pl:["ren","fin","com"], mx:24, dm:6, mc:60, nota:null},
-    {id:9,  n:"X6",      m:"MAGLUMI",  c:"Inmunología",     p:1388587, co:1068144, mr:0.30, pl:["ren","fin","com"], mx:24, dm:6, mc:60, nota:null},
-    {id:10, n:"X8",      m:"MAGLUMI",  c:"Inmunología",     p:2391289, co:1839453, mr:0.30, pl:["ren","fin","com"], mx:24, dm:6, mc:60, nota:null},
+    {id:1,  n:"BA88A",   m:"Mindray",  c:"Química Clínica", p:39990,   pl:["fin"],             mx:6,  dm:0, mc:0,  nota:"0% de interés hasta 4 meses · máximo 6 meses"},
+    {id:2,  n:"AQ-200i", m:"Meril",    c:"Química Clínica", p:184338,  pl:["fin","com"],       mx:24, dm:3, mc:48, nota:null},
+    {id:3,  n:"DH22",    m:"DYMIND",   c:"Hematología",     p:95000,   pl:["fin","com"],       mx:24, dm:3, mc:36, nota:null},
+    {id:4,  n:"DH36",    m:"DYMIND",   c:"Hematología",     p:106000,  pl:["fin","com"],       mx:24, dm:3, mc:36, nota:null},
+    {id:5,  n:"DF55",    m:"DYMIND",   c:"Hematología",     p:205000,  pl:["fin","com"],       mx:24, dm:3, mc:48, nota:null},
+    {id:6,  n:"DH76",    m:"DYMIND",   c:"Hematología",     p:260000,  pl:["fin","com"],       mx:24, dm:4, mc:48, nota:null},
+    {id:7,  n:"c-5000",  m:"Poclight", c:"Inmunología",     p:90000,   pl:["fin","com"],       mx:24, dm:3, mc:36, nota:null},
+    {id:8,  n:"X3",      m:"MAGLUMI",  c:"Inmunología",     p:590150,  pl:["ren","fin","com"], mx:24, dm:6, mc:60, nota:null},
+    {id:9,  n:"X6",      m:"MAGLUMI",  c:"Inmunología",     p:1388587, pl:["ren","fin","com"], mx:24, dm:6, mc:60, nota:null},
+    {id:10, n:"X8",      m:"MAGLUMI",  c:"Inmunología",     p:2391289, pl:["ren","fin","com"], mx:24, dm:6, mc:60, nota:null},
   ];
 
   // ── Formateadores MXN ──────────────────────────────────────────────────────
@@ -245,7 +248,8 @@
     return {
       plan: 'com', reactivosMin: reactivosMin, reactivosMinIVA: iva(reactivosMin),
       deposito: deposito, depositoMeses: c.depositoMeses, duracionMeses: c.mesesLiquidacion,
-      opcionCompra: (eq.co || eq.p) * c.opcionCompraPct,
+      // Precomputado en la vista (no exponemos costo al front). Fallback: 15% del precio.
+      opcionCompra: (eq.oc != null ? eq.oc : eq.p * c.opcionCompraPct),
     };
   }
 
