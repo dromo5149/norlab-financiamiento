@@ -24,7 +24,7 @@
   var SB_URL  = 'https://bbkpxpfhxxakwhrbbxww.supabase.co';
   var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJia3B4cGZoeHhha3docmJieHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3OTUyNDgsImV4cCI6MjA4OTM3MTI0OH0.kpKxI6ZLXkRUmy9NkzuBPM9cmSQo8UuTVLv6IrS7qKU';
   // Vista pública fin_equipos_web = fin_equipos (activos) + product_catalog.image_url.
-  var EQ_SOURCE_URL = SB_URL + '/rest/v1/fin_equipos_web?select=sku,nombre,marca,categoria,precio,costo,margen_reactivos,planes,plazo_max,deposito_meses,duracion_comodato,nota,orden,image_url&order=orden.asc';
+  var EQ_SOURCE_URL = SB_URL + '/rest/v1/fin_equipos_web?select=sku,nombre,marca,categoria,precio,costo,margen_reactivos,planes,plazo_max,deposito_meses,duracion_comodato,nota,orden,image_url,imagen_url&order=orden.asc';
 
   // Mapea una fila de `fin_equipos` (claves largas) al shape compacto que
   // consumen portal.js/solicitud.js: {id,n,m,c,p,co,mr,pl,mx,dm,mc,nota,sku}.
@@ -45,7 +45,8 @@
       mc: r.duracion_comodato || 0,
       nota: r.nota || null,
       sku: r.sku,
-      img: r.image_url || null,
+      // Foto: maestro (product_catalog) y, como fallback, la del Sheet de Equipos.
+      img: r.image_url || r.imagen_url || null,
     };
   }
 

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha de equipo · NORLAB</title>
+<meta name="description" content="Ficha técnica del equipo de laboratorio · NORLAB. Información, parámetros y opciones de financiamiento.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0b1f3a; --navy2:#132d52; --blue:#1976d2; --cyan:#0891b2;
+    --green:#2e9e5b; --violet:#7c3aed; --bg:#f7f9fc; --border:#e8edf5;
+    --text:#0b1f3a; --muted:#5a6b85;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  /* Nav */
+  .nav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{font-weight:700;font-size:18px;letter-spacing:-.022em;color:var(--navy);display:flex;align-items:center;gap:8px}
+  .brand b{color:var(--blue)}
+  .nav a.back{font-size:13px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px}
+  .nav a.back:hover{color:var(--blue)}
+  /* Hero */
+  .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:34px;align-items:center;padding:42px 0 30px}
+  .hero-img{background:#fff;border:1px solid var(--border);border-radius:18px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 10px 30px rgba(11,31,58,.06)}
+  .hero-img img{width:100%;height:100%;object-fit:contain;padding:18px}
+  .badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--cyan);background:#0891b212;border:1px solid #0891b233;border-radius:999px;padding:4px 11px;margin-bottom:12px}
+  h1{font-size:34px;line-height:1.12;letter-spacing:-.022em;color:var(--navy);margin-bottom:4px}
+  .brandname{font-size:15px;color:var(--muted);font-weight:600;margin-bottom:14px}
+  .price{font-size:15px;color:var(--muted);margin-bottom:6px}
+  .price b{font-size:26px;color:var(--navy);font-weight:700}
+  .desde{font-size:13px;color:var(--green);font-weight:600;margin-bottom:18px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;border-radius:11px;padding:12px 20px;border:1px solid transparent;cursor:pointer;transition:filter .15s, box-shadow .15s}
+  .btn:focus-visible{outline:none;box-shadow:0 0 0 3px #1976d255}
+  .btn-pri{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(25,118,210,.28)}
+  .btn-pri:hover{filter:brightness(1.06)}
+  .btn-wa{background:#fff;color:var(--green);border-color:#2e9e5b44}
+  .btn-wa:hover{background:#2e9e5b0c}
+  /* Sections */
+  .sec{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;margin:14px 0;box-shadow:0 4px 16px rgba(11,31,58,.04)}
+  .sec h2{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .sec p{font-size:15px;color:#26334a}
+  .params{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:13px;font-weight:500;color:var(--navy2);background:#1976d20d;border:1px solid var(--border);border-radius:9px;padding:7px 12px}
+  .stat{display:flex;align-items:baseline;gap:8px}
+  .stat b{font-size:30px;color:var(--blue);font-weight:700;letter-spacing:-.02em}
+  .video-wrap{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000}
+  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  /* Planes */
+  .planes{display:flex;flex-wrap:wrap;gap:10px}
+  .plan{flex:1 1 180px;border:1px solid var(--border);border-radius:13px;padding:16px;border-top:4px solid var(--blue)}
+  .plan .pn{font-weight:700;font-size:14px;color:var(--navy);margin-bottom:3px}
+  .plan .pv{font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-.02em}
+  .plan .ps{font-size:12px;color:var(--muted);margin-top:2px}
+  .empty-note{font-size:13.5px;color:var(--muted);font-style:italic}
+  .foot{text-align:center;color:var(--muted);font-size:12px;padding:34px 0}
+  /* Mobile */
+  @media(max-width:760px){
+    .hero{grid-template-columns:1fr;gap:20px;padding:26px 0 18px}
+    h1{font-size:27px}
+    .hero-img{aspect-ratio:3/2}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap nav-in">
+    <a class="brand" href="/">NOR<b>LAB</b> · Financiamiento</a>
+    <a class="back" href="/">‹ Volver al simulador</a>
+  </div></nav>
+
+  <main class="wrap" id="app">
+    <div style="padding:80px 0;text-align:center;color:var(--muted)">Cargando ficha…</div>
+  </main>
+
+  <div class="foot wrap">NORLAB · Equipos para laboratorio clínico · Precios + IVA, sujetos a propuesta formal.</div>
+
+<script src="fin-model.js?v=20260611msi2"></script>
+<script>
+(function(){
+  var FM = window.FinModel;
+  var SB='https://bbkpxpfhxxakwhrbbxww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJia3B4cGZoeHhha3docmJieHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3OTUyNDgsImV4cCI6MjA4OTM3MTI0OH0.kpKxI6ZLXkRUmy9NkzuBPM9cmSQo8UuTVLv6IrS7qKU';
+  var fmt=FM.fmt, fmt2=FM.fmt2;
+  var app=document.getElementById('app');
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+
+  var FLASK='<svg width="74" height="74" viewBox="0 0 24 24" fill="none" stroke="#c3cee0" stroke-width="1.4"><path d="M9 3h6M10 3v5.5L5 17a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3L14 8.5V3"/></svg>';
+
+  var qs=new URLSearchParams(location.search);
+  var sku=(qs.get('sku')||'').trim();
+  if(!sku){ return fail('Falta el equipo. Vuelve al <a href="/" style="color:var(--blue)">simulador</a>.'); }
+
+  function fail(msg){ app.innerHTML='<div style="padding:70px 0;text-align:center;color:var(--muted)">'+msg+'</div>'; }
+
+  function youtubeEmbed(url){
+    var m=String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+    return m? 'https://www.youtube.com/embed/'+m[1] : null;
+  }
+
+  fetch(SB+'/rest/v1/fin_equipos_web?sku=eq.'+encodeURIComponent(sku)+'&select=sku,nombre,marca,categoria,precio,planes,plazo_max,nota,orden,image_url,imagen_url,descripcion,parametros,throughput,video_url&limit=1',
+    {headers:{apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json'}})
+    .then(function(r){return r.ok?r.json():[];})
+    .then(function(d){ if(!d||!d.length) return fail('Equipo no encontrado. Vuelve al <a href="/" style="color:var(--blue)">simulador</a>.'); render(d[0]); })
+    .catch(function(){ fail('No se pudo cargar la ficha. Intenta de nuevo.'); });
+
+  function render(e){
+    document.title = e.nombre + ' · NORLAB';
+    var img = e.image_url || e.imagen_url || null;
+    var pl = Array.isArray(e.planes)?e.planes:[];
+    var eqCalc = { p:Number(e.precio)||0, mx:e.plazo_max||12, id:e.orden, pl:pl, co:null };
+
+    // "Desde $X/mes" — usa MSI si está, si no financiamiento.
+    var desde='';
+    if(pl.indexOf('msi')>=0){
+      var plz=FM.plazosMSI(eqCalc); var n=plz[plz.length-1]||12;
+      var ms=FM.calcMSI(eqCalc,n,40);
+      desde='Desde '+fmt2(ms.mensualIVA)+'/mes a '+n+' meses sin intereses';
+    } else if(pl.indexOf('fin')>=0){
+      var f=FM.calcFinanciamiento(eqCalc, Math.min(eqCalc.mx,24), 30);
+      desde='Desde '+fmt2(f.mensualIVA)+'/mes ('+f.plazoMeses+' meses)';
+    }
+
+    // Planes disponibles → tarjetas
+    var planCards='';
+    var PN={fin:'Financiamiento',msi:'Meses sin intereses',ren:'Renta',com:'Comodato'};
+    var PC={fin:'#1976d2',msi:'#7c3aed',ren:'#0891b2',com:'#2e9e5b'};
+    pl.forEach(function(code){
+      var v='',s='';
+      try{
+        if(code==='fin'){ var f=FM.calcFinanciamiento(eqCalc,Math.min(eqCalc.mx,24),30); v=fmt2(f.mensualIVA)+'/mes'; s=f.plazoMeses+' meses · '+(f.sinIntereses?'0%':'2% mensual'); }
+        else if(code==='msi'){ var plz=FM.plazosMSI(eqCalc); var n=plz[plz.length-1]||12; var m=FM.calcMSI(eqCalc,n,40); v=fmt2(m.mensualIVA)+'/mes'; s='3/6/'+n+' meses · 0% interés'; }
+        else if(code==='ren'){ var r=FM.calcRenta(eqCalc); v=fmt2(r.mensualIVA)+'/mes'; s='Mantenimiento incluido'; }
+        else if(code==='com'){ var c=FM.calcComodato(eqCalc); v=fmt(c.reactivosMinIVA)+'/mes'; s='Compra mín. reactivos · $0 inicial'; }
+      }catch(_){}
+      if(!PN[code]) return;
+      planCards+='<div class="plan" style="border-top-color:'+PC[code]+'"><div class="pn" style="color:'+PC[code]+'">'+PN[code]+'</div><div class="pv">'+(v||'—')+'</div><div class="ps">'+s+'</div></div>';
+    });
+
+    // Secciones opcionales (solo si hay dato)
+    var secDesc = e.descripcion ? sec('Descripción','<p>'+esc(e.descripcion).replace(/\n/g,'<br>')+'</p>') : '';
+    var secParam='';
+    if(e.parametros){
+      var items=String(e.parametros).split(/[,\n;]+/).map(function(x){return x.trim();}).filter(Boolean);
+      secParam = sec('Parámetros / analitos', '<div class="params">'+items.map(function(x){return '<span class="chip">'+esc(x)+'</span>';}).join('')+'</div>');
+    }
+    var secThru = e.throughput ? sec('Capacidad', '<div class="stat"><b>'+esc(e.throughput)+'</b></div>') : '';
+    var secVid='';
+    if(e.video_url){
+      var emb=youtubeEmbed(e.video_url);
+      secVid = sec('Video', emb? '<div class="video-wrap"><iframe src="'+emb+'" allowfullscreen loading="lazy"></iframe></div>' : '<a class="btn btn-wa" href="'+esc(e.video_url)+'" target="_blank" rel="noreferrer">▶ Ver video</a>');
+    }
+    var fichaPendiente = (!e.descripcion && !e.parametros && !e.throughput && !e.video_url)
+      ? '<div class="sec"><p class="empty-note">Ficha técnica detallada en preparación. Mientras tanto, cotiza o pide la información completa por WhatsApp.</p></div>' : '';
+
+    var wa='https://wa.me/525611202177?text='+encodeURIComponent('Hola NORLAB, quiero información del equipo '+e.nombre+' '+(e.marca||''));
+    var solicitudHref='solicitud.html?equipo='+encodeURIComponent(e.nombre+' · '+(e.marca||''))+'&precio='+encodeURIComponent(e.precio||0);
+
+    app.innerHTML =
+      '<section class="hero">'+
+        '<div class="hero-img">'+(img
+          ? '<img src="'+esc(img)+'" alt="'+esc(e.nombre)+'" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
+            + '<div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">'+FLASK+'</div>'
+          : FLASK)+'</div>'+
+        '<div>'+
+          (e.categoria?'<span class="badge">'+esc(e.categoria)+'</span>':'')+
+          '<h1>'+esc(e.nombre)+'</h1>'+
+          (e.marca?'<div class="brandname">'+esc(e.marca)+'</div>':'')+
+          '<div class="price"><b>'+fmt(e.precio)+'</b> + IVA</div>'+
+          (desde?'<div class="desde">'+desde+'</div>':'')+
+          '<div class="cta-row">'+
+            '<a class="btn btn-pri" href="'+solicitudHref+'">Solicitar financiamiento →</a>'+
+            '<a class="btn btn-wa" href="'+wa+'" target="_blank" rel="noreferrer">Cotizar por WhatsApp</a>'+
+          '</div>'+
+        '</div>'+
+      '</section>'+
+      (planCards? sec('Opciones de pago','<div class="planes">'+planCards+'</div>') : '')+
+      secDesc + secParam + secThru + secVid + fichaPendiente +
+      (e.nota? '<div class="sec"><p class="empty-note">'+esc(e.nota)+'</p></div>':'');
+  }
+
+  function sec(title,inner){ return '<section class="sec"><h2>'+title+'</h2>'+inner+'</section>'; }
+})();
+</script>
+</body>
+</html>

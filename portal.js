@@ -152,7 +152,8 @@ function renderResult() {
     msi: { ac: '#7c3aed', lt: '#c4b5fd', tag: 'Meses sin intereses — 0% · pagas justo el precio' },
   };
   var TH = THEMES[sTab] || THEMES.fin;
-  var tagTag = '<div style="font-size:12px;color:#cfd8e3;font-weight:500;margin:2px 0 14px">' + TH.tag + '</div>';
+  var tagTag = '<div style="font-size:12px;color:#cfd8e3;font-weight:500;margin:2px 0 6px">' + TH.tag + '</div>' +
+    (eq.sku ? '<a href="equipo.html?sku=' + encodeURIComponent(eq.sku) + '" style="display:inline-block;font-size:11.5px;color:#aebfd6;text-decoration:underline;margin:0 0 14px">Ver ficha técnica del equipo →</a>' : '');
 
   // ── RENTA ────────────────────────────────────────────────────────────────
   if (sTab === "ren") {
