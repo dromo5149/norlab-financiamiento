@@ -152,8 +152,8 @@ function renderResult() {
     msi: { ac: '#7c3aed', lt: '#c4b5fd', tag: 'Meses sin intereses — 0% · pagas justo el precio' },
   };
   var TH = THEMES[sTab] || THEMES.fin;
-  var tagTag = '<div style="font-size:12px;color:#cfd8e3;font-weight:500;margin:2px 0 6px">' + TH.tag + '</div>' +
-    (eq.sku ? '<a href="equipo.html?sku=' + encodeURIComponent(eq.sku) + '" style="display:inline-block;font-size:11.5px;color:#aebfd6;text-decoration:underline;margin:0 0 14px">Ver ficha técnica del equipo →</a>' : '');
+  var tagTag = '<div style="font-size:12px;color:#cfd8e3;font-weight:500;margin:2px 0 8px">' + TH.tag + '</div>' +
+    (eq.sku ? '<a href="equipo.html?sku=' + encodeURIComponent(eq.sku) + '" style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#fff;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;margin:0 0 14px;text-decoration:none">' + IC.info + ' Ver ficha del equipo →</a>' : '');
 
   // ── RENTA ────────────────────────────────────────────────────────────────
   if (sTab === "ren") {
