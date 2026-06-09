@@ -8,6 +8,7 @@ const MARGIN_COM = 0.35; // margen en reactivos comodato
 
 const PLAN_HINTS = {
   fin: 'Adquieres el equipo en pagos fijos. Es tuyo al finalizar.',
+  msi: 'Meses sin intereses (0%): pagas el precio del equipo en 3, 6 o 12 mensualidades iguales. Enganche minimo 40%. Es tuyo al finalizar.',
   ren: 'Renta mensual fija. Incluye mantenimiento preventivo. Sin enganche. Instalacion se cotiza por separado.',
   com: 'El equipo se paga con la compra minima mensual de reactivos. Punto de equilibrio en 24 meses. Instalacion se cotiza por separado.'
 };
@@ -102,7 +103,7 @@ function populateEquipos(list){
         var ps=document.getElementById('p_plan'),pl=(p.get('plan')||'').toLowerCase();
         for(var j=0;j<ps.options.length;j++){
           var code=ps.options[j].value;
-          if(code&&pl.indexOf(code==='fin'?'finan':code==='ren'?'renta':code==='com'?'comod':'xx')>-1){ps.value=code;onPlanChange();break;}
+          if(code&&pl.indexOf(code==='fin'?'finan':code==='ren'?'renta':code==='com'?'comod':code==='msi'?'sin interes':'xx')>-1){ps.value=code;onPlanChange();break;}
         }
       },80);
     }
@@ -134,7 +135,7 @@ function onEquipoChange(){
   }
 
   ps.disabled=false;
-  var planNames={fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'};
+  var planNames={fin:'Financiamiento',msi:'Meses sin intereses',ren:'Renta mensual',com:'Comodato'};
   selEq.pl.forEach(function(code){
     var o=document.createElement('option');o.value=code;o.textContent=(planNames[code]||code);ps.appendChild(o);
   });
@@ -158,6 +159,17 @@ function onPlanChange(){
     FM.plazosFin(selEq).forEach(function(m){
       var o=document.createElement('option');o.value=m;o.textContent=m+' meses';ps2.appendChild(o);
     });
+    calcPreview();
+
+  }else if(code==='msi'){
+    // Meses sin intereses: plazos 3/6/12, enganche mínimo 40%, 0% interés.
+    pw.style.display='flex';ew.style.display='flex';mw.style.display='flex';
+    if(mantWrap)mantWrap.style.display='none';
+    var psM=document.getElementById('p_plazo');psM.innerHTML='';
+    FM.plazosMSI(selEq).forEach(function(m){
+      var o=document.createElement('option');o.value=m;o.textContent=m+' meses';psM.appendChild(o);
+    });
+    if(curEngPct<FM.CONFIG.msi.engancheMin) curEngPct=FM.CONFIG.msi.engancheDefault;
     calcPreview();
 
   }else if(code==='ren'){
@@ -197,14 +209,16 @@ function onPlanChange(){
 }
 function calcPreview(){
   if(!selEq)return;
+  var code=document.getElementById('p_plan').value;
   var m=parseInt(document.getElementById('p_plazo').value)||12;
   // FinModel honra el enganche elegido en el simulador (curEngPct) — antes el
   // wizard lo forzaba a 30% e ignoraba lo que el cliente había configurado.
-  var f=FM.calcFinanciamiento(selEq, m, curEngPct);
+  // MSI usa calcMSI (0% interés, enganche mínimo 40%).
+  var f = (code==='msi') ? FM.calcMSI(selEq, m, curEngPct) : FM.calcFinanciamiento(selEq, m, curEngPct);
   curEngancheNum = f.engancheIVA;
   curMensualNum  = f.mensualIVA;
   document.getElementById('p_enganche').value='$'+Math.round(f.engancheIVA).toLocaleString('es-MX')+' ('+f.enganchePct+'%)';
-  document.getElementById('p_mensual').value='$'+f.mensualIVA.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('p_mensual').value='$'+f.mensualIVA.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})+(code==='msi'?' · 0% interés':'');
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────

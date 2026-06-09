@@ -59,6 +59,16 @@
       engancheMin: 10,
       engancheMax: 60,
     },
+    // MSI · meses sin intereses (0%) para equipos marcados con plan "msi".
+    // David (2026-06-08): plazos 3/6/12, enganche mínimo 40%. El cliente paga
+    // (precio − enganche) / N, sin sobrecosto. NORLAB absorbe el costo financiero
+    // (por eso solo para ciertos equipos, marcados en el Sheet maestro).
+    msi: {
+      plazos: [3, 6, 12],
+      engancheMin: 40,       // %
+      engancheDefault: 40,
+      engancheMax: 60,
+    },
     // ⚠️ CONFIRMAR con David — hoy el código se contradecía (4% / 3.6% / 3.5%).
     renta: {
       tasaMensual: 0.04,        // 4% del precio (incluye mantenimiento preventivo)
@@ -185,6 +195,34 @@
     };
   }
 
+  // ── 1b) MSI · MESES SIN INTERESES (0%) ──────────────────────────────────────
+  // Solo para equipos cuyo `pl` incluye "msi". mensual = (precio − enganche)/N,
+  // sin intereses. Enganche mínimo 40% (CONFIG.msi.engancheMin).
+  function plazosMSI(eq) {
+    var plz = CONFIG.msi.plazos.slice();
+    if (!eq) return plz;
+    // No ofrecer un plazo MSI mayor al plazo máximo del equipo.
+    return plz.filter(function (m) { return m <= (eq.mx || 12); });
+  }
+  function calcMSI(eq, plazoMeses, enganchePct) {
+    var p = eq.p;
+    var ep = (enganchePct != null ? enganchePct : CONFIG.msi.engancheDefault);
+    if (ep < CONFIG.msi.engancheMin) ep = CONFIG.msi.engancheMin;   // piso 40%
+    if (ep > CONFIG.msi.engancheMax) ep = CONFIG.msi.engancheMax;
+    var plz = plazosMSI(eq);
+    var m = (plazoMeses && plz.indexOf(plazoMeses) >= 0) ? plazoMeses : plz[0];
+    var enganche = p * ep / 100;
+    var capital  = p - enganche;
+    var mensual  = capital / m;            // 0% interés
+    return {
+      plan: 'msi', plazoMeses: m, enganchePct: ep, tasaMensual: 0,
+      enganche: enganche, capital: capital, mensual: mensual, intereses: 0,
+      totalSinIVA: p,                       // sin sobrecosto: el total = precio
+      engancheIVA: iva(enganche), mensualIVA: iva(mensual), totalIVA: iva(p),
+      sinIntereses: true,
+    };
+  }
+
   // ── 2) RENTA ───────────────────────────────────────────────────────────────
   function calcRenta(eq) {
     var mensual = eq.p * CONFIG.renta.tasaMensual;
@@ -220,7 +258,9 @@
     insertSolicitud: insertSolicitud,
     uploadDoc: uploadDoc,
     plazosFin: plazosFin,
+    plazosMSI: plazosMSI,
     calcFinanciamiento: calcFinanciamiento,
+    calcMSI: calcMSI,
     calcRenta: calcRenta,
     calcComodato: calcComodato,
   };

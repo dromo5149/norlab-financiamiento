@@ -20,8 +20,9 @@ var IC = {
   flask: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9bb0c9" stroke-width="1.7"><path d="M9 3h6M10 3v5.5L5 17a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3L14 8.5V3"/></svg>',
   check: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
   info:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  msi:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>',
 };
-var planIcon = { fin: IC.fin, ren: IC.ren, com: IC.com };
+var planIcon = { fin: IC.fin, ren: IC.ren, com: IC.com, msi: IC.msi };
 
 var sTab = "fin", sId = null, sMes = 12, sEng = FM.CONFIG.fin.engancheDefault, sCat = "Todos";
 
@@ -35,7 +36,9 @@ function faq(btn) {
 // ── Tabs (financiamiento / renta / comodato) ──────────────────────────────────
 function setTab(t) {
   sTab = t; sId = null;
-  ["fin","ren","com"].forEach(function (x) {
+  // Al entrar a MSI, el enganche mínimo es 40% (sube el slider si venía menor).
+  if (t === "msi" && sEng < FM.CONFIG.msi.engancheMin) sEng = FM.CONFIG.msi.engancheDefault;
+  ["fin","ren","com","msi"].forEach(function (x) {
     var el = document.getElementById("t-" + x); if (el) el.classList.toggle("on", x === t);
   });
   render();
@@ -43,8 +46,8 @@ function setTab(t) {
 
 function render() {
   // Tinta la pestaña activa con el color de su plan (refuerza la diferenciación)
-  var TAB_AC = { fin: '#1976d2', ren: '#0891b2', com: '#2e9e5b' };
-  ['fin', 'ren', 'com'].forEach(function (x) {
+  var TAB_AC = { fin: '#1976d2', ren: '#0891b2', com: '#2e9e5b', msi: '#7c3aed' };
+  ['fin', 'ren', 'com', 'msi'].forEach(function (x) {
     var el = document.getElementById('t-' + x);
     if (el) el.style.color = (x === sTab) ? TAB_AC[x] : '';
   });
@@ -65,6 +68,7 @@ function render() {
     if (sCat !== "Todos" && eq.c !== sCat) return false;
     if (sTab === "ren" && (!eq.pl || eq.pl.indexOf("ren") < 0)) return false;
     if (sTab === "com" && (!eq.pl || eq.pl.indexOf("com") < 0)) return false;
+    if (sTab === "msi" && (!eq.pl || eq.pl.indexOf("msi") < 0)) return false;
     return true;
   });
   var eg = document.getElementById("eqs"); eg.innerHTML = "";
@@ -81,14 +85,17 @@ function render() {
     eg.appendChild(b);
   });
 
-  // Plazo & Enganche (solo financiamiento)
+  // Plazo & Enganche (financiamiento y MSI — ambos a plazos con enganche)
   var eq = EQ.find(function (e) { return e.id === sId; });
   var fp = document.getElementById("fPlazo"), fe = document.getElementById("fEng");
-  if (sTab !== "fin") {
+  var isPlazoPlan = (sTab === "fin" || sTab === "msi");
+  if (!isPlazoPlan) {
     fp.style.display = "none"; fe.style.display = "none";
   } else {
     fp.style.display = "block";
-    var opts = FM.plazosFin(eq);
+    var opts = (sTab === "msi") ? FM.plazosMSI(eq) : FM.plazosFin(eq);
+    // Asegura que sMes sea un plazo válido del plan actual (MSI = 3/6/12).
+    if (eq && opts.indexOf(sMes) < 0) sMes = opts[0];
     var pg = document.getElementById("pzs"); pg.innerHTML = "";
     opts.forEach(function (m) {
       var b = document.createElement("button");
@@ -97,19 +104,26 @@ function render() {
       b.onclick = function () { sMes = m; render(); };
       pg.appendChild(b);
     });
-    fe.style.display = (eq && eq.id !== 1) ? "block" : "none";
-    if (eq && eq.id !== 1) {
+    // BA88A (id 1) en financiamiento no lleva enganche; MSI SIEMPRE lleva (mín 40%).
+    var noEng = (sTab === "fin" && eq && eq.id === 1);
+    fe.style.display = (eq && !noEng) ? "block" : "none";
+    if (eq && !noEng) {
+      var engMin = (sTab === "msi") ? FM.CONFIG.msi.engancheMin : FM.CONFIG.fin.engancheMin;
+      var engMax = (sTab === "msi") ? FM.CONFIG.msi.engancheMax : FM.CONFIG.fin.engancheMax;
+      if (sEng < engMin) sEng = engMin;
+      if (sEng > engMax) sEng = engMax;
+      var engHint = (sTab === "msi") ? "  ·  mín 40%" : "";
       var engLbl = document.getElementById("engLbl");
-      engLbl.textContent = "Enganche: " + sEng + "% — " + fmt(eq.p * sEng / 100);
+      engLbl.textContent = "Enganche: " + sEng + "% — " + fmt(eq.p * sEng / 100) + engHint;
       var sl = document.getElementById("engS");
-      sl.min = FM.CONFIG.fin.engancheMin; sl.max = FM.CONFIG.fin.engancheMax;
+      sl.min = engMin; sl.max = engMax;
       sl.value = sEng;
       // BUGFIX: el slider sólo actualiza label + resultado (NO render() completo).
       // Antes render() reconstruía equipos/categorías/plazos a media-arrastrada y
       // el navegador soltaba el drag del slider → "no dejaba subir el enganche".
       sl.oninput = function (ev) {
         sEng = parseInt(ev.target.value, 10);
-        engLbl.textContent = "Enganche: " + sEng + "% — " + fmt(eq.p * sEng / 100);
+        engLbl.textContent = "Enganche: " + sEng + "% — " + fmt(eq.p * sEng / 100) + engHint;
         renderResult();
       };
     }
@@ -135,6 +149,7 @@ function renderResult() {
     fin: { ac: '#1976d2', lt: '#90caf9', tag: 'Compra el equipo a plazos — enganche + mensualidades' },
     ren: { ac: '#0891b2', lt: '#67e8f9', tag: 'Úsalo sin comprarlo — mantenimiento incluido' },
     com: { ac: '#2e9e5b', lt: '#a5d6a7', tag: '$0 de inversión inicial — pagas reactivos' },
+    msi: { ac: '#7c3aed', lt: '#c4b5fd', tag: 'Meses sin intereses — 0% · pagas justo el precio' },
   };
   var TH = THEMES[sTab] || THEMES.fin;
   var tagTag = '<div style="font-size:12px;color:#cfd8e3;font-weight:500;margin:2px 0 14px">' + TH.tag + '</div>';
@@ -183,6 +198,31 @@ function renderResult() {
     return;
   }
 
+  // ── MSI · MESES SIN INTERESES (0%) ───────────────────────────────────────
+  if (sTab === "msi") {
+    var ms = FM.calcMSI(eq, sMes, sEng);
+    box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
+      '<div class="r-lbl" style="color:' + TH.lt + '">' + planIcon.msi + ' Meses sin intereses</div>' + tagTag + eqImgTag +
+      '<div class="r-eq">' + eq.n + ' · ' + eq.m + '</div>' +
+      '<div class="r-ml">Mensualidad (0% interés)</div>' +
+      '<div class="r-mv">' + fmt2(ms.mensualIVA) + '</div>' +
+      '<div class="r-ms">Incluye IVA · ' + ms.plazoMeses + ' pagos iguales</div>' +
+      '<div class="rr"><span class="rl">Precio equipo</span><span class="rv">' + fmt(eq.p) + '</span></div>' +
+      '<div class="rr"><span class="rl">Enganche (' + ms.enganchePct + '%)</span><span class="rv">' + fmt(ms.engancheIVA) + '</span></div>' +
+      '<div class="rr"><span class="rl">A diferir a ' + ms.plazoMeses + ' meses</span><span class="rv">' + fmt(ms.capital) + '</span></div>' +
+      '<div class="rr"><span class="rl">Intereses</span><span class="rv" style="color:#a5d6a7">$0 — 0%</span></div>' +
+      '<div class="rr"><span class="rl">Total sin IVA (deducible)</span><span class="rv">' + fmt2(ms.totalSinIVA) + '</span></div>' +
+      '<div class="r-tot"><span class="rtl">Total con IVA</span><span class="rtv">' + fmt2(ms.totalIVA) + '</span></div>' +
+      '<div class="r-green">' + IC.check + ' Sin intereses — pagas exactamente el precio del equipo</div>' +
+      (eq.nota ? '<div class="r-note">' + IC.info + ' ' + eq.nota + '</div>' : '') +
+      '<div class="r-cta">' +
+      '<button class="r-btn" onclick="openMd()">Solicitar MSI →</button>' +
+      '<a class="r-wa" href="' + waLink(wm + ' - Meses sin intereses ' + ms.plazoMeses + ' meses, mensualidad ' + fmt2(ms.mensual)) + '" target="_blank">' + waSvg() + ' Cotizar por WhatsApp</a>' +
+      '<div class="r-sub">Respuesta en menos de 24 hrs</div>' +
+      '</div></div>';
+    return;
+  }
+
   // ── FINANCIAMIENTO ───────────────────────────────────────────────────────
   var f = FM.calcFinanciamiento(eq, sMes, sEng);
   box.innerHTML = '<div class="res" style="border-top:5px solid ' + TH.ac + '">' +
@@ -217,6 +257,11 @@ function openMd() {
     planName = "Financiamiento"; plazo = String(f.plazoMeses); engPct = String(f.enganchePct);
     mensual = fmt2(f.mensualIVA) + " c/IVA";
     enganche = fmt(f.engancheIVA) + " (" + f.enganchePct + "%)";
+  } else if (sTab === "msi") {
+    var ms = FM.calcMSI(eq, sMes, sEng);
+    planName = "Meses sin intereses"; plazo = String(ms.plazoMeses); engPct = String(ms.enganchePct);
+    mensual = fmt2(ms.mensualIVA) + " c/IVA (0% interés)";
+    enganche = fmt(ms.engancheIVA) + " (" + ms.enganchePct + "%)";
   } else if (sTab === "ren") {
     var r = FM.calcRenta(eq);
     planName = "Renta"; mensual = fmt2(r.mensualIVA) + " c/IVA";
