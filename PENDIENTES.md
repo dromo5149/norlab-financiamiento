@@ -75,6 +75,13 @@ El módulo admin del OS (`src/pages/financiamiento/`: Solicitudes/Buró/Contrato
   - ✅ **Mobile simulador** (commit `2ecd1dc`): ≤700px panel no-sticky; ≤480px tarjetas a 1 col, número 42→34px, panel con menos padding. Wizard ya era responsive (grids a 540px, solo max-width). Fase 2 completa.
   - ⚠️ **Seguridad (separado)**: la vista y el fetch del front exponen `costo` y `margen_reactivos` al navegador (ya pasaba antes del wire). `costo` se usa para la "opción de compra" del comodato (precio*0.15 si se quita). Para no filtrar costos: precomputar `opcion_compra` en la vista y dejar de mandar `costo`/`margen` — cambia el número mostrado, confirmar antes.
 
+## MSI · Meses sin intereses (2026-06-08 · HECHO + DEPLOYADO)
+- **Modelo** (`fin-model.js`): `CONFIG.msi` = plazos **3/6/12**, enganche **mínimo 40%**, 0% interés. `calcMSI()` → mensual = (precio − enganche)/N, total = precio (sin sobrecosto). `plazosMSI()`.
+- **Simulador** (`portal.js`): 4ª pestaña **"Sin intereses"** (acento morado), visible/usable sólo si el equipo tiene `"msi"` en `planes`. Plazo 3/6/12 + slider enganche piso 40% + panel con badge 0%. `openMd()` pasa el plan al wizard.
+- **Wizard** (`solicitud.js`): mapea plan "Meses sin intereses", dropdown/hints/preview con `calcMSI`. Cache-bust `v=20260611msi`.
+- **Elegibilidad ("ciertos equipos")**: se controla desde el **Sheet maestro NORLAB-Equipos · pestaña Equipos**, columna `planes` → agregar `msi` (ej. `fin,com,msi`). El cron del OS (`sync-catalog-sheets.js` · `syncFinEquiposConfigFromSheet`, commit `aeee136d`) sincroniza SOLO config (planes/plazo_max/depósito/duración/nota/activo) del Sheet → `fin_equipos` cada 15 min, matcheando por `orden=id`. **NUNCA toca el precio** (queda curado). ⚠️ Hallazgo: hasta ahora el Sheet NO estaba conectado a `fin_equipos` (sólo se había seedeado a mano); este sync lo conecta.
+- **Para activar**: David agrega `msi` a la columna `planes` de los equipos elegidos en el Sheet → vivo en ≤15 min (sync) + ~10 min (cache Cloudflare).
+
 ## Confirmaciones de negocio abiertas (están en 1 solo lugar de fin-model.js)
 - Renta = **4%** mensual (asumido = lo que muestra el simulador hoy).
 - Comodato = reactivos `(precio/24 + mant 10%/12)/margen 35%`, **depósito 2 meses**, duración 24 meses.
