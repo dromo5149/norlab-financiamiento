@@ -236,7 +236,8 @@ function renderResult() {
     '<div class="rr"><span class="rl">Enganche (' + f.enganchePct + '%)</span><span class="rv">' + fmt(f.engancheIVA) + '</span></div>' +
     '<div class="rr"><span class="rl">Capital financiado</span><span class="rv">' + fmt(f.capital) + '</span></div>' +
     '<div class="rr"><span class="rl">Tasa mensual</span><span class="rv">' + (f.sinIntereses ? "0% sin intereses" : (f.tasaMensual*100) + "% mensual") + '</span></div>' +
-    '<div class="rr"><span class="rl">Intereses totales</span><span class="rv" style="color:' + (f.intereses>0 ? "#ffb74d" : "#a5d6a7") + '">' + fmt(f.intereses) + ' s/IVA</span></div>' +
+    '<div class="rr"><span class="rl">Intereses del plazo (sin IVA)</span><span class="rv" style="color:' + (f.intereses>0 ? "#ffb74d" : "#a5d6a7") + '">' + fmt(f.intereses) + '</span></div>' +
+    (f.intereses > 0 ? '<div class="rr"><span class="rl">IVA 16% sobre intereses</span><span class="rv">' + fmt(f.intereses * FM.CONFIG.IVA) + '</span></div>' : '') +
     '<div class="rr"><span class="rl">Total sin IVA (deducible)</span><span class="rv">' + fmt2(f.totalSinIVA) + '</span></div>' +
     '<div class="r-tot"><span class="rtl">Total con IVA</span><span class="rtv">' + fmt2(f.totalIVA) + '</span></div>' +
     (f.sinIntereses ? '<div class="r-green">' + IC.check + ' Sin intereses — Financiamiento al 0%</div>' : '') +
