@@ -143,7 +143,9 @@
     });
 
     // Secciones opcionales (solo si hay dato)
-    var secDesc = e.descripcion ? sec('Descripción','<p>'+esc(e.descripcion).replace(/\n/g,'<br>')+'</p>') : '';
+    // **texto** (negritas del Sheet, vía sync XLSX) → <b>; se aplica DESPUÉS
+    // de esc() para que el contenido siga escapado (sin XSS).
+    var secDesc = e.descripcion ? sec('Descripción','<p>'+esc(e.descripcion).replace(/\*\*([\s\S]+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')+'</p>') : '';
     var secParam='';
     if(e.parametros){
       var items=String(e.parametros).split(/[,\n;]+/).map(function(x){return x.trim();}).filter(Boolean);
