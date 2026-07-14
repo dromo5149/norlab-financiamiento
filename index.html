@@ -292,10 +292,10 @@ html.js [data-rev].in{opacity:1;transform:translateY(0);}
 .brands::before,.brands::after{content:'';position:absolute;top:0;bottom:0;width:90px;z-index:2;pointer-events:none;}
 .brands::before{left:0;background:linear-gradient(90deg,#fff,transparent);}
 .brands::after{right:0;background:linear-gradient(270deg,#fff,transparent);}
-.br-track{display:flex;align-items:center;gap:34px;width:max-content;animation:marq 32s linear infinite;}
+.br-track{display:flex;align-items:center;gap:56px;width:max-content;animation:marq 32s linear infinite;}
 .brands:hover .br-track{animation-play-state:paused;}
-.br-i{font-family:'Sora','IBM Plex Sans',sans-serif;font-weight:700;font-size:14px;color:#9fb2c8;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;}
-.br-d{color:#cdd9ea;font-size:15px;}
+.br-img{height:34px;width:auto;max-width:140px;object-fit:contain;filter:grayscale(1);opacity:.55;transition:filter .3s,opacity .3s;flex-shrink:0;}
+@media(hover:hover) and (pointer:fine){.br-img:hover{filter:none;opacity:1;}}
 @keyframes marq{to{transform:translateX(-50%)}}
 /* Subrayado que se dibuja bajo los títulos de sección */
 .sec-h{position:relative;padding-bottom:14px;}
@@ -372,17 +372,16 @@ html.js .how-row.in .how-line,html:not(.js) .how-line{transform:scaleX(1);}
   </div>
 </section>
 
-<!-- MARCAS -->
-<div class="brands" aria-hidden="true">
+<!-- MARCAS (logos del catálogo) -->
+<div class="brands">
   <div class="br-track" id="brTrack">
-    <span class="br-i">Mindray</span><span class="br-d">·</span>
-    <span class="br-i">DYMIND</span><span class="br-d">·</span>
-    <span class="br-i">MAGLUMI</span><span class="br-d">·</span>
-    <span class="br-i">Poclight</span><span class="br-d">·</span>
-    <span class="br-i">Snibe</span><span class="br-d">·</span>
-    <span class="br-i">FUJIFILM</span><span class="br-d">·</span>
-    <span class="br-i">Caretium</span><span class="br-d">·</span>
-    <span class="br-i">Meril</span><span class="br-d">·</span>
+    <img class="br-img" src="/marcas/mindray.png" alt="Mindray" loading="lazy">
+    <img class="br-img" src="/marcas/dymind.png" alt="DYMIND" loading="lazy">
+    <img class="br-img" src="/marcas/maglumi.png" alt="MAGLUMI" loading="lazy">
+    <img class="br-img" src="/marcas/poclight.png" alt="Poclight" loading="lazy">
+    <img class="br-img" src="/marcas/fujifilm.png" alt="FUJIFILM" loading="lazy">
+    <img class="br-img" src="/marcas/caretium.png" alt="Caretium" loading="lazy">
+    <img class="br-img" src="/marcas/meril.png" alt="Meril" loading="lazy">
   </div>
 </div>
 
