@@ -72,13 +72,16 @@
       engancheDefault: 40,
       engancheMax: 60,
     },
-    // ⚠️ CONFIRMAR con David — hoy el código se contradecía (4% / 3.6% / 3.5%).
+    // Confirmado por David (14-jul-2026): renta 4% mensual y depósito en
+    // garantía de 2 meses tanto en renta como en comodato. El contrato
+    // (norlab-os/fin-contrato) usa estos mismos parámetros.
     renta: {
       tasaMensual: 0.04,        // 4% del precio (incluye mantenimiento preventivo)
       plazoMinMeses: 36,
+      depositoMeses: 2,         // depósito en garantía = 2 meses de renta
     },
-    // ⚠️ CONFIRMAR — modelo "nuevo" (el de la solicitud): reactivos para liquidar
-    // el equipo en `meses` incluyendo mantenimiento anual, sobre margen.
+    // Modelo de la solicitud: reactivos para liquidar el equipo en `meses`
+    // incluyendo mantenimiento anual, sobre margen.
     comodato: {
       mesesLiquidacion: 24,
       mantenimientoAnualPct: 0.10,  // 10% del precio / año
@@ -230,8 +233,10 @@
   // ── 2) RENTA ───────────────────────────────────────────────────────────────
   function calcRenta(eq) {
     var mensual = eq.p * CONFIG.renta.tasaMensual;
+    var deposito = mensual * CONFIG.renta.depositoMeses;
     return {
       plan: 'ren', mensual: mensual, mensualIVA: iva(mensual),
+      deposito: deposito, depositoMeses: CONFIG.renta.depositoMeses,
       tasaMensual: CONFIG.renta.tasaMensual, plazoMinMeses: CONFIG.renta.plazoMinMeses,
       mantenimiento: 'Incluido',
     };

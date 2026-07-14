@@ -166,6 +166,7 @@ function renderResult() {
       '<div class="r-ms">Incluye IVA · Plazo mínimo ' + (r.plazoMinMeses/12) + ' años</div>' +
       '<div class="rr"><span class="rl">Sin IVA (deducible)</span><span class="rv">' + fmt2(r.mensual) + '</span></div>' +
       '<div class="rr"><span class="rl">Enganche</span><span class="rv">No aplica</span></div>' +
+      '<div class="rr"><span class="rl">Depósito en garantía (' + r.depositoMeses + ' meses)</span><span class="rv">' + fmt2(r.deposito) + '</span></div>' +
       '<div class="rr"><span class="rl">Plazo mínimo</span><span class="rv">' + r.plazoMinMeses + ' meses</span></div>' +
       '<div class="rr"><span class="rl">Mantenimiento</span><span class="rv" style="color:#a5d6a7">Incluido ✓</span></div>' +
       '<div class="rr"><span class="rl">Tasa</span><span class="rv">' + (r.tasaMensual*100) + '% mensual</span></div>' +

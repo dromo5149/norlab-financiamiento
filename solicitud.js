@@ -9,7 +9,7 @@ const MARGIN_COM = 0.35; // margen en reactivos comodato
 const PLAN_HINTS = {
   fin: 'Adquieres el equipo en pagos fijos. Es tuyo al finalizar.',
   msi: 'Meses sin intereses (0%): pagas el precio del equipo en 3, 6 o 12 mensualidades iguales. Enganche minimo 40%. Es tuyo al finalizar.',
-  ren: 'Renta mensual fija. Incluye mantenimiento preventivo. Sin enganche. Instalacion se cotiza por separado.',
+  ren: 'Renta mensual fija. Incluye mantenimiento preventivo. Sin enganche; deposito en garantia de 2 meses. Instalacion se cotiza por separado.',
   com: 'El equipo se paga con la compra minima mensual de reactivos. Punto de equilibrio en 24 meses. Instalacion se cotiza por separado.'
 };
 const UMBRAL_AVAL = 300000; // Obligado Solidario requerido para equipos >= este monto
