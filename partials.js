@@ -80,7 +80,7 @@ function renderFooter() {
           <ul>
             <li><a href="https://norlab.com.mx" target="_blank">Inicio</a></li>
             <li><a href="https://norlab.com.mx/analizadores-de-laboratorio" target="_blank">Equipos</a></li>
-            <li><a href="https://os.norlab.xyz/p/precios" target="_blank">Catálogo con precios</a></li>
+            <li><a href="https://catalogo.norlab.com.mx" target="_blank">Catálogo</a></li>
           </ul>
         </div>
       </div>
