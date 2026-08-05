@@ -86,7 +86,7 @@ function renderFooter() {
       </div>
       <div class="footer-bottom">
         <span>© ${year} Grupo Rohmnos S. de R.L. de C.V. · RFC GRO1903139Z6</span>
-        <span>Naucalpan de Juárez, Estado de México · WhatsApp 56 2183 6094</span>
+        <span>Naucalpan de Juárez, Estado de México · WhatsApp 56 1120 2177</span>
       </div>
       <div class="footer-legal">
         <a href="/terminos.html">Términos y condiciones</a>
