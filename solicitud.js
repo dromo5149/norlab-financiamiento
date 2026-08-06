@@ -355,7 +355,7 @@ function renderReactivosGrid(list,reactMin){
   var html='<div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px">Cat\u00e1logo de precios especiales</div>';
   html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-bottom:10px">';
   list.forEach(function(r,i){
-    html+='<label style="display:flex;align-items:flex-start;gap:8px;background:#f8fbfd;border:1px solid #d6eaf5;border-radius:8px;padding:10px;cursor:pointer;transition:all .15s" id="rx_card_'+i+'">';
+    html+='<label style="display:flex;align-items:flex-start;gap:8px;background:#f8fbfd;border:1px solid #d6eaf5;border-radius:10px;padding:10px;cursor:pointer;transition:all .15s" id="rx_card_'+i+'">';
     html+='<input type="checkbox" id="rx_chk_'+i+'" style="margin-top:2px;flex-shrink:0" onchange="updateReactivosSel()" data-i="'+i+'" data-nombre="'+(r.n||'').replace(/"/g,'&quot;')+'" data-precio="'+(r.p||0)+'" data-unidad="'+(r.u||'unidad')+'">';
     html+='<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--navy)">'+(r.n||'Reactivo')+'</div>';
     html+='<div style="font-size:11px;color:var(--muted)">'+(r.m||'')+'</div>';

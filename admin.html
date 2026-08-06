@@ -40,7 +40,7 @@ nav{background:var(--navy);padding:0 28px;height:62px;display:flex;align-items:c
 .filter-sel{border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;background:#fff;outline:none;color:var(--text);}
 .btn-refresh{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;}
 .stats-bar{padding:16px 28px;display:flex;gap:12px;flex-wrap:wrap;}
-.stat-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;min-width:120px;flex:1;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px;min-width:120px;flex:1;}
 .stat-n{font-size:28px;font-weight:800;color:var(--navy);line-height:1;}
 .stat-l{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;}
 .stat-card.green{border-color:#a5d6a7;background:#f1f8e9;} .stat-card.green .stat-n{color:var(--green);}
@@ -48,7 +48,7 @@ nav{background:var(--navy);padding:0 28px;height:62px;display:flex;align-items:c
 .stat-card.red{border-color:#ef9a9a;background:#ffebee;} .stat-card.red .stat-n{color:var(--red);}
 .stat-card.blue{border-color:#90caf9;background:#e3f2fd;} .stat-card.blue .stat-n{color:var(--blue);}
 .table-wrap{padding:0 28px 28px;overflow-x:auto;}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--border);}
 th{background:var(--navy);color:#fff;padding:11px 14px;font-size:11px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;}
 td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
@@ -75,19 +75,19 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 .dp-row:last-child{border-bottom:none;}
 .dp-row span:first-child{color:var(--muted);flex:0 0 140px;}
 .dp-row span:last-child{font-weight:600;text-align:right;flex:1;}
-.score-big{text-align:center;padding:20px;background:var(--light);border-radius:12px;margin-bottom:16px;}
+.score-big{text-align:center;padding:20px;background:var(--light);border-radius:10px;margin-bottom:16px;}
 .score-big .sn{font-size:48px;font-weight:900;line-height:1;}
 .score-big .sl{font-size:13px;color:var(--muted);margin-top:6px;}
 .score-big .rec{margin-top:10px;font-size:14px;font-weight:700;}
-.status-select{border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;font-family:inherit;width:100%;margin-bottom:8px;background:#fff;}
-.nota-input{border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;font-family:inherit;width:100%;min-height:72px;resize:vertical;margin-bottom:8px;}
-.btn-save{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;}
-.file-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:12px;}
+.status-select{border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;font-family:inherit;width:100%;margin-bottom:8px;background:#fff;}
+.nota-input{border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;font-family:inherit;width:100%;min-height:72px;resize:vertical;margin-bottom:8px;}
+.btn-save{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;}
+.file-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;font-size:12px;}
 .file-item a{color:var(--blue);text-decoration:none;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-drive{display:flex;align-items:center;gap:6px;background:#e3f2fd;color:var(--blue2);border:1px solid #90caf9;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;text-decoration:none;margin-bottom:12px;}
+.btn-drive{display:flex;align-items:center;gap:6px;background:#e3f2fd;color:var(--blue2);border:1px solid #90caf9;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;text-decoration:none;margin-bottom:12px;}
 .empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
 .loading-spinner{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px;color:var(--muted);font-size:14px;}
-.notes-log{background:var(--light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);white-space:pre-wrap;line-height:1.6;max-height:100px;overflow-y:auto;margin-bottom:8px;}
+.notes-log{background:var(--light);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);white-space:pre-wrap;line-height:1.6;max-height:100px;overflow-y:auto;margin-bottom:8px;}
 
 /* ── Tabs ─────────────────────────────────────────────────────────────────── */
 .tabs-bar{background:#fff;border-bottom:2px solid var(--border);padding:0 28px;display:flex;gap:0;}
@@ -98,7 +98,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 .tab-panel.active{display:block;}
 /* ── Contratos ────────────────────────────────────────────────────────────── */
 .ct-wrap{padding:20px 28px 40px;}
-.ct-card{background:#fff;border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;}
+.ct-card{background:#fff;border:1px solid var(--border);border-radius:16px;margin-bottom:12px;overflow:hidden;}
 .ct-card-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);}
 .ct-folio{font-size:13px;font-weight:800;color:var(--navy);}
 .ct-name{font-size:13px;color:var(--text);flex:1;}
@@ -109,14 +109,14 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 .ct-badge-sign{background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .ct-badge-firmado{background:#1b5e20;color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .ct-doc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0;border-bottom:1px solid #f0f4f8;}
-.ct-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;font-size:12px;font-weight:700;border:1.5px solid;cursor:pointer;font-family:inherit;text-decoration:none;}
+.ct-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;border:1.5px solid;cursor:pointer;font-family:inherit;text-decoration:none;}
 .ct-btn-gdoc{background:#e8f0fe;color:#1a73e8;border-color:#a8c7fa;}
 .ct-btn-word{background:#e8f5e9;color:#2e7d32;border-color:#a5d6a7;}
 .ct-btn-sign{background:var(--blue);color:#fff;border-color:var(--blue);}
 .ct-btn-sign:disabled{opacity:.5;cursor:not-allowed;}
 .ct-upload-area{display:flex;align-items:center;gap:8px;flex:1;min-width:200px;}
-.ct-upload-input{font-size:12px;font-family:inherit;border:1.5px solid var(--border);border-radius:9px;padding:6px 10px;flex:1;min-width:0;}
-.ct-btn-upload{background:var(--blue2);color:#fff;border:none;border-radius:9px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.ct-upload-input{font-size:12px;font-family:inherit;border:1.5px solid var(--border);border-radius:10px;padding:6px 10px;flex:1;min-width:0;}
+.ct-btn-upload{background:var(--blue2);color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .ct-btn-upload:disabled{opacity:.5;cursor:not-allowed;}
 .ct-msg{font-size:12px;padding:4px 10px;border-radius:6px;}
 .ct-msg-ok{background:#e8f5e9;color:#2e7d32;}
@@ -191,7 +191,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
           <div style="font-size:12px;color:var(--muted);margin-top:2px">Genera y envía contratos para expedientes aprobados</div>
         </div>
         <div style="display:flex;gap:10px;">
-          <select id="filtroEstadoContrato" onchange="filtrarContratos()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
+          <select id="filtroEstadoContrato" onchange="filtrarContratos()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;">
             <option value="">Todos los estados</option>
             <option value="Pendiente Generación">⏳ Pendiente</option>
             <option value="Generado">📝 Generado</option>
@@ -235,7 +235,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
             Actualizar
           </button>
-          <button style="border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--blue2);color:#fff;display:flex;align-items:center;gap:6px" onclick="showAddReactivoModal()">
+          <button style="border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--blue2);color:#fff;display:flex;align-items:center;gap:6px" onclick="showAddReactivoModal()">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Agregar reactivo
           </button>
@@ -247,22 +247,22 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 
   <!-- Modal agregar/editar reactivo -->
   <div id="reactivoModal" style="display:none;position:fixed;inset:0;background:rgba(10,22,32,.45);z-index:1100;display:none;align-items:center;justify-content:center">
-    <div style="background:#fff;border-radius:14px;padding:24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(11,31,58,.2)">
+    <div style="background:#fff;border-radius:16px;padding:24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(11,31,58,.2)">
       <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px" id="reactivoModalTitle">Agregar reactivo</div>
       <div style="display:grid;gap:12px">
-        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Nombre del reactivo</label><input id="rx_nombre" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Ej. Reactivo para glucosa COBAS"></div>
-        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Marca / modelo</label><input id="rx_marca" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Ej. Roche / REF 123456"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Nombre del reactivo</label><input id="rx_nombre" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:10px;font-size:13px;font-family:inherit" placeholder="Ej. Reactivo para glucosa COBAS"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Marca / modelo</label><input id="rx_marca" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:10px;font-size:13px;font-family:inherit" placeholder="Ej. Roche / REF 123456"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Precio especial (MXN)</label><input id="rx_precio" type="number" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="0.00"></div>
-          <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Unidad</label><input id="rx_unidad" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="kit / caja / frasco"></div>
+          <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Precio especial (MXN)</label><input id="rx_precio" type="number" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:10px;font-size:13px;font-family:inherit" placeholder="0.00"></div>
+          <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Unidad</label><input id="rx_unidad" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:10px;font-size:13px;font-family:inherit" placeholder="kit / caja / frasco"></div>
         </div>
-        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Equipos compatibles</label><input id="rx_equipo" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Ej. COBAS C111, COBAS B101"></div>
-        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Activo</label><select id="rx_activo" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit"><option value="si">S&iacute;</option><option value="no">No</option></select></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Equipos compatibles</label><input id="rx_equipo" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:10px;font-size:13px;font-family:inherit" placeholder="Ej. COBAS C111, COBAS B101"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Activo</label><select id="rx_activo" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:10px;font-size:13px;font-family:inherit"><option value="si">S&iacute;</option><option value="no">No</option></select></div>
       </div>
       <div id="rx_modal_msg" style="display:none;margin-top:10px;font-size:12px;color:#c62828"></div>
       <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">
-        <button onclick="closeReactivoModal()" style="border:1.5px solid #d6eaf5;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;background:#fff;color:var(--navy);cursor:pointer;font-family:inherit">Cancelar</button>
-        <button onclick="saveReactivo()" id="rx_save_btn" style="border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;background:var(--blue2);color:#fff;cursor:pointer;font-family:inherit">Guardar</button>
+        <button onclick="closeReactivoModal()" style="border:1.5px solid #d6eaf5;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;background:#fff;color:var(--navy);cursor:pointer;font-family:inherit">Cancelar</button>
+        <button onclick="saveReactivo()" id="rx_save_btn" style="border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;background:var(--blue2);color:#fff;cursor:pointer;font-family:inherit">Guardar</button>
       </div>
     </div>
   </div>
@@ -545,7 +545,7 @@ function renderDetail(d){
       '<div class="dp-section-title">Documentos</div>'+
       filesHtml+
       (files.length ? '<button onclick="reanalizarDocs(\''+d['Folio']+'\',\''+nombre+'\')" id="btn_reanalizar_'+d['Folio']+'" '+
-        'style="background:#0d7c66;color:#fff;border:none;border-radius:9px;padding:9px 16px;'+
+        'style="background:#0d7c66;color:#fff;border:none;border-radius:10px;padding:9px 16px;'+
         'font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;display:flex;'+
         'align-items:center;justify-content:center;gap:8px;margin-top:10px">'+
         '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">'+
@@ -558,11 +558,11 @@ function renderDetail(d){
     '<div class="dp-section" id="analysis_section_'+d['Folio']+'">'+
       '<div class="dp-section-title">Analisis crediticio por IA</div>'+
       (d['Dictamen'] && d['Dictamen']!=='' ?
-        '<div style="background:#e8f5e9;border-radius:8px;padding:8px 12px;font-size:11px;color:#2e7d32;margin-bottom:8px">'+
+        '<div style="background:#e8f5e9;border-radius:10px;padding:8px 12px;font-size:11px;color:#2e7d32;margin-bottom:8px">'+
         '&#10003; Dictamen guardado: <strong>'+d['Dictamen'].replace(/_/g,' ')+'</strong> &mdash; '+
         (d['Fecha analisis']||'').toString().substr(0,16)+'</div>' : '')+
       '<button onclick="runAnalysis(\''+d['Folio']+'\')" id="btn_analysis_'+d['Folio']+'" '+
-        'style="background:var(--navy);color:#fff;border:none;border-radius:9px;padding:11px 18px;'+
+        'style="background:var(--navy);color:#fff;border:none;border-radius:10px;padding:11px 18px;'+
         'font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;display:flex;'+
         'align-items:center;justify-content:center;gap:8px;margin-bottom:8px">'+
         '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none">'+
@@ -571,8 +571,8 @@ function renderDetail(d){
         'Generar dictamen crediticio completo'+
       '</button>'+
       '<div id="analysis_result_'+d['Folio']+'">'+
-        (d['Resumen IA'] ? '<div style="background:var(--light);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.6;color:var(--text)">'+d['Resumen IA']+'</div>' : '')+
-        (d['Siguiente paso'] ? '<div style="background:#e3f2fd;border-radius:8px;padding:10px 12px;border-left:3px solid var(--blue);margin-top:8px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:4px">Siguiente paso</div><div style="font-size:12px;color:var(--text)">'+d['Siguiente paso']+'</div></div>' : '')+
+        (d['Resumen IA'] ? '<div style="background:var(--light);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;color:var(--text)">'+d['Resumen IA']+'</div>' : '')+
+        (d['Siguiente paso'] ? '<div style="background:#e3f2fd;border-radius:10px;padding:10px 12px;border-left:3px solid var(--blue);margin-top:8px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:4px">Siguiente paso</div><div style="font-size:12px;color:var(--text)">'+d['Siguiente paso']+'</div></div>' : '')+
       '</div>'+
     '</div>'+
     '<div class="dp-section">'+
@@ -741,7 +741,7 @@ function renderAnalysis(s){
 
   // Resumen
   if(s.resumen_ejecutivo){
-    html += '<div style="background:var(--light);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:12px;color:var(--text)">'+
+    html += '<div style="background:var(--light);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:12px;color:var(--text)">'+
       s.resumen_ejecutivo+'</div>';
   }
 
@@ -797,13 +797,13 @@ function renderAnalysis(s){
   if(riesgos.length||favor.length){
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
     if(favor.length){
-      html += '<div style="background:#f1f8e9;border-radius:8px;padding:10px 12px">';
+      html += '<div style="background:#f1f8e9;border-radius:10px;padding:10px 12px">';
       html += '<div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px">A favor</div>';
       favor.forEach(function(f){ html += '<div style="font-size:11px;color:var(--text);margin-bottom:3px">+ '+f+'</div>'; });
       html += '</div>';
     }
     if(riesgos.length){
-      html += '<div style="background:#ffebee;border-radius:8px;padding:10px 12px">';
+      html += '<div style="background:#ffebee;border-radius:10px;padding:10px 12px">';
       html += '<div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;margin-bottom:6px">Riesgo</div>';
       riesgos.forEach(function(r){ html += '<div style="font-size:11px;color:var(--text);margin-bottom:3px">- '+r+'</div>'; });
       html += '</div>';
@@ -814,7 +814,7 @@ function renderAnalysis(s){
   // Condiciones
   var condiciones = s.condiciones||[];
   if(condiciones.length){
-    html += '<div style="background:#fff8e1;border-radius:8px;padding:10px 12px;margin-bottom:10px">';
+    html += '<div style="background:#fff8e1;border-radius:10px;padding:10px 12px;margin-bottom:10px">';
     html += '<div style="font-size:10px;font-weight:700;color:var(--yellow);text-transform:uppercase;margin-bottom:6px">Condiciones para aprobar</div>';
     condiciones.forEach(function(c){ html += '<div style="font-size:12px;color:var(--text);margin-bottom:3px">• '+c+'</div>'; });
     html += '</div>';
@@ -822,7 +822,7 @@ function renderAnalysis(s){
 
   // Siguiente paso
   if(s.siguiente_paso){
-    html += '<div style="background:#e3f2fd;border-radius:8px;padding:10px 12px;border-left:3px solid var(--blue)">';
+    html += '<div style="background:#e3f2fd;border-radius:10px;padding:10px 12px;border-left:3px solid var(--blue)">';
     html += '<div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:4px">Siguiente paso</div>';
     html += '<div style="font-size:12px;color:var(--text)">'+s.siguiente_paso+'</div>';
     html += '</div>';
@@ -836,7 +836,7 @@ window.onload=function(){ document.getElementById('pwdInput').focus(); };
 // ── Mifiel ────────────────────────────────────────────────────────────────────
 function buildMifielBtns_(d) {
   var folio = d['Folio'];
-  var btnStyle = 'border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;';
+  var btnStyle = 'border:none;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;';
   return '<button style="'+btnStyle+'background:#2D7EA8;color:#fff" onclick="signEnviar(\''+folio+'\',\'contrato\')">📄 Generar Contrato</button>' +
     '<button style="'+btnStyle+'background:#4AB8C8;color:#fff" onclick="signEnviar(\''+folio+'\',\'pagare\')">📋 Generar Pagaré</button>' +
     '<button style="'+btnStyle+'background:#2A5870;color:#fff" onclick="signEnviar(\''+folio+'\',\'aviso\')">🔒 Aviso Privacidad</button>' +
@@ -852,7 +852,7 @@ function signEnviar(folio, tipo) {
     if(!el) return;
     if(d.ok){
       el.innerHTML =
-        '<div style="background:#e8f5e9;border-radius:8px;padding:10px 12px;border-left:3px solid #4caf50">' +
+        '<div style="background:#e8f5e9;border-radius:10px;padding:10px 12px;border-left:3px solid #4caf50">' +
         '<div style="font-weight:700;color:#2e7d32;margin-bottom:4px">✓ '+label+' enviado para firma</div>' +
         '<div style="font-size:11px;color:#555">'+d.mensaje+'</div>' +
         (d.sign_url ? '<a href="'+d.sign_url+'" target="_blank" style="display:inline-block;margin-top:8px;background:#2D7EA8;color:#fff;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;text-decoration:none">🔗 Link de firma del cliente</a>' : '') +

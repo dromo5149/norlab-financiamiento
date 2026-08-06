@@ -75,7 +75,7 @@ function render() {
   lista.forEach(function (eq) {
     var b = document.createElement("button");
     b.className = "eq" + (sId === eq.id ? " on" : "");
-    var thumb = '<div style="flex:0 0 46px;width:46px;height:46px;border-radius:8px;background:#fff;border:1px solid var(--border);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden">' +
+    var thumb = '<div style="flex:0 0 46px;width:46px;height:46px;border-radius:10px;background:#fff;border:1px solid var(--border);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden">' +
       IC.flask +
       (eq.img ? '<img src="' + eq.img + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff" onerror="this.remove()">' : '') +
       '</div>';
