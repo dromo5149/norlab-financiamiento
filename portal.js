@@ -174,7 +174,7 @@ function renderResult() {
       '<div class="r-cta">' +
       '<button class="r-btn" onclick="openMd()">Solicitar renta →</button>' +
       '<a class="r-wa" href="' + waLink(wm + ' - Renta mensual') + '" target="_blank">' + waSvg() + ' Cotizar por WhatsApp</a>' +
-      '<div class="r-sub">Respuesta en menos de 24 hrs</div>' +
+      '<div class="r-sub">Respuesta en menos de 48 hrs</div>' +
       '</div></div>';
     return;
   }
@@ -195,7 +195,7 @@ function renderResult() {
       '<div class="r-cta">' +
       '<button class="r-btn" onclick="openMd()">Solicitar comodato →</button>' +
       '<a class="r-wa" href="' + waLink(wm + ' - Comodato') + '" target="_blank">' + waSvg() + ' Cotizar por WhatsApp</a>' +
-      '<div class="r-sub">Respuesta en menos de 24 hrs</div>' +
+      '<div class="r-sub">Respuesta en menos de 48 hrs</div>' +
       '</div></div>';
     return;
   }
@@ -220,7 +220,7 @@ function renderResult() {
       '<div class="r-cta">' +
       '<button class="r-btn" onclick="openMd()">Solicitar MSI →</button>' +
       '<a class="r-wa" href="' + waLink(wm + ' - Meses sin intereses ' + ms.plazoMeses + ' meses, mensualidad ' + fmt2(ms.mensual)) + '" target="_blank">' + waSvg() + ' Cotizar por WhatsApp</a>' +
-      '<div class="r-sub">Respuesta en menos de 24 hrs</div>' +
+      '<div class="r-sub">Respuesta en menos de 48 hrs</div>' +
       '</div></div>';
     return;
   }
@@ -246,7 +246,7 @@ function renderResult() {
     '<div class="r-cta">' +
     '<button class="r-btn" onclick="openMd()">Solicitar este plan →</button>' +
     '<a class="r-wa" href="' + waLink(wm + ' - Financiamiento ' + f.plazoMeses + ' meses mensualidad ' + fmt2(f.mensual)) + '" target="_blank">' + waSvg() + ' Cotizar por WhatsApp</a>' +
-    '<div class="r-sub">Respuesta en menos de 24 hrs</div>' +
+    '<div class="r-sub">Respuesta en menos de 48 hrs</div>' +
     '</div></div>';
 }
 
