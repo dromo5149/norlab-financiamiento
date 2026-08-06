@@ -1,3 +1,7 @@
+/* La tipografía es la misma de norlab.com.mx (Plus Jakarta Sans).
+   Esta hoja gobierna 11 de las 14 páginas y estaba en la fuente del
+   SISTEMA: en Mac se veía San Francisco y en Windows Segoe UI, así que
+   el sitio de financiamiento no se parecía al sitio en ninguna máquina. */
 /* ═══════════════════════════════════════════════════════════════════
    NORLAB Financiera · estilos compartidos
    Importado por: como-funciona.html, planes.html, requisitos.html, faq.html
@@ -11,7 +15,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text);
   overflow-x: hidden;
   background: #fff;
