@@ -6,9 +6,19 @@
    NORLAB Financiera · estilos compartidos
    Importado por: como-funciona.html, planes.html, requisitos.html, faq.html
    ═══════════════════════════════════════════════════════════════════ */
+/* ── Contraste ────────────────────────────────────────────────────────
+   Medido, no a ojo. El gris `--muted` daba 4.26:1 sobre blanco y 4.04:1
+   sobre el fondo claro (--light) en 131 lugares de las once páginas: por
+   debajo del mínimo legible de 4.5. Un tono más hondo lo cruza en los dos
+   fondos sin cambiar el carácter del texto secundario.
+
+   `--blue2` fallaba sólo como TEXTO sobre fondos teñidos (4.36 sobre
+   --light, 4.03 sobre --bl, en precios y en "meses"). Como fondo de botón
+   con blanco encima siempre estuvo bien, así que no se toca: se agrega
+   `--blue-txt` para cuando el azul es letra y no relleno. */
 :root {
   --navy:#0b1f3a; --navy2:#132d52; --blue:#1565c0; --blue2:#1976d2;
-  --bl:#e3f2fd; --light:#f7f9fc; --border:#e8edf5; --text:#1a2a4a; --muted:#6b7c93;
+  --bl:#e3f2fd; --light:#f7f9fc; --border:#e8edf5; --text:#1a2a4a; --muted:#5b6b7f; --blue-txt:#1258ab;
   --green:#2e7d32; --green-light:#e8f5e9; --amber:#b45309; --amber-light:#fff8e1;
   --red:#c62828; --red-light:#ffebee;
 }
@@ -157,7 +167,47 @@ footer.site-footer {
   nav.topbar { padding: 0 16px; }
   .sec, .page-hero, footer.site-footer { padding-left: 20px; padding-right: 20px; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+
+  /* La barra escondía los ENLACES pero dejaba los tres botones de la derecha.
+     En 390px medían 352px al lado de un logo de 120: el bloque llegaba hasta
+     el pixel 488 y el sitio entero se deslizaba de lado 99px en las once
+     páginas. Peor: "Solicitar →" quedaba de 392 a 488, o sea COMPLETAMENTE
+     fuera de pantalla — en un teléfono no existía la acción principal.
+
+     En celular se queda sólo Solicitar. WhatsApp ya está en el globo fijo de
+     la esquina, y Mi portal sigue en el pie. */
+  .nav-right .btn-wa-sm,
+  .nav-right .btn-nav-outline { display: none; }
+  .nav-right { margin-left: auto; }
+  .btn-nav { padding: 11px 18px; }
+
+  /* Blancos de toque: los enlaces del pie median 16px de alto. El mínimo
+     cómodo con el pulgar son 40. */
+  .footer-col a,
+  .footer-legal a { display: inline-block; padding: 13px 0; }
 }
 @media (max-width: 480px) {
   .footer-grid { grid-template-columns: 1fr; }
+  nav.topbar { padding: 0 14px; }
+  .btn-nav { padding: 11px 15px; font-size: 13.5px; }
 }
+
+
+/* ── Legibilidad y blancos de toque ──────────────────────────────────
+   Medido en las doce páginas a 390px. Dos cosas:
+
+   · Etiquetas de 10px. Eran las de "Obligatorio", "Vigente", las pestañas
+     del FAQ y los pies de tarjeta. Diez píxeles no se leen en un teléfono
+     con la pantalla a un brazo de distancia; doce sí, y la jerarquía no se
+     pierde porque el peso y el espaciado ya la sostienen.
+
+   · Controles por debajo de 40px de alto. "Solicitar →" medía 39, las
+     pestañas 34 y el índice lateral de Privacidad y Términos 16. No son
+     enlaces dentro de un párrafo —esos pueden ser del alto del texto—, son
+     botones y navegación: con el pulgar se fallan. */
+.badge, .kpi-lbl, .toc-title, .tab, .chip, .tag, .pill,
+.footer-legal, .stat-lbl { font-size: 12px }
+
+.btn-nav, .btn-nav-outline, .btn-wa-sm { min-height: 44px; display: inline-flex; align-items: center }
+.tab, .chip, .filtro, .faq-cat { min-height: 40px; display: inline-flex; align-items: center }
+.toc a, .toc-list a { display: block; padding: 8px 0; min-height: 40px }

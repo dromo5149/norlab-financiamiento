@@ -94,7 +94,7 @@
 
   var qs=new URLSearchParams(location.search);
   var sku=(qs.get('sku')||'').trim();
-  if(!sku){ return fail('Falta el equipo. Vuelve al <a href="/" style="color:var(--blue)">simulador</a>.'); }
+  if(!sku){ return fail('Falta el equipo. Vuelve al <a href="/" style="color:var(--blue-txt)">simulador</a>.'); }
 
   function fail(msg){ app.innerHTML='<div style="padding:70px 0;text-align:center;color:var(--muted)">'+msg+'</div>'; }
 
@@ -106,7 +106,7 @@
   fetch(SB+'/rest/v1/fin_equipos_web?sku=eq.'+encodeURIComponent(sku)+'&select=sku,nombre,marca,categoria,precio,planes,plazo_max,nota,orden,image_url,imagen_url,descripcion,parametros,throughput,video_url&limit=1',
     {headers:{apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json'}})
     .then(function(r){return r.ok?r.json():[];})
-    .then(function(d){ if(!d||!d.length) return fail('Equipo no encontrado. Vuelve al <a href="/" style="color:var(--blue)">simulador</a>.'); render(d[0]); })
+    .then(function(d){ if(!d||!d.length) return fail('Equipo no encontrado. Vuelve al <a href="/" style="color:var(--blue-txt)">simulador</a>.'); render(d[0]); })
     .catch(function(){ fail('No se pudo cargar la ficha. Intenta de nuevo.'); });
 
   function render(e){

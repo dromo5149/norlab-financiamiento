@@ -23,7 +23,7 @@
   font-size: 13px; font-weight: 700; color: var(--muted);
   cursor: pointer; transition: all .2s; font-family: inherit;
 }
-.faq-cat:hover { border-color: var(--blue2); color: var(--blue2); }
+.faq-cat:hover { border-color: var(--blue-txt); color: var(--blue-txt); }
 .faq-cat.on { background: var(--navy); color: #fff; border-color: var(--navy); }
 
 .faq-list { max-width: 880px; margin: 0 auto; }
@@ -32,7 +32,7 @@
   margin-bottom: 12px; overflow: hidden; transition: all .2s;
 }
 .faq-item.hide { display: none; }
-.faq-item:hover { border-color: var(--blue2); }
+.faq-item:hover { border-color: var(--blue-txt); }
 .faq-q {
   padding: 18px 24px; cursor: pointer;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -41,7 +41,7 @@
 }
 .faq-q:hover { background: var(--light); }
 .faq-q-cat {
-  display: inline-block; font-size: 10px; font-weight: 700;
+  display: inline-flex; align-items: center; min-height: 40px; font-size: 12px; font-weight: 700;
   text-transform: uppercase; letter-spacing: .8px;
   padding: 3px 10px; border-radius: 12px; margin-right: 12px;
   background: var(--bl); color: var(--blue);
@@ -75,7 +75,7 @@
   font-size: 14px; outline: none; font-family: inherit;
   transition: border-color .2s;
 }
-.search-bar input:focus { border-color: var(--blue2); }
+.search-bar input:focus { border-color: var(--blue-txt); }
 .search-bar svg {
   position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
   color: var(--muted);

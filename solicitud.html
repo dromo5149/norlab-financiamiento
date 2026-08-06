@@ -18,7 +18,7 @@
 :root{
   --navy:#0b1f3a;--navy2:#132d52;--blue:#1565c0;--blue2:#2D7EA8;--blue3:#2A5870;
   --bl:#D6EAF5;--light:#f7f9fc;--border:#e8edf5;--text:#0F2430;
-  --muted:#6b7c93;--green:#2e7d32;--red:#c62828;--teal:#4AB8C8;
+  --muted:#5b6b7f;--green:#2e7d32;--red:#c62828;--teal:#4AB8C8;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--text);background:var(--light);min-height:100vh;}
@@ -59,11 +59,11 @@ nav{background:#fff;padding:0 32px;height:68px;display:flex;align-items:center;j
 .card-title svg{flex-shrink:0;}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 @media(max-width:540px){.fg2{grid-template-columns:1fr;}}
-.fg{display:flex;flex-direction:column;gap:5px;}
+.fg{display:flex;flex-direction:column;gap:5px;min-width:0;}
 .fg.full{grid-column:1/-1;}
 .fg label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
 .fg label span{color:var(--red);}
-.fg input,.fg select,.fg textarea{border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s;background:#fff;}
+.fg input,.fg select,.fg textarea{max-width:100%;min-width:0;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s;background:#fff;}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue2);}
 .fg input.er,.fg select.er{border-color:var(--red);}
 .fg input[readonly]{background:#f5f7fa;color:var(--muted);}
