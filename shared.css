@@ -19,6 +19,15 @@
 :root {
   --navy:#0b1f3a; --navy2:#132d52; --blue:#1565c0; --blue2:#1976d2;
   --bl:#e3f2fd; --light:#f7f9fc; --border:#e8edf5; --text:#1a2a4a; --muted:#5b6b7f; --blue-txt:#1258ab;
+  /* La escala de elevación. Estaba declarada SÓLO en index.html, así que las
+     otras once páginas no podían usarla: acabaron con once sombras escritas a
+     mano, varias en negro puro (rgba(0,0,0,…)) en vez del navy de la marca.
+     Una sombra negra sobre un fondo azulado se ve sucia; teñirla del color del
+     fondo es lo que hace que se vea colocada y no pegada. */
+  --sh-sm:0 1px 2px rgba(11,31,58,.05),0 4px 14px rgba(11,31,58,.06);
+  --sh-md:0 2px 6px rgba(11,31,58,.06),0 14px 36px rgba(11,31,58,.11);
+  --sh-lg:0 4px 12px rgba(11,31,58,.08),0 28px 68px rgba(11,31,58,.17);
+
   --green:#2e7d32; --green-light:#e8f5e9; --amber:#b45309; --amber-light:#fff8e1;
   --red:#c62828; --red-light:#ffebee;
 }
@@ -38,7 +47,7 @@ nav.topbar {
   background: #fff; padding: 0 40px; height: 68px;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200;
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  box-shadow: var(--sh-sm);
 }
 .nav-logo img { height: 38px; object-fit: contain; display: block; }
 .nav-links { display: flex; gap: 28px; }

@@ -35,10 +35,10 @@
 }
 .t-card {
   background: #fff; border: 1px solid var(--border); border-radius: 16px;
-  padding: 28px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.05);
+  padding: 28px 32px; box-shadow: var(--sh-sm);
   transition: all .3s;
 }
-.t-card:hover { transform: translateX(4px); box-shadow: 0 12px 32px rgba(0,0,0,.08); }
+.t-card:hover { transform: translateX(4px); box-shadow: 0 12px 32px rgba(11,31,58,.08); }
 .t-time {
   display: inline-block; background: var(--bl); color: var(--blue);
   font-size: 11px; font-weight: 700; text-transform: uppercase;
@@ -94,7 +94,7 @@
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
   max-width: 880px; margin: 0 auto 48px;
   background: #fff; border: 1px solid var(--border); border-radius: 16px;
-  overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.05);
+  overflow: hidden; box-shadow: var(--sh-sm);
 }
 .kpi-cell { padding: 24px; text-align: center; border-right: 1px solid var(--border); }
 .kpi-cell:last-child { border-right: none; }

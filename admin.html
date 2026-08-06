@@ -23,7 +23,7 @@ nav{background:var(--navy);padding:0 28px;height:62px;display:flex;align-items:c
 .nav-logo{height:38px;object-fit:contain;}
 .nav-title{color:rgba(255,255,255,.5);font-size:13px;font-weight:600;letter-spacing:.5px;}
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 62px);padding:24px;}
-.login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.08);animation:fadeUp .3s ease;}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;border:1px solid var(--border);box-shadow: var(--sh-md);animation:fadeUp .3s ease;}
 .login-box h2{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:6px;}
 .login-box p{font-size:13px;color:var(--muted);margin-bottom:24px;}
 .login-box input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;}
@@ -63,7 +63,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 .score-track{flex:1;height:6px;background:#e8edf5;border-radius:3px;min-width:60px;}
 .score-fill{height:100%;border-radius:3px;}
 #detailOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;}
-#detailPanel{display:none;position:fixed;right:0;top:0;bottom:0;width:500px;max-width:95vw;background:#fff;box-shadow:-4px 0 32px rgba(0,0,0,.15);overflow-y:auto;z-index:201;}
+#detailPanel{display:none;position:fixed;right:0;top:0;bottom:0;width:500px;max-width:95vw;background:#fff;box-shadow:-4px 0 32px rgba(11,31,58,.15);overflow-y:auto;z-index:201;}
 .dp-head{background:var(--navy);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
 .dp-head h3{color:#fff;font-size:16px;font-weight:700;}
 .dp-close{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:24px;line-height:1;}
@@ -247,7 +247,7 @@ tr:hover td{background:#f8fafc;cursor:pointer;}
 
   <!-- Modal agregar/editar reactivo -->
   <div id="reactivoModal" style="display:none;position:fixed;inset:0;background:rgba(10,22,32,.45);z-index:1100;display:none;align-items:center;justify-content:center">
-    <div style="background:#fff;border-radius:14px;padding:24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="background:#fff;border-radius:14px;padding:24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(11,31,58,.2)">
       <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px" id="reactivoModalTitle">Agregar reactivo</div>
       <div style="display:grid;gap:12px">
         <div><label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Nombre del reactivo</label><input id="rx_nombre" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #d6eaf5;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Ej. Reactivo para glucosa COBAS"></div>
