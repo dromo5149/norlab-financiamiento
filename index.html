@@ -384,6 +384,81 @@ html.js .tab.on{background:transparent;box-shadow:none;}
   background:rgba(8,24,48,.72); border-color:rgba(147,197,253,.42);
   color:#cfe4ff; backdrop-filter:blur(6px); font-weight:700;
 }
+
+/* ══ El ritmo de la página ═══════════════════════════════════════════════
+   Debajo del hero eran CUATRO secciones seguidas del mismo molde: tarjetas
+   blancas centradas sobre gris claro, gris claro, blanco, gris claro. 3,700 px
+   sin un solo punto donde el ojo se detenga, y en medio el simulador —que es
+   la razón de ser del sitio— pintado igual que todo lo demás.
+   Lo que cambia, en orden de importancia. */
+
+/* 1 · EL SIMULADOR SE VUELVE LA ESTRELLA ────────────────────────────────
+   La sección se va a oscuro y el simulador queda como un instrumento
+   apoyado encima: se levanta con su propia superficie y su sombra. Es el
+   único punto oscuro entre el hero y el cierre, así que el ojo va ahí solo
+   sin que haya que gritarle con un color de acento. */
+#simulador{
+  background:linear-gradient(168deg,#0B1F3A 0%,#15325c 54%,#0e2542 100%);
+  padding:clamp(66px,8vw,104px) 40px clamp(70px,8vw,110px);
+}
+#simulador .sim-wrap{
+  background:#fff; border-radius:20px;
+  padding:clamp(26px,3.6vw,44px) clamp(20px,3vw,40px) clamp(30px,3.6vw,44px);
+  box-shadow:0 44px 100px -34px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.09);
+}
+/* Ya no hace falta el aire de abajo del título: lo da el panel. */
+#simulador .sec-s{ margin-bottom:30px }
+
+/* 2 · "POR QUÉ ELEGIR" DEJA DE SER CUATRO TARJETAS IDÉNTICAS ────────────
+   Cuatro cajas centradas con su iconito es el patrón más genérico que hay:
+   se lee como plantilla porque lo es. Alineadas a la izquierda y con una
+   regla de color arriba, se leen como fichas editoriales — y de paso el
+   texto se escanea, que centrado no se escanea. */
+.feat-grid{ grid-template-columns:repeat(auto-fit,minmax(224px,1fr)); gap:18px; max-width:1000px }
+.feat-card{
+  text-align:left; padding:26px 24px 28px;
+  border-top:3px solid var(--blue2);
+  box-shadow:0 14px 34px -20px rgba(11,31,58,.42);
+  transition:transform .18s, box-shadow .22s;
+}
+.feat-card:hover{ transform:translateY(-3px); box-shadow:0 22px 46px -22px rgba(11,31,58,.5) }
+.feat-icon{ margin:0 0 15px; width:46px; height:46px; border-radius:10px }
+.feat-t{ font-size:16.5px; letter-spacing:-.012em; margin-bottom:7px }
+.feat-d{ font-size:13.5px }
+
+/* 3 · "CÓMO FUNCIONA" TENÍA CUERPO DE NOTA AL PIE ───────────────────────
+   Cuatro pasos de 50 px con texto de 12 no son un proceso, son un pie de
+   página. Es el argumento entero del sitio —"esto se resuelve en 48 horas
+   y sin papeleo"— así que se dice del tamaño que merece. */
+.how-n{
+  width:64px; height:64px; font-size:23px;
+  box-shadow:0 12px 26px -12px rgba(11,31,58,.55);
+}
+.how-line{ top:32px }
+.how-t{ font-size:16px; margin-bottom:7px }
+.how-d{ font-size:13.5px; line-height:1.62 }
+.how-row{ max-width:900px }
+
+/* 4 · LA FAQ ERA SEIS RENGLONES SUELTOS ─────────────────────────────────
+   Sin caja, cada pregunta flotaba sobre el blanco separada por una línea de
+   1 px. Ahora cada una es una tarjeta: se ve dónde se puede tocar, que en
+   un acordeón es la mitad del trabajo. */
+.faq-wrap{ max-width:760px }
+.faq-i{
+  border:1px solid var(--border); border-bottom:1px solid var(--border);
+  border-radius:16px; background:#fff; margin-bottom:10px; padding:0 22px;
+  transition:border-color .2s, box-shadow .2s;
+}
+.faq-i:hover{ border-color:#bcd7ea; box-shadow:0 10px 26px -18px rgba(11,31,58,.4) }
+.faq-q{ padding:20px 0; font-size:16px }
+.faq-a{ font-size:14.5px }
+
+/* 5 · Y EL FONDO DEJA DE SER UN GRIS PLANO ──────────────────────────────
+   Un degradado apenas perceptible entre el blanco y el gris hace que las
+   secciones claras no se lean como el mismo bloque repetido. */
+.sec-lt{
+  background:linear-gradient(180deg,#fff 0%,var(--light) 30%,var(--light) 70%,#fff 100%);
+}
 </style>
 </head>
 <body>
