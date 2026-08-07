@@ -54,7 +54,21 @@ nav{background:#fff;padding:0 40px;height:68px;display:flex;align-items:center;j
 @media(max-width:768px){.nav-links{display:none;}nav{padding:0 16px;}}
 
 /* ── HERO ── */
-.hero{background:linear-gradient(135deg,var(--navy) 0%,#132d52 55%,#1a3a70 100%);padding:64px 48px;position:relative;overflow:hidden;}
+/* La portada era un degradado de tres azules y, al lado, una foto de banco
+   de imágenes: señor sonriente con bata y matraz. Eso es exactamente lo que
+   hace que un sitio se lea como plantilla — y el que va a firmar 24 meses no
+   compra a una plantilla.
+   Ahora es una foto propia (arquitectura de laboratorio a la hora azul,
+   generada para esta portada) a sangre completa, con el navy cayendo desde la
+   izquierda para que el titular tenga contraste sin depender de la imagen.
+   Se lee sólido, tranquilo y caro, que es lo que una financiera debe proyectar. */
+.hero{
+  background:
+    linear-gradient(100deg, rgba(11,31,58,.97) 0%, rgba(11,31,58,.93) 34%, rgba(11,31,58,.62) 62%, rgba(11,31,58,.72) 100%),
+    url('/img-hero.webp') center 62% / cover no-repeat, var(--navy);
+  padding:clamp(72px,9vw,112px) 48px clamp(64px,8vw,96px);
+  position:relative;overflow:hidden;
+}
 .hero-inner{display:flex;align-items:center;gap:48px;max-width:1160px;margin:0 auto;}
 .hero-text{flex:1;min-width:0;}
 .hero-badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 18px;font-size:12px;color:#90caf9;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:20px;animation:fadeInUp .6s ease;}
@@ -348,6 +362,28 @@ html.js .tab.on{background:transparent;box-shadow:none;}
 /* CTA principal del hero con pulso de glow */
 @keyframes glowP{0%,100%{box-shadow:0 4px 20px rgba(25,118,210,.4)}50%{box-shadow:0 4px 34px rgba(25,118,210,.65)}}
 .hero-btns .btn-p{animation:glowP 3.2s ease-in-out 1.2s infinite;}
+
+/* La tarjeta de la derecha era la foto de stock. Se apaga en vez de borrarse
+   por si David quiere volver a poner ahí una foto REAL de un equipo instalado
+   —que sería mejor que las dos opciones—. El dato que llevaba encima
+   ("Aprobación en 48 hrs") no se pierde: ya está en la banda de cifras. */
+.hero-img{ display:none }
+.hero-inner{ max-width:1160px }
+.hero-text{ max-width:640px }
+.hero h1{ font-size:clamp(30px,4.6vw,56px); letter-spacing:-.028em; line-height:1.08 }
+.hero p{ font-size:clamp(15px,1.7vw,18px); color:rgba(255,255,255,.82); max-width:52ch }
+.hero-stats>div{ padding:2px 30px }
+/* El punteado y el halo competían con la foto: sobre una imagen se leen como
+   suciedad, no como textura. */
+.hero::before, .hero::after{ display:none }
+
+/* La píldora daba 1.75:1 sobre el hero: a 12px eso no se lee, se adivina.
+   Fondo propio y opaco en vez de un blanco al 10% que depende de lo que haya
+   detrás, y el texto en un azul claro que sí cruza el mínimo. */
+.hero-badge{
+  background:rgba(8,24,48,.72); border-color:rgba(147,197,253,.42);
+  color:#cfe4ff; backdrop-filter:blur(6px); font-weight:700;
+}
 </style>
 </head>
 <body>
