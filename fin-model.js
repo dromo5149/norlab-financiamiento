@@ -134,41 +134,8 @@
     setTimeout(function () { finish(null); }, opts.timeout || 4000);
   }
 
-  // ── INSERT de solicitud a Supabase (anon · RLS sólo permite INSERT) ────────
-  // Fire-and-forget: registra la solicitud en `fin_solicitudes` para que el
-  // admin del OS la lea. NO reemplaza el POST al Apps Script (que sigue
-  // escribiendo Sheet + subiendo docs a Drive) — es dual-write durante la
-  // migración. Devuelve una promesa que nunca rechaza (no rompe el wizard).
-  function insertSolicitud(row) {
-    try {
-      return fetch(SB_URL + '/rest/v1/fin_solicitudes', {
-        method: 'POST',
-        headers: {
-          apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON,
-          'Content-Type': 'application/json', Prefer: 'return=minimal',
-        },
-        body: JSON.stringify(row),
-      }).catch(function () {});
-    } catch (e) { return Promise.resolve(); }
-  }
-
-  // ── Subir documento a Supabase Storage (Edge Function service-role) ────────
-  // Dual-write Fase 3 R1: además del upload a Drive (Apps Script), guarda el
-  // doc en Storage (bucket fin-docs) + registra fin_documentos. La Edge Function
-  // usa service-role internamente; aquí va el anon JWT (verify_jwt on).
-  // Fire-and-forget: nunca rompe la subida a Drive.
-  function uploadDoc(payload) {
-    try {
-      return fetch(SB_URL + '/functions/v1/fin-upload-doc', {
-        method: 'POST',
-        headers: {
-          apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }).catch(function () {})
-    } catch (e) { return Promise.resolve() }
-  }
+  // 17-ago-2026: insertSolicitud/uploadDoc se retiraron — el wizard manda
+  // todo a os.norlab.xyz/api/fin-solicitud (ver solicitud.js).
 
   // ── Plazos válidos para un equipo (financiamiento) ─────────────────────────
   function plazosFin(eq) {
@@ -265,8 +232,6 @@
     EQ_SOURCE_URL: EQ_SOURCE_URL,
     fmt: fmt, fmt2: fmt2, iva: iva,
     loadEquipos: loadEquipos,
-    insertSolicitud: insertSolicitud,
-    uploadDoc: uploadDoc,
     plazosFin: plazosFin,
     plazosMSI: plazosMSI,
     calcFinanciamiento: calcFinanciamiento,

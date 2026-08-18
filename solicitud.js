@@ -1,4 +1,9 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQWCY3SzoYKlXG_HF7D-fll3Zi-5jYWXeaOkSAPi0zJpGO3T_C-DLpW-DQLuHDxasM/exec';
+// 17-ago-2026: el wizard habla SOLO con el OS (fin-solicitud). El Apps Script
+// "SIMULADOR" se retiró: solicitud, documentos y verificación viven en el OS.
+const OS_URL = 'https://os.norlab.xyz/api/fin-solicitud';
+function osPost(body){
+  return fetch(OS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json();});
+}
 const WA_NUM = '525611202177';
 
 // Financial constants
@@ -338,14 +343,8 @@ function loadReactivosComodato(reactMin){
   grid.style.display='none';
   loading.style.display='block';
   loading.textContent='Cargando cat\u00e1logo de reactivos...';
-  if(reactivosCache){renderReactivosGrid(reactivosCache,reactMin);return;}
-  fetch(SCRIPT_URL+'?action=reactivos_comodato')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      reactivosCache=d.reactivos||[];
-      renderReactivosGrid(reactivosCache,reactMin);
-    })
-    .catch(function(){loading.textContent='No se pudo cargar el cat\u00e1logo.';});
+  // Sin catálogo de precios especiales en línea: el ejecutivo lo manda.
+  renderReactivosGrid([],reactMin);
 }
 function renderReactivosGrid(list,reactMin){
   var grid=document.getElementById('com_reactivos_grid');
@@ -438,8 +437,7 @@ function doZohoLookup(t){
   var box=document.getElementById('zoho_'+t);
   box.className='zoho-box loading show';
   box.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" stroke="#1976d2" stroke-width="2" fill="none" style="animation:spin .8s linear infinite;margin-right:6px"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Verificando en nuestro sistema...';
-  fetch(SCRIPT_URL+'?action=zoho_lookup&email='+encodeURIComponent(email)+'&ts='+Date.now())
-    .then(function(r){return r.json();})
+  osPost({action:'zoho_lookup',email:email})
     .then(function(data){zohoData=data;renderZoho(box,data,t);})
     .catch(function(){box.className='zoho-box notfound show';box.innerHTML='Error de conexi\u00f3n.';});
 }
@@ -454,13 +452,11 @@ function renderZoho(box,d,t){
     '<svg viewBox="0 0 24 24" width="16" height="16" stroke="#2e7d32" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>'+
     'Cliente verificado: '+d.nombre+'</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px">'+
-    '<span style="color:#6b7c93">Total compras</span><span style="font-weight:600">$'+(d.total_pagado||0).toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>'+
-    '<span style="color:#6b7c93">Facturas pagadas</span><span style="font-weight:600">'+(d.facturas_pagadas||0)+'/'+(d.total_facturas||0)+'</span>'+
-    '<span style="color:#6b7c93">\u00daltima compra</span><span style="font-weight:600">'+(d.ultima_compra||'N/A')+'</span>'+
-    '<span style="color:#6b7c93">Comportamiento</span><span style="font-weight:600">'+(d.comportamiento||'N/A')+'</span>'+
-    (d.saldo_pendiente>0?'<span style="color:#c62828;font-weight:600;grid-column:1/-1;margin-top:4px">Saldo pendiente: $'+d.saldo_pendiente.toLocaleString('es-MX',{maximumFractionDigits:0})+'</span>':'')+
+    (d.cliente_desde?'<span style="color:#6b7c93">Cliente desde</span><span style="font-weight:600">'+d.cliente_desde+'</span>':'')+
+    (d.ultima_compra?'<span style="color:#6b7c93">\u00daltima compra</span><span style="font-weight:600">'+d.ultima_compra+'</span>':'')+
+    '<span style="color:#6b7c93">Historial</span><span style="font-weight:600">'+(d.comportamiento||'N/A')+'</span>'+
     '</div>'+
-    '<div style="font-size:11px;color:#2e7d32;margin-top:8px;font-style:italic">Los campos disponibles se han llenado autom\u00e1ticamente.</div>';
+    '<div style="font-size:11px;color:#2e7d32;margin-top:8px;font-style:italic">Tu historial con NORLAB cuenta a tu favor. Los campos disponibles se llenaron autom\u00e1ticamente.</div>';
 
   // Auto-fill ALL available fields
   function fill(id,val){if(val){var el=document.getElementById(id);if(el&&!el.value.trim())el.value=val;}}
@@ -525,7 +521,7 @@ function processDocFiles(files,docId){
     if(file.size>10*1024*1024){alert(file.name+' excede el limite de 10MB');return;}
     var uid='f'+Date.now()+Math.random().toString(36).substr(2,4);
     var docType=DOC_TYPE[docId]||'Documento';
-    var item={uid:uid,name:file.name,docId:docId,docType:docType,tipo:tipo,status:'reading'};
+    var item={uid:uid,name:file.name,docId:docId,docType:docType,tipo:tipo,status:'reading',file:file};
     uploadedFiles.push(item);
     addDocFileItem(item,docId);
     var reader=new FileReader();
@@ -544,23 +540,31 @@ function uploadFile(item){
   var nombre=tipo==='fisica'?(g('f_nombre')||'solicitante'):(g('m_razon')||g('m_rep')||'solicitante');
   var folio=curFolio||('NL-'+String(Math.floor(10000+Math.random()*90000)));
   if(!curFolio||curFolio.indexOf('TEMP_')===0) curFolio=folio;
-  // Dual-write R1: además de Drive, subir a Supabase Storage (fin-docs) +
-  // registrar fin_documentos vía Edge Function. Fire-and-forget.
-  try{ if(FM&&FM.uploadDoc){ FM.uploadDoc({folio:folio,tipo_doc:item.docType,filename:item.docType.replace(/ /g,'_')+'_'+item.name,mime:item.mime,base64:item.b64}); } }catch(_){}
-  // Folder will be named: {Nombre}_{Folio}
-  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify({action:'upload_doc',folio:folio,nombre:nombre,tipo_doc:item.docType,
-      mensualidad:curMensualidad||0,
-      file:item.b64,mime:item.mime,filename:folio+'_'+item.docType.replace(/ /g,'_')+'_'+item.name})
-  }).then(function(){
-    item.status='done';item.analysis='Guardado en Drive. Analisis Claude enviado por email.';
-    updateDocFileItem(item);checkDoc(item.docId);
-    setTimeout(function(){collapseDoc(item.docId);},800);
-  }).catch(function(){
-    item.status='done';item.analysis='Enviado correctamente.';
-    updateDocFileItem(item);checkDoc(item.docId);
-    setTimeout(function(){collapseDoc(item.docId);},800);
-  });
+  // Subida directa a Storage del OS: 1) el OS da una URL firmada, 2) PUT del
+  // archivo (sin credenciales en el navegador), 3) el OS registra el documento.
+  var blob=item.file||(item.b64?b64ToBlob(item.b64,item.mime):null);
+  osPost({action:'upload_url',folio:folio,filename:item.docType.replace(/ /g,'_')+'_'+item.name,mime:item.mime})
+    .then(function(u){
+      if(!u||!u.ok||!u.url) throw new Error(u&&u.error||'sin url');
+      return fetch(u.url,{method:'PUT',headers:{'Content-Type':item.mime||'application/octet-stream'},body:blob}).then(function(r){
+        if(!r.ok) throw new Error('storage '+r.status);
+        return osPost({action:'doc_ok',folio:folio,path:u.path,tipo_doc:item.docType});
+      });
+    })
+    .then(function(){
+      item.status='done';item.analysis='Documento recibido.';
+      updateDocFileItem(item);checkDoc(item.docId);
+      setTimeout(function(){collapseDoc(item.docId);},800);
+    })
+    .catch(function(){
+      item.status='error';item.analysis='No se pudo subir. Int\u00e9ntalo de nuevo o env\u00edalo por WhatsApp.';
+      updateDocFileItem(item);
+    });
+}
+function b64ToBlob(b64,mime){
+  var bin=atob(b64),len=bin.length,arr=new Uint8Array(len);
+  for(var i=0;i<len;i++)arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:mime||'application/octet-stream'});
 }
 function addDocFileItem(item,docId){var list=document.getElementById('flist_'+docId);if(!list)return;var d=document.createElement('div');d.id='fi_'+item.uid;d.className='fi-row';list.appendChild(d);updateDocFileItem(item);}
 function updateDocFileItem(item){
@@ -571,7 +575,7 @@ function updateDocFileItem(item){
     done:'<svg viewBox="0 0 24 24" width="16" height="16" stroke="#2e7d32" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>',
     error:'<svg viewBox="0 0 24 24" width="16" height="16" stroke="#c62828" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
   };
-  var stat={reading:'Leyendo...',uploading:'Subiendo y analizando con Claude...',done:'Guardado en Drive',error:'Error'};
+  var stat={reading:'Leyendo...',uploading:'Subiendo...',done:'Recibido',error:'Error'};
   el.className='fi-row '+(item.status==='done'?'done':item.status==='uploading'?'uploading':'');
   el.innerHTML='<span style="flex-shrink:0">'+(icons[item.status]||icons.reading)+'</span>'+
     '<div style="flex:1;min-width:0">'+
@@ -621,7 +625,7 @@ function submitForm(){
   var docsOk=req.filter(function(x){return checkedDocs.has(x);}).length;
   var pc=document.getElementById('p_plan').value;
   var planName=({fin:'Financiamiento',ren:'Renta mensual',com:'Comodato'})[pc]||pc;
-  var data={action:'solicitud',folio:curFolio,equipo:selEq?(selEq.n+' - '+selEq.m):'',plan:planName,
+  var data={action:'solicitud',folio:curFolio,equipo:selEq?(selEq.n+' - '+selEq.m):'',equipo_sku:selEq?(selEq.sku||''):'',plan:pc,
     plazo:g('p_plazo'),
     mensual: curMensualNum > 0 ? '$' + curMensualNum.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}) : '',
     enganche: curEngancheNum > 0 ? '$' + curEngancheNum.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}) : '',
@@ -632,59 +636,20 @@ function submitForm(){
     anos:g('f_anos')||g('m_anos'),cliente:g('f_cliente')||g('m_cliente'),
     razon:g('m_razon'),rep:g('m_rep'),notas:g('f_notas')||g('m_notas'),
     docs_ok:docsOk,docs_req:req.length,
-    // Obligado solidario
     aval_nombre:g('aval_nombre'),aval_rfc:g('aval_rfc'),aval_tel:g('aval_tel'),
     aval_dir:g('aval_dir'),aval_ciudad:g('aval_ciudad'),aval_relacion:g('aval_relacion'),
-    // Reactivos comodato seleccionados
-    reactivos_seleccionados:reactivosSeleccionados.join(' | '),
-    zoho_cliente:zohoData&&zohoData.found?'Si':'No verificado',
-    zoho_total:zohoData&&zohoData.found?String(zohoData.total_pagado||0):'',
-    zoho_ultima:zohoData&&zohoData.found?(zohoData.ultima_compra||''):'',
-    zoho_pagadas:zohoData&&zohoData.found?((zohoData.facturas_pagadas||0)+'/'+(zohoData.total_facturas||0)):'',
-    zoho_pendiente:zohoData&&zohoData.found?String(zohoData.saldo_pendiente||0):'',
-    zoho_dias_vencido:zohoData&&zohoData.found?String(zohoData.dias_vencido||0):'',
-    zoho_comportamiento:zohoData&&zohoData.found?(zohoData.comportamiento||''):''
+    _ua:navigator.userAgent
   };
-  // Dual-write Fase 3: además del Apps Script (Sheet + docs a Drive), registrar
-  // la solicitud en Supabase (fin_solicitudes) para que el admin del OS la lea.
-  // Fire-and-forget, no bloquea ni rompe el wizard si Supabase falla.
-  try {
-    if (FM && FM.insertSolicitud) {
-      FM.insertSolicitud({
-        folio: curFolio,
-        equipo_sku: selEq ? (selEq.sku || null) : null,
-        equipo: data.equipo || null,
-        plan: planName,
-        plazo: parseInt(g('p_plazo'), 10) || null,
-        mensualidad: data.mensual || null,
-        enganche: data.enganche || null,
-        precio: (selEq && selEq.p) || curPrecio || null,
-        tipo: tipo,
-        nombre: data.nombre || data.razon || null,
-        rfc: data.rfc || null,
-        curp: data.curp || null,
-        telefono: data.tel || null,
-        email: data.email || null,
-        ciudad: data.ciudad || null,
-        meta: {
-          negocio: data.negocio || '', dir: data.dir || '', anos: data.anos || '',
-          cliente: data.cliente || '', razon: data.razon || '', rep: data.rep || '',
-          notas: data.notas || '', docs_ok: data.docs_ok, docs_req: data.docs_req,
-          aval: { nombre: data.aval_nombre || '', rfc: data.aval_rfc || '', tel: data.aval_tel || '',
-                  dir: data.aval_dir || '', ciudad: data.aval_ciudad || '', relacion: data.aval_relacion || '' },
-          reactivos_seleccionados: data.reactivos_seleccionados || '',
-          zoho: { cliente: data.zoho_cliente || '', total: data.zoho_total || '', ultima: data.zoho_ultima || '',
-                  pagadas: data.zoho_pagadas || '', pendiente: data.zoho_pendiente || '',
-                  dias_vencido: data.zoho_dias_vencido || '', comportamiento: data.zoho_comportamiento || '' },
-        },
-      });
-    }
-  } catch (_) { /* el dual-write nunca debe romper el envío */ }
-
-  var qs=Object.keys(data).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(data[k]||'');}).join('&');
-  fetch(SCRIPT_URL+'?'+qs)
-    .then(function(){showSuccess(curFolio,data);})
-    .catch(function(){showSuccess(curFolio,data);});
+  data.plan=planName; // el OS acepta el nombre completo
+  osPost(data)
+    .then(function(r){
+      if(!r||!r.ok){ throw new Error(r&&r.error||'sin respuesta'); }
+      showSuccess(r.folio||curFolio,data);
+    })
+    .catch(function(){
+      btn.disabled=false;document.getElementById('btn_txt').textContent='Enviar solicitud';document.getElementById('btn_spin').style.display='none';
+      alert('No pudimos enviar tu solicitud. Int\u00e9ntalo de nuevo o escr\u00edbenos por WhatsApp al 56 1120 2177 con tu folio '+curFolio+'.');
+    });
 }
 function showSuccess(ref,data){
   for(var i=1;i<=4;i++)document.getElementById('s'+i).classList.remove('active');
