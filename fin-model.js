@@ -27,7 +27,7 @@
   // Seguridad: el front NO recibe costo ni margen_reactivos (la vista ya no los
   // expone a anon). La opción de compra del comodato viene precomputada en
   // `opcion_compra` (columna generada = 15% del costo).
-  var EQ_SOURCE_URL = SB_URL + '/rest/v1/fin_equipos_web?select=sku,nombre,marca,categoria,precio,planes,plazo_max,deposito_meses,duracion_comodato,nota,orden,image_url,imagen_url,opcion_compra&order=orden.asc';
+  var EQ_SOURCE_URL = SB_URL + '/rest/v1/fin_equipos_web?select=sku,nombre,marca,categoria,precio,planes,plazo_max,deposito_meses,duracion_comodato,nota,orden,image_url,imagen_url,opcion_compra,compra_min_mensual&order=orden.asc';
 
   // Mapea una fila de `fin_equipos` (claves largas) al shape compacto que
   // consumen portal.js/solicitud.js: {id,n,m,c,p,co,mr,pl,mx,dm,mc,nota,sku}.
@@ -41,6 +41,10 @@
       c:  r.categoria || '',
       p:  Number(r.precio) || 0,
       oc: r.opcion_compra != null ? Number(r.opcion_compra) : null,  // opción de compra comodato (15% costo, precomputado)
+      // Compra mínima de comodato ya calculada en el servidor con el margen REAL
+      // del equipo (que no se expone al navegador). Si falta, se cae a la
+      // fórmula local con el margen genérico.
+      cm: r.compra_min_mensual != null ? Number(r.compra_min_mensual) : null,
       pl: Array.isArray(r.planes) ? r.planes : [],
       mx: r.plazo_max || 24,
       dm: r.deposito_meses || 0,
@@ -85,7 +89,7 @@
     comodato: {
       mesesLiquidacion: 24,
       mantenimientoAnualPct: 0.10,  // 10% del precio / año
-      margenReactivos: 0.35,        // 35%
+      margenReactivos: 0.35,        // sólo respaldo: el real es por equipo y lo aplica el servidor
       depositoMeses: 2,             // depósito = 2 meses de compra mínima
       opcionCompraPct: 0.15,        // 15% del costo al final
     },
@@ -215,7 +219,14 @@
   function calcComodato(eq) {
     var c = CONFIG.comodato;
     var mantMensual = eq.p * c.mantenimientoAnualPct / 12;
-    var reactivosMin = Math.ceil((eq.p / c.mesesLiquidacion + mantMensual) / c.margenReactivos);
+    // El margen de reactivos es distinto por equipo (20% a 40%) y no viaja al
+    // navegador, así que la compra mínima llega precalculada del servidor
+    // (fin_equipos_web.compra_min_mensual). El cálculo local queda sólo para el
+    // catálogo de respaldo. Antes se usaba 35% parejo aquí y el contrato usaba
+    // el margen real: la cotización nunca coincidía con lo que el cliente firmaba.
+    var reactivosMin = (eq.cm != null && eq.cm > 0)
+      ? eq.cm
+      : Math.ceil((eq.p / c.mesesLiquidacion + mantMensual) / c.margenReactivos);
     var deposito = reactivosMin * c.depositoMeses;
     return {
       plan: 'com', reactivosMin: reactivosMin, reactivosMinIVA: iva(reactivosMin),
