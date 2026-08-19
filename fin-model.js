@@ -87,7 +87,7 @@
     // Modelo de la solicitud: reactivos para liquidar el equipo en `meses`
     // incluyendo mantenimiento anual, sobre margen.
     comodato: {
-      mesesLiquidacion: 24,
+      mesesLiquidacion: 24,         // respaldo: manda la duración del propio equipo
       mantenimientoAnualPct: 0.10,  // 10% del precio / año
       margenReactivos: 0.35,        // sólo respaldo: el real es por equipo y lo aplica el servidor
       depositoMeses: 2,             // depósito = 2 meses de compra mínima
@@ -224,13 +224,17 @@
     // (fin_equipos_web.compra_min_mensual). El cálculo local queda sólo para el
     // catálogo de respaldo. Antes se usaba 35% parejo aquí y el contrato usaba
     // el margen real: la cotización nunca coincidía con lo que el cliente firmaba.
+    // Los meses en que los reactivos recuperan el equipo son los del propio
+    // equipo (36/48/60 según el modelo), no 24 parejo. Ese mismo número es la
+    // vigencia del comodato en el contrato: si se liquida en 48, dura 48.
+    var meses = (eq.mc > 0) ? eq.mc : c.mesesLiquidacion;
     var reactivosMin = (eq.cm != null && eq.cm > 0)
       ? eq.cm
-      : Math.ceil((eq.p / c.mesesLiquidacion + mantMensual) / c.margenReactivos);
+      : Math.ceil((eq.p / meses + mantMensual) / c.margenReactivos);
     var deposito = reactivosMin * c.depositoMeses;
     return {
       plan: 'com', reactivosMin: reactivosMin, reactivosMinIVA: iva(reactivosMin),
-      deposito: deposito, depositoMeses: c.depositoMeses, duracionMeses: c.mesesLiquidacion,
+      deposito: deposito, depositoMeses: c.depositoMeses, duracionMeses: meses,
       // Precomputado en la vista (no exponemos costo al front). Fallback: 15% del precio.
       opcionCompra: (eq.oc != null ? eq.oc : eq.p * c.opcionCompraPct),
     };
