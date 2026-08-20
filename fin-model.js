@@ -88,6 +88,7 @@
     // incluyendo mantenimiento anual, sobre margen.
     comodato: {
       mesesLiquidacion: 24,         // respaldo: manda la duración del propio equipo
+      recuperacionMaxMeses: 24,     // el equipo se paga en 2 años como máximo; el resto es ganancia
       mantenimientoAnualPct: 0.10,  // 10% del precio / año
       margenReactivos: 0.35,        // sólo respaldo: el real es por equipo y lo aplica el servidor
       depositoMeses: 2,             // depósito = 2 meses de compra mínima
@@ -228,9 +229,13 @@
     // equipo (36/48/60 según el modelo), no 24 parejo. Ese mismo número es la
     // vigencia del comodato en el contrato: si se liquida en 48, dura 48.
     var meses = (eq.mc > 0) ? eq.mc : c.mesesLiquidacion;
+    // El equipo se recupera en 24 meses como máximo (o antes, si el comodato
+    // dura menos); lo que sigue hasta el final del plazo es ganancia. Por eso
+    // la compra mínima se calcula sobre la recuperación, no sobre la vigencia.
+    var recuperacion = Math.min(c.recuperacionMaxMeses, meses);
     var reactivosMin = (eq.cm != null && eq.cm > 0)
       ? eq.cm
-      : Math.ceil((eq.p / meses + mantMensual) / c.margenReactivos);
+      : Math.ceil((eq.p / recuperacion + mantMensual) / c.margenReactivos);
     var deposito = reactivosMin * c.depositoMeses;
     return {
       plan: 'com', reactivosMin: reactivosMin, reactivosMinIVA: iva(reactivosMin),
